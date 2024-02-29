@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchAllDocument,
   fetchDocumentById,
+  fetchOnlyDocumentId,
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
 
@@ -27,5 +28,13 @@ export const useFetchAllUsers = (options) => {
     ...options,
     queryKey: ["users"],
     queryFn: fetchAllUsers,
+  });
+};
+
+export const useDocumentOnlyId = (options) => {
+  return useQuery({
+    ...options,
+    queryKey: ["document_only_id"],
+    queryFn: fetchOnlyDocumentId,
   });
 };

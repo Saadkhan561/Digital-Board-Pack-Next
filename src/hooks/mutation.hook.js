@@ -1,4 +1,8 @@
-import { insertDocument, uploadDocument, userAccessList } from "@/services/document.service";
+import {
+  insertDocument,
+  uploadDocument,
+  userAccessList,
+} from "@/services/document.service";
 import { login, register } from "@/services/user.service";
 import { useMutation } from "@tanstack/react-query";
 
@@ -29,10 +33,16 @@ export const useInsertDocumentMutation = (option) => {
     ...option,
   });
 };
+// export const useAddPermissionMutation = (option) => {
+//   return useMutation({
+//     mutationFn: userAccessList,
+//     ...option,
+//   });
+// };
 
 export const userAccessListMutation = (option) => {
   return useMutation({
     mutationFn: userAccessList,
-    ...option
-  })
-}
+    ...option,
+  });
+};

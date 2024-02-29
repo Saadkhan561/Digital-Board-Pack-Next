@@ -3,10 +3,11 @@ import { useController, useForm } from "react-hook-form";
 import {
   useDocUploadMutation,
   useInsertDocumentMutation,
+  userAccessListMutation,
 } from "../hooks/mutation.hook";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useFetchAllUsers } from "@/hooks/query.hook";
+import { useDocumentOnlyId, useFetchAllUsers } from "@/hooks/query.hook";
 import UserAccessList from "./user_access_list";
 
 const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
@@ -17,25 +18,34 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
   }, [isNewDocument]);
 
   // HOOK TO FETCH ALL USERS
-  const {data, isLoading} = useFetchAllUsers()
-  console.log(data)
+  const { data, isLoading } = useFetchAllUsers();
+  console.log(data);
 
   const initialValues = {
     title: "",
     docName: null,
+    userId: [],
   };
 
   const documentSchema = Yup.object({
     title: Yup.string().required("Title is required"),
   });
 
-  // aik aur mutation banay gi,
+  const { mutate: documentAccess } = userAccessListMutation({
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      console.log(data, "file inserted");
-      // const filePath = data.path;
-      // const title = watch("title");
-      reset();
+      const {documentId } = useDocumentOnlyId()
+      console.log(documentId.data.doc_id)
+      const doc_id = documentId.doc_id
     },
     onError(error) {
       console.log(error);
@@ -44,11 +54,11 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
-      console.log(data, "file uploaded");
-      const docName = data
-      const title = watch("title")
-      console.log(docName, title)
-      insertFile({docName, title})
+      // console.log(data, "file uploaded");
+      const docName = data;
+      const title = watch("title");
+      console.log(docName, title);
+      insertFile({ docName, title });
     },
     onError(error) {
       console.log(error);
@@ -69,6 +79,7 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
+    console.log(data);
     uploadFile(formData);
   };
 
@@ -96,11 +107,7 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
             <label className="label" htmlFor="title">
               Title
             </label>
-            <input
-              className="input_field"
-              type="text"
-              {...register("title")}
-            />
+            <input className="input_field" type="text" {...register("title")} />
             {errors.title && (
               <p className="text-red-500 text-xs">{errors.title.message}</p>
             )}
@@ -135,10 +142,46 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
                 {/* {isLoading?(<div>Loading...</div>):data?.map((user) => (
                   <UserAccessList key={user.user_id} userId={user.user_id} username={user.username}/>
                 ))} */}
-                <UserAccessList userId='1234' />
+                {isLoading ? (
+                  <div>Loading...</div>
+                ) : (
+                  data?.map((user, index) => (
+                    <div
+                      className="flex justify-between mt-4 border-b pb-2"
+                      key={index}
+                    >
+                      <div className="flex gap-2 items-center">
+                        <img
+                          src="/images/account.png"
+                          alt=""
+                          height={20}
+                          width={20}
+                        />
+                        <p>{user.first_name + " " + user.last_name}</p>
+                      </div>
+                      <input
+                        className="cursor-pointer"
+                        // id="access"
+                        type="checkbox"
+                        // ref={register.ref}
+                        // name={"userId"}
+                        // value={user?.user_id}
+                        {...register("userId")}
+                        value={user?.user_id}
+
+                        // naam btaa response ma jo jayega
+                        // value={userId}
+                        // onChange={handleChange}
+                        // onClick={handleChange}
+                      />
+                    </div>
+                  ))
+                )}
+                {/* sun backend mn array or id bhejni haina? nhn array tw us component mn bnani hy append krke wo array wapis yaha lani hy woh ajaye gi, ary array tw bana wo ban nhnrhi na, mujhy yeh bta k response ma doc_acces ma list of userID jayengi na? doc id aur users ki ids ki array. set */}
+                {/* <UserAccessList userId='1234' />
                 <UserAccessList userId='2222' />
-                <UserAccessList userId='6666' />
-                
+                <UserAccessList userId='6666' /> */}
+                {/* acha sun ye abhi ids hardcoat ki hen check krne ke liyek pok  5 sec de*/}
               </div>
             </div>
           </div>

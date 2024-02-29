@@ -16,7 +16,9 @@ const UserAccessList = ({ userId, username }) => {
       }
     });
   };
-
+//view dikha iska
+// mtlb?
+//browser pr dikha, kidhr aa raha hai
   console.log(users);
 
   // const initialValues = {
@@ -43,7 +45,9 @@ const UserAccessList = ({ userId, username }) => {
   //     console.log(data);
   //     mutate({ ...data });
   //   };
-
+//alag component q banaya?
+// user fetch karaky iterate krke dikhana tha isliye
+//wohi wala component khol
   return (
     <>
       <div className="flex justify-between mt-4 border-b pb-2">

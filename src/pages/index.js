@@ -12,15 +12,8 @@ const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
   const [isNewDocument, setNewDocument] = useState(false);
-  const [documents, setDocument] = useState(null);
 
   const { data, isLoading } = useFetchAllDocumentQuery();
-  // console.log(data);
-
-  // const { data, isLoading } = useFetchDocumentById();
-
-  console.log(data);
-  console.log(isLoading);
 
   const updateNewDocument = (newDocumentVal) => {
     setNewDocument(newDocumentVal);
