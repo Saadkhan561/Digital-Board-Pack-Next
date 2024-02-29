@@ -132,9 +132,13 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
                 />
               </div>
               <div className="h-[200px] overflow-y-auto p-4">
-                {isLoading?(<div>Loading...</div>):data?.map((user) => (
+                {/* {isLoading?(<div>Loading...</div>):data?.map((user) => (
                   <UserAccessList key={user.user_id} userId={user.user_id} username={user.username}/>
-                ))}
+                ))} */}
+                <UserAccessList userId='1234' />
+                <UserAccessList userId='2222' />
+                <UserAccessList userId='6666' />
+                
               </div>
             </div>
           </div>

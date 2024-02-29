@@ -4,6 +4,10 @@ import Share from "@/components/share_doc_popup";
 import Comment from "@/components/card_details/comments";
 import NewComment from "@/components/card_details/new_comment";
 import Layout from "@/layout/UserLayout";
+import { useRouter } from "next/router";
+import { useFetchDocumentById } from "@/hooks/query.hook";
+import moment from "moment";
+import Link from "next/link";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -19,11 +23,22 @@ const CardDetails = () => {
     }
   };
 
+  // HOOK TO REDIRECT WITH DOCUMENT'S ID
+  const router = useRouter();
+  if (!router) {
+    return;
+  }
+  const id = router.query.id;
+  const { data, isLoading } = useFetchDocumentById(
+    { id },
+    { enabled: Boolean(id) }
+  );
+  console.log(data);
+
   return (
     <Layout>
       <div className="w-full relative">
-        <div>
-        </div>
+        <div></div>
         <div className="p-4 mr-4 ml-4">
           <div className="flex justify-between items-center border-b-2 border-b-gray-300 pb-4">
             <div className="flex items-center gap-5">
@@ -36,10 +51,11 @@ const CardDetails = () => {
               </div>
               <div>
                 <p className="text-2xl mob_screen:text-lg menu_bar_mob:text-md font-bold text-blue-600">
-                  Sales in January
+                  {data?.title}
                 </p>
                 <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm text-gray-500 font-semibold">
-                  Owner Name - 26 Nov 2023
+                  {data?.createdBy} -
+                  {moment(data?.createdAt).format("DD MMM YYYY")}
                 </p>
               </div>
             </div>
@@ -53,10 +69,22 @@ const CardDetails = () => {
                   width={25}
                 />
               </div>
-              <div className={downloadPdf ? 'absolute top-10 right-2 w-[120px] border bg-white rounded-lg border-slate-300 shadow-2xl': 'hidden'}>
+              <div
+                className={
+                  downloadPdf
+                    ? "absolute top-10 right-2 w-[120px] border bg-white rounded-lg border-slate-300 shadow-2xl"
+                    : "hidden"
+                }
+              >
                 <ul className="flex flex-col items-center">
-                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold"><a href="/files/test.pdf" download={true}>Download</a></li>
-                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold text-red-500">Delete</li>
+                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold">
+                    <Link href={`/api/download-pdf/${data?.doc_name}`} >
+                      Download
+                    </Link>
+                  </li>
+                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold text-red-500">
+                    Delete
+                  </li>
                 </ul>
               </div>
             </div>
@@ -76,7 +104,7 @@ const CardDetails = () => {
               <div className="mr-4 p-2 rounded-lg text-black font-semibold bg-slate-200">
                 <button>
                   <a
-                    href="/files/test.pdf"
+                    href={`/pdf/${data?.doc_name}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

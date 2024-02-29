@@ -13,12 +13,11 @@ export const useFetchAllDocumentQuery = (options) => {
   });
 };
 
-export const useFetchDocumentById = (options) => {
-  const { params, ...rest } = options;
+export const useFetchDocumentById = (params, options) => {
   return useQuery({
-    ...rest,
-    queryKey: ["document", params.id],
+    queryKey: ["document", JSON.stringify(params)],
     queryFn: () => fetchDocumentById(params),
+    ...options,
   });
 };
 
@@ -27,6 +26,6 @@ export const useFetchAllUsers = (options) => {
   return useQuery({
     ...options,
     queryKey: ["users"],
-    queryFn: fetchAllUsers
-  })
-}
+    queryFn: fetchAllUsers,
+  });
+};

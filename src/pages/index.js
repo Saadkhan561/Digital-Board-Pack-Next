@@ -7,21 +7,20 @@ import {
   useFetchAllDocumentQuery,
   useFetchDocumentById,
 } from "@/hooks/query.hook";
-import { axios } from "../utils/axios";
 
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
   const [isNewDocument, setNewDocument] = useState(false);
-  const [documents, setDocument] = useState(null)
+  const [documents, setDocument] = useState(null);
 
-  
-  const {data, isLoading} = useFetchAllDocumentQuery()
-  console.log(data)
+  const { data, isLoading } = useFetchAllDocumentQuery();
+  // console.log(data);
 
   // const { data, isLoading } = useFetchDocumentById();
 
-  // console.log(data);
+  console.log(data);
+  console.log(isLoading);
 
   const updateNewDocument = (newDocumentVal) => {
     setNewDocument(newDocumentVal);
@@ -116,9 +115,19 @@ const Home = () => {
           {/* CARDS BODY DIV */}
           <div className="p-4 flex flex-wrap gap-4 mob_screen:justify-center">
             {/* CARD */}
-            {isLoading?(<div>Loading...</div>):data?.map((document) => (
-              <Card key={document.doc_id} docId={document.doc_id} docName={document.doc_name} title={document.title} />
-            ))}
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              data &&
+              data?.map((document) => (
+                <Card
+                  key={document.doc_id}
+                  docId={document.doc_id}
+                  docName={document.doc_name}
+                  title={document.title}
+                />
+              ))
+            )}
           </div>
         </div>
         {/* NEW DOCUMENT DIV */}

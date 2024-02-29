@@ -21,3 +21,4 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+axios.defaults.headers.common["ngrok-skip-browser-warning"] = "home";

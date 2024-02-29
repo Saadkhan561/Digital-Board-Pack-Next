@@ -20,6 +20,15 @@ export const insertDocument = async (data) => {
   }
 };
 
+export const userAccessList = async(data) => {
+  try {
+    const res = await axios.post("/AddPermission", data)
+    return res.data
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const fetchAllDocument = async () => {
   try {
     const response = await axios.get("/GetDoc");
@@ -35,11 +44,13 @@ export const fetchAllDocument = async () => {
 
 export const fetchDocumentById = async (params) => {
   const { id } = params;
+
   try {
-    const response = await axios.get(`/getdocumentbyid/${id}`);
+    const response = await axios.get(`/GetFile/${id}`);
     if (response.status !== 200) {
       throw new Error("Network response was not ok");
     }
+
     return response.data;
   } catch (error) {
     throw new Error(error);
