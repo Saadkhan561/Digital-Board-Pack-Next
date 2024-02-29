@@ -3,23 +3,25 @@ import { useState } from "react";
 import Card from "@/components/card";
 import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {
+  useFetchAllDocumentQuery,
+  useFetchDocumentById,
+} from "@/hooks/query.hook";
+import { axios } from "../utils/axios";
 
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
   const [isNewDocument, setNewDocument] = useState(false);
-//   const loggedIn = localStorage.getItem('loggen_in')
-//   const username = localStorage.getItem('username')
+  const [documents, setDocument] = useState(null)
 
-// useEffect(() => {
-//   if (loggedIn == true) {
-//       notify()
-//   }
-// }, [])
+  
+  const {data, isLoading} = useFetchAllDocumentQuery()
+  console.log(data)
 
-// const notify = () => toast(username, "logged in successfully!")
+  // const { data, isLoading } = useFetchDocumentById();
+
+  // console.log(data);
 
   const updateNewDocument = (newDocumentVal) => {
     setNewDocument(newDocumentVal);
@@ -38,10 +40,7 @@ const Home = () => {
 
   return (
     <Layout>
-      <div>
-        {/* <div>
-          <ToastContainer />
-        </div> */}
+      <>
         <div
           className={
             isNewDocument
@@ -117,30 +116,14 @@ const Home = () => {
           {/* CARDS BODY DIV */}
           <div className="p-4 flex flex-wrap gap-4 mob_screen:justify-center">
             {/* CARD */}
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {isLoading?(<div>Loading...</div>):data?.map((document) => (
+              <Card key={document.doc_id} docId={document.doc_id} docName={document.doc_name} title={document.title} />
+            ))}
           </div>
         </div>
         {/* NEW DOCUMENT DIV */}
         <div className="absolute top-0">{renderNewDocument()}</div>
-      </div>
+      </>
     </Layout>
   );
 };
