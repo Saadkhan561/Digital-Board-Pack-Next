@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useFetchDocumentById } from "@/hooks/query.hook";
 import moment from "moment";
 import Link from "next/link";
+import ProtectedLogin from "@/components/Protected Routes/protected_login";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -36,6 +37,7 @@ const CardDetails = () => {
   console.log(data);
 
   return (
+    <ProtectedLogin>
     <Layout>
       <div className="w-full relative">
         <div></div>
@@ -133,6 +135,7 @@ const CardDetails = () => {
         </div>
       </div>
     </Layout>
+    </ProtectedLogin>
   );
 };
 

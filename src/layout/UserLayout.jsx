@@ -1,10 +1,10 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
+import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
 // FOR TOAST
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +28,9 @@ function Layout({ children }) {
       return <NewDocument />;
     }
   };
+
+  // FUNCTION TO LOGOUT A USER
+  const {logout} = useUserStore()
 
   return (
     <div className="flex relative overflow-x-hidden h-screen">
@@ -144,12 +147,17 @@ function Layout({ children }) {
                 <Notification />
               </div>
             </div>
-            <Link
-              href="register"
-              className="cursor-pointer border border-gray-400 rounded-full w-8 h-8 ml-2"
-            >
-              <img src="/images/account.png" alt="" height={28} width={28} />
-            </Link>
+            <div>
+              <Link
+                href="register"
+                className="cursor-pointer rounded-full w-8 h-8 ml-2"
+              >
+                <img src="/images/account.png" alt="" height={28} width={28} />
+              </Link>
+              <div onClick={logout} className="mt-1 text-sm font-semibold text-red-500 underline hover:cursor-pointer">
+                Logout
+              </div>
+            </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
           <div className="relative flex gap-2 items-center mob_screen_closed:hidden">

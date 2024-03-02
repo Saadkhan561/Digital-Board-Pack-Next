@@ -3,12 +3,12 @@ import { useState } from "react";
 import Card from "@/components/card";
 import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
+import ProtectedLogin from "@/components/Protected Routes/protected_login";
 import {
   useFetchAllDocumentQuery,
   useFetchDocumentById,
 } from "@/hooks/query.hook";
 import { useRouter } from "next/router";
-
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
@@ -26,6 +26,7 @@ const Home = () => {
   const { data, isLoading } = useFetchAllDocumentQuery();
 
   return (
+    <ProtectedLogin>
     <Layout>
       <>
         <div
@@ -120,6 +121,7 @@ const Home = () => {
         </div>
       </>
     </Layout>
+    </ProtectedLogin>
   );
 };
 

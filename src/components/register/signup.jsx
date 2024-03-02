@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useUserStore from "@/stores/useUserStore";
 import { useRegisterUser } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
+import { useAllDepartments } from "@/hooks/query.hook";
 
 const SignUp = ({ onUpdateLogin, prevLogin }) => {
   const [isLogin, setLogin] = useState(prevLogin);
   const [showPassword1, setShowPassword1] = useState(false);
-  const [showPassword2, setShowPassword2] = useState(false);
-  const { currentUser } = useUserStore();
-  
+  const [dropDown, setDropDown] = useState("None");
+  const [downArrow, setDownArrow] = useState(false);
+
+  const { data, isLoading } = useAllDepartments();
 
   onUpdateLogin(isLogin);
 
@@ -22,6 +23,7 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
     last_name: null,
     email: null,
     designation: null,
+    group_id: null,
   };
 
   const signupSchema = Yup.object({
@@ -39,16 +41,15 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
       .email("Invalid email address")
       .required("Email is required"),
     designation: Yup.string().required("Designation is required"),
+    group_id: Yup.string().required("Department is required"),
   });
-  
+
   const router = useRouter();
   const { mutate } = useRegisterUser({
     onSuccess(data) {
       console.log(data);
       reset();
       router.push("/register?login=true");
-      // resetForm();
-      // setValues({ ...initialValues });
     },
     onError(error) {
       console.log(error);
@@ -64,25 +65,16 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
     values: initialValues,
     resolver: yupResolver(signupSchema),
   });
-  // const { values, errors, handleChange, handleSubmit, resetForm, setValues } =
-  //   useFormik({
-  //     initialValues: initialValues,
-  //     validationSchema: signupSchema,
-  //     onSubmit: (values) => {
-  //       mutate({
-  //         ...values,
-  //       });
-  //     },
-  //   });
   const onSubmit = (data) => {
     mutate({
       ...data,
     });
   };
-  // console.log(values);
-  // const redirectFunction = (query) => {
 
-  // }
+  const handleDropDown = (e) => {
+    setDropDown(e.target.innerText);
+  };
+
   return (
     <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[450px] menu_bar_mob:w-[240px] p-4">
       <div className="text-3xl menu_bar_mob:text-xl font-semibold">
@@ -101,8 +93,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
               className="input_field"
               type="text"
               {...register("username")}
-              // values={values.username}
-              // onChange={handleChange}
             />
             <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
           </div>
@@ -118,11 +108,7 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
             <input
               className="input_field"
               type="text"
-              // id="first_name"
-              // name="first_name"
               {...register("first_name")}
-              // values={values.first_name}
-              // onChange={handleChange}
             />
             <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
           </div>
@@ -138,16 +124,28 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
             <input
               className="input_field"
               type="text"
-              // id="last_name"
-              // name="last_name"
               {...register("last_name")}
-              // values={values.last_name}
-              // onChange={handleChange}
             />
             <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
           </div>
           {errors.last_name && (
             <p className="text-red-500 text-xs">{errors.last_name.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="label" htmlFor="email">
+            Email
+          </label>
+          <div className="flex gap-1 border-b border-b-gray-300">
+            <input
+              className="input_field"
+              type="email"
+              {...register("email")}
+            />
+            <img className="h-4 w-4" src="/images/input_email.png" alt="" />
+          </div>
+          {errors.email && (
+            <p className="text-red-500 text-xs">{errors.email.message}</p>
           )}
         </div>
         <div>
@@ -158,11 +156,7 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
             <input
               className="input_field"
               type={showPassword1 ? "text" : "password"}
-              // id="pwd"
-              // name="pwd"
               {...register("pwd")}
-              // values={values.pwd}
-              // onChange={handleChange}
             />
             <img
               onClick={() => setShowPassword1(!showPassword1)}
@@ -173,48 +167,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
           </div>
           {errors.pwd && (
             <p className="text-red-500 text-xs">{errors.pwd.message}</p>
-          )}
-        </div>
-        {/* <div>
-          <label className="label" htmlFor="confirm_password">
-            Confirm Password
-          </label>
-          <div className="flex gap-1 border-b border-b-gray-300">
-            <input
-              className="input_field"
-              type={showPassword2 ? "text" : "password"}
-              id="confirm_password"
-              name="confirm_password"
-              values={values.confirm_password}
-              onChange={handleChange}
-            />
-            <img
-              onClick={() => setShowPassword2(!showPassword2)}
-              className="cursor-pointer h-4 w-4"
-              src="/images/pass_eye.png"
-              alt=""
-            />
-          </div>
-          <p className="text-red-500 text-xs">{errors.confirm_password}</p>
-        </div> */}
-        <div>
-          <label className="label" htmlFor="email">
-            Email
-          </label>
-          <div className="flex gap-1 border-b border-b-gray-300">
-            <input
-              className="input_field"
-              type="email"
-              // id="email"
-              {...register("email")}
-              // name="email"
-              // values={values.email}
-              // onChange={handleChange}
-            />
-            <img className="h-4 w-4" src="/images/input_email.png" alt="" />
-          </div>
-          {errors.email && (
-            <p className="text-red-500 text-xs">{errors.email.message}</p>
           )}
         </div>
         <div>
@@ -233,6 +185,69 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
             <p className="text-red-500 text-xs">{errors.designation.message}</p>
           )}
         </div>
+        <div className="flex flex-col gap-y-2">
+          <label className="label" htmlFor="designation">
+            Choose Your Department
+          </label>
+          <div>
+            <select {...register("group_id")}>
+              <option value="">Select Department</option>
+              {isLoading ? (
+                <option disabled>Loading...</option>
+              ) : (
+                data &&
+                data.map((depart) => (
+                  <option key={depart.group_id} value={depart.group_id}>
+                    {depart.group_name}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+          {/* <div className="relative">
+            <div
+              onClick={() => setDownArrow(!downArrow)}
+              className="flex justify-between items-center text-sm border p-1 hover:cursor-pointer hover:bg-slate-200 duration-200"
+            >
+              <p className="font-semibold">{dropDown}</p>
+              <img
+                src="/images/down-arrow.png"
+                alt=""
+                height={15}
+                width={15}
+                className="cursor-pointer ml-4"
+              />
+            </div>
+            <div
+              className={
+                downArrow
+                  ? "absolute p-1 w-full text-sm font-semibold bg-white shadow-2xl rounded-b border-t-none -md top-7 border-slate-300"
+                  : "absolute p-1 text-sm font-semibold top-7 border border-slate-300 hidden"
+              }
+            >
+              <ul className="w-full">
+                {isLoading ? (
+                  <div>Loading</div>
+                ) : (
+                  data &&
+                  data?.map((data) => (
+                    <li
+                      key={data.group_id}
+                      onClick={handleDropDown}
+                      className="p-1 cursor-pointer hover:bg-slate-300 duration-300"
+                      value={data.group_name}
+                    >
+                      <input type="text" value={data.group_name} {...register("department")}/>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </div> */}
+          {errors.department && (
+            <p className="text-red-500 text-xs">{errors.department.message}</p>
+          )}
+        </div>
         <button
           className="border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
           type="submit"
@@ -249,7 +264,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
               router.push(router, undefined, { shallow: true });
             }}
             className="text-blue-500 underline  cursor-pointer"
-           
           >
             Sign In
           </a>

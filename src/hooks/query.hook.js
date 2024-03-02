@@ -5,6 +5,7 @@ import {
   fetchOnlyDocumentId,
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
+import { fetchAllDepartments } from "@/services/department.service";
 
 export const useFetchAllDocumentQuery = (options) => {
   return useQuery({
@@ -31,10 +32,19 @@ export const useFetchAllUsers = (options) => {
   });
 };
 
-export const useDocumentOnlyId = (options) => {
+// export const useDocumentOnlyId = (options) => {
+//   return useQuery({
+//     ...options,
+//     queryKey: ["document_only_id"],
+//     queryFn: fetchOnlyDocumentId,
+//   });
+// };
+
+// TO FETCH ALL DEPARTMENTS
+export const useAllDepartments = (options) => {
   return useQuery({
     ...options,
-    queryKey: ["document_only_id"],
-    queryFn: fetchOnlyDocumentId,
+    queryKey: ["department"],
+    queryFn: fetchAllDepartments,
   });
 };
