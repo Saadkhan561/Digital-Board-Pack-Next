@@ -7,35 +7,30 @@ import {
   useFetchAllDocumentQuery,
   useFetchDocumentById,
 } from "@/hooks/query.hook";
+import { useRouter } from "next/router";
 
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
-  const [isNewDocument, setNewDocument] = useState(false);
+  const router = useRouter();
+
+  const newDocument = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
+  };
 
   const { data, isLoading } = useFetchAllDocumentQuery();
-
-  const updateNewDocument = (newDocumentVal) => {
-    setNewDocument(newDocumentVal);
-  };
-
-  const renderNewDocument = () => {
-    if (isNewDocument) {
-      return (
-        <NewDocument
-          prevNewDocument={isNewDocument}
-          updateNewDocument={updateNewDocument}
-        />
-      );
-    }
-  };
 
   return (
     <Layout>
       <>
         <div
           className={
-            isNewDocument
+            eval(router.query.open)
               ? "opacity-50 duration-200"
               : "opacity-100 duration-200"
           }
@@ -100,7 +95,7 @@ const Home = () => {
               </div>
             </div>
             <div className="fixed bottom-10 right-10 z-10 mob_screen_closed:hidden flex justify-center p-2 bg-slate-100 border border-gray-400 rounded-full items-center cursor-pointer shadow-2xl hover:duration-200">
-              <div onClick={() => setNewDocument(!isNewDocument)}>
+              <div onClick={() => newDocument("open")}>
                 <img src="/images/plus.png" alt="" height={22} width={22} />
               </div>
             </div>
@@ -123,8 +118,6 @@ const Home = () => {
             )}
           </div>
         </div>
-        {/* NEW DOCUMENT DIV */}
-        <div className="absolute top-0">{renderNewDocument()}</div>
       </>
     </Layout>
   );

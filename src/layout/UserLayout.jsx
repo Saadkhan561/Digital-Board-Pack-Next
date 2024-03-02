@@ -2,6 +2,7 @@ import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 // FOR TOAST
@@ -11,25 +12,20 @@ import "react-toastify/dist/ReactToastify.css";
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
   const [notify, setNotify] = useState(false);
-  const [isNewDocument, setNewDocument] = useState(false);
+  const router = useRouter();
 
-  // const loggedIn = localStorage.getItem('loggen_in')
-  // const username = localStorage.getItem('username')
-
-const userToast = () => toast(username, "logged in successfully!")
-
-  const updateNewDocument = (newDocumentVal) => {
-    setNewDocument(newDocumentVal);
+  const newDocument = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
   };
 
   const renderNewDocument = () => {
-    if (isNewDocument) {
-      return (
-        <NewDocument
-          prevNewDocument={isNewDocument}
-          updateNewDocument={updateNewDocument}
-        />
-      );
+    if (router.query.open) {
+      return <NewDocument />;
     }
   };
 
@@ -41,7 +37,7 @@ const userToast = () => toast(username, "logged in successfully!")
       {/* SIDE BAR */}
       <div
         className={
-          isNewDocument
+          eval(router.query.open)
             ? "p-4 h-screen w-[300px] mob_screen:hidden opacity-50"
             : "p-4 h-screen w-[300px] mob_screen:hidden"
         }
@@ -50,7 +46,7 @@ const userToast = () => toast(username, "logged in successfully!")
         <div>
           <div className="text-xl font-semibold">Digital Board Pack</div>
           <div
-            onClick={() => setNewDocument(!isNewDocument)}
+            onClick={() => newDocument("open")}
             className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-100"
           >
             <div className="mr-2">
@@ -120,15 +116,11 @@ const userToast = () => toast(username, "logged in successfully!")
           </ul>
         </div> */}
         </div>
-        {/* <SideBar
-          prevValue={isNewDocument}
-          updateNewDocument={updateNewDocument}
-        /> */}
       </div>
       {/* MIDDLE DIV */}
       <div
         className={
-          menu || isNewDocument
+          menu || eval(router.query.open)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }
@@ -151,7 +143,6 @@ const userToast = () => toast(username, "logged in successfully!")
               >
                 <Notification />
               </div>
-              
             </div>
             <Link
               href="register"

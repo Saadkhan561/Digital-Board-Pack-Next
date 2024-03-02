@@ -23,8 +23,6 @@ export const insertDocument = async (data) => {
 // sun anas ne thk krdia hy swagger pe dobrar check kar ok
 export const userAccessList = async (data) => {
   const { docId, userId } = data;
-  console.log(data)
-
   try {
     const res = await axios.post(`/AddPermission/${docId}`, userId); // assume kr rahay hain k payload userId ka array lega sirf aur doc id param se pakrega
     return res.data;
@@ -33,10 +31,9 @@ export const userAccessList = async (data) => {
   }
 };
 
-export const fetchOnlyDocumentId= async () => {
+export const fetchOnlyDocumentId = async () => {
   try {
     const response = await axios.get("/LatestDoc");
-    console.log(response)
 
     if (response.status !== 200) {
       throw new Error("Network response was not ok");

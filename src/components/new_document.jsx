@@ -7,19 +7,25 @@ import {
 } from "../hooks/mutation.hook";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDocumentOnlyId, useFetchAllUsers } from "@/hooks/query.hook";
+import { useFetchAllDocumentQuery, useFetchAllUsers } from "@/hooks/query.hook";
 import UserAccessList from "./user_access_list";
+import { Bounce, toast } from "react-toastify";
+import { useRouter } from "next/router";
 
-const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
-  const [isNewDocument, setNewDocument] = useState(prevNewDocument);
+const NewDocument = () => {
+  const router = useRouter();
 
-  useEffect(() => {
-    updateNewDocument(isNewDocument);
-  }, [isNewDocument]);
+  const newDocument = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
+  };
 
-  // HOOK TO FETCH ALL USERS
   const { data, isLoading } = useFetchAllUsers();
-  console.log(data);
+  const { refetch } = useFetchAllDocumentQuery();
 
   const initialValues = {
     title: "",
@@ -33,35 +39,77 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
 
   const { mutate: documentAccess } = userAccessListMutation({
     onSuccess(data) {
-      console.log(data);
+      refetch();
+      toast.success("Document Added Successfully.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      reset();
     },
     onError(error) {
-      console.log(error);
+      toast.error("Failed to Upload Document", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     },
   });
 
-
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      const {documentId } = useDocumentOnlyId()
-      console.log(documentId.data.doc_id)
-      const doc_id = documentId.doc_id
+      const userId = watch("userId");
+      const docId = data.value;
+      documentAccess({ docId, userId });
     },
     onError(error) {
-      console.log(error);
+      a;
+      toast.error("Failed to Upload Document", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     },
   });
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
-      // console.log(data, "file uploaded");
       const docName = data;
       const title = watch("title");
-      console.log(docName, title);
+      console.log("here");
       insertFile({ docName, title });
     },
     onError(error) {
-      console.log(error);
+      toast.error("Failed to Upload Document", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     },
   });
 
@@ -79,7 +127,6 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    console.log(data);
     uploadFile(formData);
   };
 
@@ -92,7 +139,7 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
           </div>
           <div>
             <img
-              onClick={() => setNewDocument(!isNewDocument)}
+              onClick={() => newDocument("open")}
               className="cursor-pointer"
               src="
             /images/cross.png"
@@ -116,20 +163,14 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
             <label className="label" htmlFor="file">
               Upload your document:
             </label>
-            <input
-              // className="mt-4 mb-4"
-              type="file"
-              {...register("file")}
-            />
+            <input type="file" {...register("file")} />
             {errors.file && (
               <p className="text-red-500 text-xs">{errors.file.message}</p>
             )}
           </div>
 
-          {/* ACCESS LIST DIV */}
           <div>
             <div className="p-2">
-              {/* SEARCH BAR */}
               <div className="sticky top-0 shadow-md bg-white w-full mb-4">
                 <input
                   className="w-full border border-slate-300 rounded-md p-1 mt-2 focus:outline-blue-400"
@@ -139,9 +180,6 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
                 />
               </div>
               <div className="h-[200px] overflow-y-auto p-4">
-                {/* {isLoading?(<div>Loading...</div>):data?.map((user) => (
-                  <UserAccessList key={user.user_id} userId={user.user_id} username={user.username}/>
-                ))} */}
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : (
@@ -161,27 +199,13 @@ const NewDocument = ({ prevNewDocument, updateNewDocument }) => {
                       </div>
                       <input
                         className="cursor-pointer"
-                        // id="access"
                         type="checkbox"
-                        // ref={register.ref}
-                        // name={"userId"}
-                        // value={user?.user_id}
                         {...register("userId")}
                         value={user?.user_id}
-
-                        // naam btaa response ma jo jayega
-                        // value={userId}
-                        // onChange={handleChange}
-                        // onClick={handleChange}
                       />
                     </div>
                   ))
                 )}
-                {/* sun backend mn array or id bhejni haina? nhn array tw us component mn bnani hy append krke wo array wapis yaha lani hy woh ajaye gi, ary array tw bana wo ban nhnrhi na, mujhy yeh bta k response ma doc_acces ma list of userID jayengi na? doc id aur users ki ids ki array. set */}
-                {/* <UserAccessList userId='1234' />
-                <UserAccessList userId='2222' />
-                <UserAccessList userId='6666' /> */}
-                {/* acha sun ye abhi ids hardcoat ki hen check krne ke liyek pok  5 sec de*/}
               </div>
             </div>
           </div>
