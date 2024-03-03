@@ -30,13 +30,11 @@ function Layout({ children }) {
   };
 
   // FUNCTION TO LOGOUT A USER
-  const {logout} = useUserStore()
+  const { logout } = useUserStore();
 
   return (
+    
     <div className="flex relative overflow-x-hidden h-screen">
-      <div>
-        <ToastContainer />
-      </div>
       {/* SIDE BAR */}
       <div
         className={
@@ -154,7 +152,10 @@ function Layout({ children }) {
               >
                 <img src="/images/account.png" alt="" height={28} width={28} />
               </Link>
-              <div onClick={logout} className="mt-1 text-sm font-semibold text-red-500 underline hover:cursor-pointer">
+              <div
+                onClick={logout}
+                className="mt-1 text-sm font-semibold text-red-500 underline hover:cursor-pointer"
+              >
                 Logout
               </div>
             </div>

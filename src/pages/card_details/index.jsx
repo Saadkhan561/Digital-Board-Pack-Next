@@ -37,7 +37,6 @@ const CardDetails = () => {
   console.log(data);
 
   return (
-    <ProtectedLogin>
     <Layout>
       <div className="w-full relative">
         <div></div>
@@ -80,7 +79,7 @@ const CardDetails = () => {
               >
                 <ul className="flex flex-col items-center">
                   <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold">
-                    <Link href={`/api/download-pdf/${data?.doc_name}`} >
+                    <Link href={`/api/download-pdf/${data?.doc_name}`}>
                       Download
                     </Link>
                   </li>
@@ -135,7 +134,6 @@ const CardDetails = () => {
         </div>
       </div>
     </Layout>
-    </ProtectedLogin>
   );
 };
 

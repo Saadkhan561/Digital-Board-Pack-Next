@@ -26,7 +26,6 @@ const Home = () => {
   const { data, isLoading } = useFetchAllDocumentQuery();
 
   return (
-    <ProtectedLogin>
     <Layout>
       <>
         <div
@@ -121,7 +120,6 @@ const Home = () => {
         </div>
       </>
     </Layout>
-    </ProtectedLogin>
   );
 };
 
