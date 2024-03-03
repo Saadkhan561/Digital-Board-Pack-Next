@@ -5,7 +5,7 @@ export const register = async (data) => {
   // console.log(variables, "adsadasdadas");
   try {
     const res = await axios.post("/register", data);
-    
+    console.log(res)
     return res.data;
   } catch (error) {
     throw new Error(error);
