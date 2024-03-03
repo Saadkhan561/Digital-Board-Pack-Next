@@ -39,7 +39,10 @@ const NewDocument = () => {
 
   const { mutate: documentAccess } = userAccessListMutation({
     onSuccess(data) {
-      refetch();
+      const x = refetch();
+      x.then((resolve) => {
+        console.log(resolve);
+      });
       toast.success("Document Added Successfully.", {
         position: "top-right",
         autoClose: 5000,

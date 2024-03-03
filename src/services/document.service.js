@@ -31,19 +31,6 @@ export const userAccessList = async (data) => {
   }
 };
 
-export const fetchOnlyDocumentId = async () => {
-  try {
-    const response = await axios.get("/LatestDoc");
-
-    if (response.status !== 200) {
-      throw new Error("Network response was not ok");
-    }
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
 export const fetchAllDocument = async () => {
   try {
     const response = await axios.get("/GetDoc");

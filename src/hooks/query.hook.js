@@ -9,14 +9,14 @@ import { fetchAllUsers } from "@/services/user.service";
 export const useFetchAllDocumentQuery = (options) => {
   return useQuery({
     ...options,
-    queryKey: ["document"],
+    queryKey: ['document'],
     queryFn: fetchAllDocument,
   });
 };
 
 export const useFetchDocumentById = (params, options) => {
   return useQuery({
-    queryKey: ["documentById", JSON.stringify(params)],
+    queryKey: ['documentById', JSON.stringify(params)],
     queryFn: () => fetchDocumentById(params),
     ...options,
   });
@@ -26,15 +26,8 @@ export const useFetchDocumentById = (params, options) => {
 export const useFetchAllUsers = (options) => {
   return useQuery({
     ...options,
-    queryKey: ["users"],
+    queryKey: ['users'],
     queryFn: fetchAllUsers,
   });
 };
 
-export const useDocumentOnlyId = (options) => {
-  return useQuery({
-    ...options,
-    queryKey: ["document_only_id"],
-    queryFn: fetchOnlyDocumentId,
-  });
-};
