@@ -5,9 +5,6 @@ import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-// FOR TOAST
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);

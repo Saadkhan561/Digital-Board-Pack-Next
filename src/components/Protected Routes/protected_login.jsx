@@ -1,18 +1,42 @@
-import useUserStore from '@/stores/useUserStore';
-import { useRouter } from 'next/router';
-import React, {useEffect } from 'react';
+// import useUserStore from "@/stores/useUserStore";
+// import { useRouter } from "next/router";
+// import React, { useEffect } from "react";
 
-const ProtectedLogin = ({children}) => {
-    const router = useRouter()
+// const ProtectedLogin = ({ children }) => {
+//   const router = useRouter();
 
-    const {currentUser} = useUserStore()
-    useEffect(() => {
-        if (!currentUser) {
-            router.push('/register?login=true')
-        }
-    
-    }, [currentUser])
-    return currentUser ? children : null
-}
- 
-export default ProtectedLogin;
+//   const currentUser = useUserStore((state) => state.currentUser);
+//   console.log(currentUser,"Adsadte")
+//   useEffect(() => {
+//     if (!currentUser) {
+//       router.push("/register?login=true");
+//     }
+//   }, [currentUser, router]);
+//   return currentUser ? children : null;
+// };
+
+// export default ProtectedLogin;
+
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/display-name */
+import useUserStore from "@/stores/useUserStore";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+
+export const ProtectedWrapper = (Component) => (props) => {
+  const { currentUser } = useUserStore();
+  const [showChildren, setShowChildren] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!currentUser?.token) {
+      router.push("/");
+    } else {
+      setShowChildren(true);
+    }
+  }, [currentUser, router, setShowChildren]);
+
+  return showChildren ? <Component {...props} /> : <div>Loading...</div>;
+};
+
+export const withProtectedWrapper = ProtectedWrapper;

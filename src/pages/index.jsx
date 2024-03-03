@@ -3,7 +3,9 @@ import { useState } from "react";
 import Card from "@/components/card";
 import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
-import ProtectedLogin from "@/components/Protected Routes/protected_login";
+import  {
+  withProtectedWrapper,
+} from "@/components/Protected Routes/protected_login";
 import {
   useFetchAllDocumentQuery,
   useFetchDocumentById,
@@ -24,6 +26,7 @@ const Home = () => {
   };
 
   const { data, isLoading } = useFetchAllDocumentQuery();
+  console.log(data,"index wala")
 
   return (
     <Layout>
@@ -106,7 +109,7 @@ const Home = () => {
             {isLoading ? (
               <div>Loading...</div>
             ) : (
-              data &&
+             
               data?.map((document) => (
                 <Card
                   key={document.doc_id}
@@ -123,4 +126,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withProtectedWrapper(Home);

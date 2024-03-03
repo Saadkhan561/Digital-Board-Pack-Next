@@ -63,9 +63,9 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
 
   return (
     <div className="relative">
-      <div className="absolute">
+      {/* <div className="absolute">
         <ToastContainer />
-      </div>
+      </div> */}
       {/* LOGIN DIV */}
       <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[400px] menu_bar_mob:w-[240px] p-8">
         <div className="text-3xl menu_bar_mob:text-xl font-semibold">

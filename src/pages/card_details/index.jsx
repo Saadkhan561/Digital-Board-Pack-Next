@@ -8,7 +8,9 @@ import { useRouter } from "next/router";
 import { useFetchDocumentById } from "@/hooks/query.hook";
 import moment from "moment";
 import Link from "next/link";
-import ProtectedLogin from "@/components/Protected Routes/protected_login";
+import ProtectedLogin, {
+  withProtectedWrapper,
+} from "@/components/Protected Routes/protected_login";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -137,4 +139,4 @@ const CardDetails = () => {
   );
 };
 
-export default CardDetails;
+export default withProtectedWrapper(CardDetails);

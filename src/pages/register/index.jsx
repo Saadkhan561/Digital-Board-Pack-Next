@@ -1,5 +1,6 @@
 import Login from "@/components/register/login";
 import SignUp from "@/components/register/signup";
+import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -9,6 +10,11 @@ const Register = () => {
     setLogin(newLogin);
   };
   const router = useRouter();
+  const { currentUser } = useUserStore();
+  if (currentUser?.token) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div className="border border-black h-screen flex justify-center items-center">

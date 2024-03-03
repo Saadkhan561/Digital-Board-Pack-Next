@@ -25,8 +25,8 @@ const NewDocument = () => {
   };
 
   const { data, isLoading } = useFetchAllUsers();
-  const { refetch } = useFetchAllDocumentQuery();
-
+  const {data:doc, refetch } = useFetchAllDocumentQuery();
+console.log(doc,"new doc wala")
   const initialValues = {
     title: "",
     docName: null,
@@ -39,10 +39,10 @@ const NewDocument = () => {
 
   const { mutate: documentAccess } = userAccessListMutation({
     onSuccess(data) {
-      const x = refetch();
-      x.then((resolve) => {
-        console.log(resolve);
-      });
+      console.log("here3");
+
+      refetch();
+
       toast.success("Document Added Successfully.", {
         position: "top-right",
         autoClose: 5000,
@@ -74,6 +74,8 @@ const NewDocument = () => {
 
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
+      console.log("here 2");
+
       const userId = watch("userId");
       const docId = data.value;
       documentAccess({ docId, userId });
