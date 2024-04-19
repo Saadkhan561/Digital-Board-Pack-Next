@@ -16,9 +16,12 @@ module.exports = {
         card_div_sm: { max: "307px" },
         comments_icon: { max: "1000px" },
         new_document: { max: "450px" },
+        calendar_mob: { max: "1200px" },
+        calendar_full: { min: "1200px" },
       },
     },
   },
 
-  plugins: [],
+  plugins: [
+  ],
 };

@@ -83,7 +83,7 @@ function Layout({ children }) {
                 </div>
                 <div>Tools</div>
               </li>
-              <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              <Link href={'scheduling'} className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img
                     src="/images/meeting.png"
@@ -93,7 +93,7 @@ function Layout({ children }) {
                   />
                 </div>
                 <div>Scheduling</div>
-              </li>
+              </Link>
               <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img src="/images/email.png" alt="" height={20} width={20} />
@@ -144,17 +144,17 @@ function Layout({ children }) {
             </div>
             <div>
               <Link
-                href="register"
+                href={'register'}
                 className="cursor-pointer rounded-full w-8 h-8 ml-2"
               >
                 <img src="/images/account.png" alt="" height={28} width={28} />
               </Link>
-              <div
+              {/* <div
                 onClick={logout}
                 className="mt-1 text-sm font-semibold text-red-500 underline hover:cursor-pointer"
               >
                 Logout
-              </div>
+              </div> */}
             </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
@@ -196,7 +196,7 @@ function Layout({ children }) {
           >
             <img src="/images/right-arrow.png" alt="" height={20} width={20} />
           </div>
-          <li className="menu-bar-li flex justify-between">Account</li>
+          <Link href={'register'} className="menu-bar-li flex justify-between">Account</Link>
           <li className="menu-bar-li">Profile</li>
           <hr />
           <li className="menu-bar-li mt-2">Dashboard</li>

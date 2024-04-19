@@ -33,6 +33,7 @@ export const ProtectedWrapper = (Component) => (props) => {
       router.push("/");
     } else {
       setShowChildren(true);
+      console.log('false');
     }
   }, [currentUser, router, setShowChildren]);
 

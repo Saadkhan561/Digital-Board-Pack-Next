@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/pdf/:id",
-        destination: "https://be7e-37-111-181-140.ngrok-free.app/document/:id",
+        destination: "https://3c73-223-123-107-236.ngrok-free.app/document/:id",
         permanent: false,
       },
     ];

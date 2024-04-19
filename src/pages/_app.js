@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
        <NextNProgress />
       <ToastContainer />
-      <ReactQueryDevtools initialIsOpen={true} />
+      {/* <ReactQueryDevtools initialIsOpen={true} /> */}
       <Component {...pageProps} />
     </QueryClientProvider>
   );

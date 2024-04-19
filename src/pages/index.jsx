@@ -26,7 +26,7 @@ const Home = () => {
   };
 
   const { data, isLoading } = useFetchAllDocumentQuery();
-  console.log(data,"index wala")
+  console.log(data)
 
   return (
     <Layout>
@@ -126,4 +126,4 @@ const Home = () => {
   );
 };
 
-export default withProtectedWrapper(Home);
+export default Home;

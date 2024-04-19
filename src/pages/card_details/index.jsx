@@ -139,4 +139,4 @@ const CardDetails = () => {
   );
 };
 
-export default withProtectedWrapper(CardDetails);
+export default CardDetails;

@@ -76,7 +76,7 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
   };
 
   return (
-    <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[450px] menu_bar_mob:w-[240px] p-4">
+    <div className="flex flex-col items-center h-[550px] w-[400px] menu_bar_mob:h-[450px] menu_bar_mob:w-[240px] p-4">
       <div className="text-3xl menu_bar_mob:text-xl font-semibold">
         Create your account
       </div>
@@ -204,46 +204,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
               )}
             </select>
           </div>
-          {/* <div className="relative">
-            <div
-              onClick={() => setDownArrow(!downArrow)}
-              className="flex justify-between items-center text-sm border p-1 hover:cursor-pointer hover:bg-slate-200 duration-200"
-            >
-              <p className="font-semibold">{dropDown}</p>
-              <img
-                src="/images/down-arrow.png"
-                alt=""
-                height={15}
-                width={15}
-                className="cursor-pointer ml-4"
-              />
-            </div>
-            <div
-              className={
-                downArrow
-                  ? "absolute p-1 w-full text-sm font-semibold bg-white shadow-2xl rounded-b border-t-none -md top-7 border-slate-300"
-                  : "absolute p-1 text-sm font-semibold top-7 border border-slate-300 hidden"
-              }
-            >
-              <ul className="w-full">
-                {isLoading ? (
-                  <div>Loading</div>
-                ) : (
-                  data &&
-                  data?.map((data) => (
-                    <li
-                      key={data.group_id}
-                      onClick={handleDropDown}
-                      className="p-1 cursor-pointer hover:bg-slate-300 duration-300"
-                      value={data.group_name}
-                    >
-                      <input type="text" value={data.group_name} {...register("department")}/>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          </div> */}
           {errors.department && (
             <p className="text-red-500 text-xs">{errors.department.message}</p>
           )}
