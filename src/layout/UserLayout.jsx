@@ -1,6 +1,7 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
+import Scheduling from "@/pages/scheduling";
 import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -25,6 +26,12 @@ function Layout({ children }) {
       return <NewDocument />;
     }
   };
+  
+  // const renderScheduleModal =() => {
+  //   if (router.query.schedule) {
+  //     return <Scheduling />
+  //   }
+  // }
 
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
@@ -211,6 +218,9 @@ function Layout({ children }) {
       </div>
       {/* NEW DOCUMENT DIV */}
       <div className="absolute top-0">{renderNewDocument()}</div>
+
+      {/* SCHEDULE MODAL DIV */}
+      {/* <div className="absolute top-0">{renderScheduleModal()}</div> */}
     </div>
   );
 }

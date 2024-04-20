@@ -7,6 +7,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
+import { useRouter } from "next/router";
 
 // DATE/TIME PICKER
 import DateTimePicker from "react-datetime-picker";
@@ -19,6 +20,18 @@ const Scheduling = () => {
 
   // SCHEDULING DATE
   const [value, onChange] = useState(new Date());
+  const [meeting, setMeeting] = useState(false);
+
+  // FOR SCHEDULE MODAL
+  const router = useRouter();
+  const schedule = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
+  };
 
   const initialValues = {
     agenda: "",
@@ -108,23 +121,53 @@ const Scheduling = () => {
     );
   };
 
+  const renderMeetingDiv = () => {
+    if (meeting) {
+      return (
+        <div className="">
+          <div className="flex justify-between items-center">
+            <div className="text-3xl font-semibold">Schedule your meeting</div>
+            <div>
+              <img
+                onClick={() => setMeeting(!meeting)}
+                className="cursor-pointer"
+                src="
+            /images/cross.png"
+                alt=""
+                height={20}
+                width={20}
+              />
+            </div>
+          </div>
+          <div className="p-1">
+            <form onSubmit={onSubmitHandle}>
+              <div>
+                <label className="label" htmlFor="agenda">
+                  Meeting Agenda
+                </label>
+                <input className="input_field" type="text" />
+              </div>
+              <div className="mt-10 w-[50px] h-[50px]">
+                <DateTimePicker
+                  className="z-10"
+                  onChange={onChange}
+                  value={value}
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+    );
+    }
+  };
+
   return (
     <Layout>
       <div className="p-2">
-        <div className="text-3xl font-semibold">Schedule your meeting</div>
-        <div className="p-1">
-          <form className="flex gap-2 items-center" onSubmit={onSubmitHandle}>
-            <div>
-              <label className="label" htmlFor="agenda">
-                Meeting Agenda
-              </label>
-              <input className="input_field" type="text" />
-            </div>
-            <div className="mt-10 w-[50px] h-[50px]">
-              <DateTimePicker onChange={onChange} value={value} />
-            </div>
-          </form>
+        <div onClick={() => setMeeting(!meeting)}>
+          <button className="flex justify-center items-center w-[170px] p-1 rounded-sm bg-black text-white font-semibold text-md">Schedule a meeting</button>
         </div>
+      {renderMeetingDiv()}
         <div>
           <h1>Demo App</h1>
           <FullCalendar

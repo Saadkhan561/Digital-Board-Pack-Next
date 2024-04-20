@@ -26,7 +26,7 @@ const NewDocument = () => {
 
   const { data, isLoading } = useFetchAllUsers();
   const {data:doc, refetch } = useFetchAllDocumentQuery();
-console.log(doc,"new doc wala")
+  
   const initialValues = {
     title: "",
     docName: null,
