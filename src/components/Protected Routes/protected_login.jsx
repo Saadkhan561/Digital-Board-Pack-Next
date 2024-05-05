@@ -1,22 +1,3 @@
-// import useUserStore from "@/stores/useUserStore";
-// import { useRouter } from "next/router";
-// import React, { useEffect } from "react";
-
-// const ProtectedLogin = ({ children }) => {
-//   const router = useRouter();
-
-//   const currentUser = useUserStore((state) => state.currentUser);
-//   console.log(currentUser,"Adsadte")
-//   useEffect(() => {
-//     if (!currentUser) {
-//       router.push("/register?login=true");
-//     }
-//   }, [currentUser, router]);
-//   return currentUser ? children : null;
-// };
-
-// export default ProtectedLogin;
-
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/display-name */
 import useUserStore from "@/stores/useUserStore";
@@ -30,10 +11,9 @@ export const ProtectedWrapper = (Component) => (props) => {
 
   useEffect(() => {
     if (!currentUser?.token) {
-      router.push("/");
+      router.push("/register?login=true");
     } else {
       setShowChildren(true);
-      console.log('false');
     }
   }, [currentUser, router, setShowChildren]);
 

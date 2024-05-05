@@ -5,7 +5,6 @@ export const register = async (data) => {
   // console.log(variables, "adsadasdadas");
   try {
     const res = await axios.post("/register", data);
-    console.log(res)
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -14,9 +13,11 @@ export const register = async (data) => {
 export const login = async (data) => {
   try {
     const res = await axios.post("/login", data);
+    console.log(res)
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.log(err.response)
+    throw new Error(err.response.data.message)
   }
 };
 

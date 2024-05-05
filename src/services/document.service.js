@@ -1,5 +1,6 @@
 import { axios } from "../utils/axios";
 
+// UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
   try {
     const res = await axios.post("/uploads", data);
@@ -10,6 +11,7 @@ export const uploadDocument = async (data) => {
   }
 };
 
+// INSERT FILE NAME INTO THE DATABASE
 export const insertDocument = async (data) => {
   try {
     const res = await axios.post("/InsertDocument", data);
@@ -20,7 +22,7 @@ export const insertDocument = async (data) => {
   }
 };
 
-// sun anas ne thk krdia hy swagger pe dobrar check kar ok
+// GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT
 export const userAccessList = async (data) => {
   const { docId, userId } = data;
   try {
@@ -31,6 +33,7 @@ export const userAccessList = async (data) => {
   }
 };
 
+// FETCH ALL DOCUMENTS
 export const fetchAllDocument = async () => {
   try {
     const response = await axios.get("/GetDoc");
@@ -44,6 +47,7 @@ export const fetchAllDocument = async () => {
   }
 };
 
+// FETCH A PARTICULAR DOCUMENT
 export const fetchDocumentById = async (params) => {
   const { id } = params;
 

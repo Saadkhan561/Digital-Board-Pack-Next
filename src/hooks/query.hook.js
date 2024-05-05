@@ -13,8 +13,7 @@ export const useFetchAllDocumentQuery = (options) => {
     queryKey: ['document'],
     queryFn: fetchAllDocument,
   });
-};
-
+}; 
 export const useFetchDocumentById = (params, options) => {
   return useQuery({
     queryKey: ['documentById', JSON.stringify(params)],

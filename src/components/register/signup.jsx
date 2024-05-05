@@ -6,6 +6,11 @@ import { useRegisterUser } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
 import { useAllDepartments } from "@/hooks/query.hook";
 
+// FOR TOAST
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 const SignUp = ({ onUpdateLogin, prevLogin }) => {
   const [isLogin, setLogin] = useState(prevLogin);
   const [showPassword1, setShowPassword1] = useState(false);
@@ -34,9 +39,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
       .min(8, "Password must be atleast 8 characters long")
       .max(15, "Password must not exceed this limit")
       .required("Password is required"),
-    // confirm_password: Yup.string()
-    //   .oneOf([Yup.ref("password"), null], "Password must match")
-    //   .required("Confirmation is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -47,12 +49,35 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
   const router = useRouter();
   const { mutate } = useRegisterUser({
     onSuccess(data) {
-      console.log(data);
       reset();
-      router.push("/register?login=true");
+      toast.success((data.message), {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      setTimeout(() => {
+        router.push("/register?login=true");
+      }, 2000);
     },
     onError(error) {
       console.log(error);
+      toast.error("Account already exist with this gmail", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     },
   });
 
@@ -71,14 +96,11 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
     });
   };
 
-  const handleDropDown = (e) => {
-    setDropDown(e.target.innerText);
-  };
-
   return (
     <div className="flex flex-col items-center h-[550px] w-[400px] menu_bar_mob:h-[450px] menu_bar_mob:w-[240px] p-4">
+      <ToastContainer/>
       <div className="text-3xl menu_bar_mob:text-xl font-semibold">
-        Create your account
+        Admin Panel
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -217,7 +239,6 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
       </form>
       <div className="flex gap-1 text-md menu_bar_mob:text-xs mt-2">
         <p>
-          Already have an account?{" "}
           <a
             onClick={() => {
               router.query.login = String(true);

@@ -1,6 +1,7 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
+import Scheduler from "@/components/schedule_meeting/scheduler";
 import Scheduling from "@/pages/scheduling";
 import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
   const [notify, setNotify] = useState(false);
+  const [logOut, setLogout] = useState(false);
   const router = useRouter();
 
   const newDocument = (name) => {
@@ -26,23 +28,22 @@ function Layout({ children }) {
       return <NewDocument />;
     }
   };
-  
-  // const renderScheduleModal =() => {
-  //   if (router.query.schedule) {
-  //     return <Scheduling />
-  //   }
-  // }
+
+  const renderScheduleModal = () => {
+    if (router.query.schedule) {
+      return <Scheduler />;
+    }
+  };
 
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
 
   return (
-    
     <div className="flex relative overflow-x-hidden h-screen">
       {/* SIDE BAR */}
       <div
         className={
-          eval(router.query.open)
+          eval(router.query.open || router.query.schedule)
             ? "p-4 h-screen w-[300px] mob_screen:hidden opacity-50"
             : "p-4 h-screen w-[300px] mob_screen:hidden"
         }
@@ -62,7 +63,10 @@ function Layout({ children }) {
           {/* SIDE BAR FULL SCREEN */}
           <div className="mt-4">
             <ul className="text-md">
-              <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              <Link
+                href={"/"}
+                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
+              >
                 <div className="mr-2">
                   <img
                     src="/images/dashboard.png"
@@ -72,7 +76,7 @@ function Layout({ children }) {
                   />
                 </div>
                 <div>Dashboard</div>
-              </li>
+              </Link>
               <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img
@@ -90,7 +94,10 @@ function Layout({ children }) {
                 </div>
                 <div>Tools</div>
               </li>
-              <Link href={'scheduling'} className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              <Link
+                href={"scheduling"}
+                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
+              >
                 <div className="mr-2">
                   <img
                     src="/images/meeting.png"
@@ -109,28 +116,17 @@ function Layout({ children }) {
               </li>
             </ul>
           </div>
-          {/* SIDE BAR MEDIUM SCREEN */}
-          {/* <div className="mt-16 w-8 relative side_bar_full:hidden border border-black">
-          <ul>
-            <li className="cursor-pointer relative peer">
-              <img src="/images/dashboard.png" alt="" height={30} width={30} />
-              <div className="hidden absolute top-0 left-10 text-white bg-black text-xs p-[4px] items-center rounded-3xl peer-hover:block border border-black">
-                Dashboard
-              </div>
-            </li>
-          </ul>
-        </div> */}
         </div>
       </div>
       {/* MIDDLE DIV */}
       <div
         className={
-          menu || eval(router.query.open)
+          menu || eval(router.query.open || router.query.schedule)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }
       >
-        {/* SEARCH BAR DIV */}
+        {/* SEARCH BAR DIV */}``
         <div className="flex justify-between items-center p-4">
           {/* SEARCH BAR */}
           <Search />
@@ -149,19 +145,22 @@ function Layout({ children }) {
                 <Notification />
               </div>
             </div>
-            <div>
+            <div className="flex items-center relative">
               <Link
-                href={'register'}
+                href={""}
+                onClick={() => setLogout(!logOut)}
                 className="cursor-pointer rounded-full w-8 h-8 ml-2"
               >
                 <img src="/images/account.png" alt="" height={28} width={28} />
               </Link>
-              {/* <div
-                onClick={logout}
-                className="mt-1 text-sm font-semibold text-red-500 underline hover:cursor-pointer"
-              >
-                Logout
-              </div> */}
+              {logOut ? (
+                <div
+                  onClick={logout}
+                  className="absolute z-10 top-8 -left-5 rounded-md border border-slate-300 p-1 pl-2 pr-2 shadow-2xl mt-1 text-sm font-semibold text-red-500 hover:bg-slate-100 duration-200 cursor-pointer"
+                >
+                  Logout
+                </div>
+              ) : null}
             </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
@@ -203,24 +202,24 @@ function Layout({ children }) {
           >
             <img src="/images/right-arrow.png" alt="" height={20} width={20} />
           </div>
-          <Link href={'register'} className="menu-bar-li flex justify-between">Account</Link>
+          <Link href={"register"} className="menu-bar-li flex justify-between">
+            Account
+          </Link>
           <li className="menu-bar-li">Profile</li>
           <hr />
-          <li className="menu-bar-li mt-2">Dashboard</li>
-          <li className="menu-bar-li">Calendar</li>
-          <li className="menu-bar-li">Tools</li>
-          <li className="menu-bar-li">Scheduling</li>
-          <li className="menu-bar-li">Share Document</li>
+          <li className="menu-bar-li"><Link href={'/'}>Dashboard</Link></li>
+          <li className="menu-bar-li"><Link href={'/scheduling'}>Scheduling</Link></li>
+          <li onClick={logout} className="menu-bar-li text-red-500">Log Out</li>
         </ul>
         <div className="border border-slate-500 p-[3px] rounded-2xl hover:bg-slate-400 duration-300">
           <img src="/images/right-arrow.png" alt="" height={20} width={20} />
         </div>
       </div>
-      {/* NEW DOCUMENT DIV */}
-      <div className="absolute top-0">{renderNewDocument()}</div>
+      {/* NEW DOCUMENT DIV  */}
+      <div className="fixed top-0">{renderNewDocument()}</div>
 
       {/* SCHEDULE MODAL DIV */}
-      {/* <div className="absolute top-0">{renderScheduleModal()}</div> */}
+      <div className="absolute top-0">{renderScheduleModal()}</div>
     </div>
   );
 }

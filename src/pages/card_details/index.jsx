@@ -54,10 +54,10 @@ const CardDetails = () => {
               </div>
               <div>
                 <p className="text-2xl mob_screen:text-lg menu_bar_mob:text-md font-bold text-blue-600">
-                  {data?.title}
+                  {data?.value.title}
                 </p>
                 <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm text-gray-500 font-semibold">
-                  {data?.createdBy} -
+                  {data?.value.username} -
                   {moment(data?.createdAt).format("DD MMM YYYY")}
                 </p>
               </div>
@@ -81,7 +81,7 @@ const CardDetails = () => {
               >
                 <ul className="flex flex-col items-center">
                   <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold">
-                    <Link href={`/api/download-pdf/${data?.doc_name}`}>
+                    <Link href={`/api/download-pdf/${data?.value.doc_name}`}>
                       Download
                     </Link>
                   </li>
@@ -107,7 +107,7 @@ const CardDetails = () => {
               <div className="mr-4 p-2 rounded-lg text-black font-semibold bg-slate-200">
                 <button>
                   <a
-                    href={`/pdf/${data?.doc_name}`}
+                    href={`/pdf/${data?.value.doc_name}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -139,4 +139,4 @@ const CardDetails = () => {
   );
 };
 
-export default CardDetails;
+export default withProtectedWrapper(CardDetails);

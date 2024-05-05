@@ -9,8 +9,11 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useFetchAllDocumentQuery, useFetchAllUsers } from "@/hooks/query.hook";
 import UserAccessList from "./user_access_list";
-import { Bounce, toast } from "react-toastify";
 import { useRouter } from "next/router";
+
+// FOR TOAST
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NewDocument = () => {
   const router = useRouter();
@@ -39,34 +42,32 @@ const NewDocument = () => {
 
   const { mutate: documentAccess } = userAccessListMutation({
     onSuccess(data) {
-      console.log("here3");
-
+      console.log(data)
       refetch();
 
-      toast.success("Document Added Successfully.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
+      toast.success("Document added successfully!",{
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "dark",
         transition: Bounce,
-      });
-
+      })
       reset();
     },
     onError(error) {
       toast.error("Failed to Upload Document", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "dark",
         transition: Bounce,
       });
     },
@@ -74,23 +75,21 @@ const NewDocument = () => {
 
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      console.log("here 2");
-
       const userId = watch("userId");
       const docId = data.value;
       documentAccess({ docId, userId });
     },
     onError(error) {
-      a;
+      console.log(error)
       toast.error("Failed to Upload Document", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "dark",
         transition: Bounce,
       });
     },
@@ -104,15 +103,16 @@ const NewDocument = () => {
       insertFile({ docName, title });
     },
     onError(error) {
+      console.log(error)
       toast.error("Failed to Upload Document", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "dark",
         transition: Bounce,
       });
     },
@@ -137,6 +137,7 @@ const NewDocument = () => {
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
+      <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px] p-6">
         <div className="flex justify-between items-center">
           <div className="text-2xl font-semibold mob_screen:text-lg">
