@@ -6,12 +6,18 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import { useRouter } from "next/router";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
+import { useFetchAllMeetings } from "@/hooks/query.hook";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
+  const [period, setPeriod] = useState();
 
   // SCHEDULING DATE
   const [value, onChange] = useState(new Date());
+
+  // HOOK TO GET ALL MEETINGS
+  const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
+  console.log(meetings);
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -24,60 +30,100 @@ const Calendar = () => {
     router.push(router, undefined, { shallow: true });
   };
 
+  const meeting = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
+  };
+
   // FOR CALENDAR
-  const events = [
-    {
-      id: "event1",
-      title: "Discuss daily sales",
-      start: "2024-04-10T14:00:00",
-      end: "2024-04-10T18:00:00",
+  const fullCalendarEvents =
+    meetings &&
+    meetings.map((meeting) => ({
+      title: meeting.meeting_title,
+      start: `${meeting.meeting_date}T${meeting.meeting_time}`,
+      end: `${meeting.meeting_date}T${meeting.meeting_time}`,
       extendedProps: {
-        members: ["saad", "anas"],
-        time: "02:00 PM - 06:00 PM",
+        agenda: meeting.agenda,
+        meeting_id: meeting.meeting_id,
+        meeting_mins: meeting.meeting_mins,
       },
-    },
-    {
-      id: "event2",
-      title: "Conference",
-      start: "2024-04-04T09:00:00",
-      end: "2024-04-04T17:00:00",
-      extendedProps: {
-        members: ["Dave", "Eve"],
-        time: "09:00 AM - 05:00 PM",
-      },
-    },
-  ];
+    }));
+  // const events = [
+  //   {
+  //     id: "event1",
+  //     title: "Discuss daily sales",
+  //     start: "2024-04-10T14:00:00",
+  //     end: "2024-04-10T18:00:00",
+  //     extendedProps: {
+  //       members: ["saad", "anas"],
+  //       time: "02:00 PM - 06:00 PM",
+  //     },
+  //   },
+  //   {
+  //     id: "event2",
+  //     title: "Conference",
+  //     start: "2024-04-04T09:00:00",
+  //     end: "2024-04-04T17:00:00",
+  //     extendedProps: {
+  //       members: ["Dave", "Eve"],
+  //       time: "09:00 AM - 05:00 PM",
+  //     },
+  //   },
+  // ];
 
   const renderEventContent = (eventInfo) => {
-    const { members, time } = eventInfo.event.extendedProps;
+    const { meeting_id } = eventInfo.event.extendedProps;
+    const isExpanded = meeting_id === expandedEventId;
 
-    const isExpanded = eventInfo.event.id === expandedEventId;
+    let hours = eventInfo.event.start.getHours();
+    let minutes = eventInfo.event.start.getMinutes();
+    let period = 'AM' 
+
+    if (hours >= 12) {
+      period = "PM"
+      hours = hours === 12 ? 12 : hours - 12;
+    } else {
+      period = "AM"
+      if (hours === 0) {
+        hours = 12;
+      }
+    }
+
+    const formattedTime = `${hours}:${
+      minutes < 10 ? "0" + minutes : minutes
+    } ${period}`;
 
     return (
-      <div className="event-content">
-        <div className="font-semibold text-lg calendar_mob:text-sm mob_screen:text-xs">
-          {eventInfo.event.title}
-        </div>
-        <div className="text-xs calendar_mob:hidden">
-          {members && <div>{`Members: ${members.join(", ")}`}</div>}
-          {time && <div>{`Time: ${time}`}</div>}
-        </div>
-        <div className="calendar_full:hidden">
-          <div className="relative">
-            <p
-              className="underline hover:cursor-pointer text-xs"
-              onClick={() =>
-                setExpandedEventId(isExpanded ? null : eventInfo.event.id)
-              }
-            >
-              {isExpanded ? "Show Less" : "Show More"}
-            </p>
-            {isExpanded && (
-              <div className="absolute -left-10 border rounded-lg shadow-2xl bg-black text-white p-2 font-semibold">
-                {members && <div>{`Members: ${members.join(", ")}`}</div>}
-                {time && <div>{`Time: ${time}`}</div>}
-              </div>
-            )}
+      <div onClick={() => meeting("meeting")} className="cursor-pointer event-content">
+        <div key={meeting._id}>
+          <div className="font-semibold text-lg calendar_mob:text-sm mob_screen:text-xs">
+            {eventInfo.event.title}
+          </div>
+          <div className="text-xs calendar_mob:hidden">
+            {/* {members && <div>{`Members: ${members.join(", ")}`}</div>} */}
+            <div>{`Time: ${formattedTime}`}</div>
+          </div>
+          <div className="calendar_full:hidden">
+            <div className="relative">
+              <p
+                className="underline hover:cursor-pointer text-xs"
+                onClick={() =>
+                  setExpandedEventId(isExpanded ? null : meeting._id)
+                }
+              >
+                {isExpanded ? "Show Less" : "Show More"}
+              </p>
+              {isExpanded && (
+                <div className="absolute -left-10 border rounded-lg shadow-2xl bg-black text-white p-2 font-semibold">
+                  {/* {members && <div>{`Members: ${members.join(", ")}`}</div>} */}
+                  <div>{`Time: ${formattedTime}`}</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -126,7 +172,7 @@ const Calendar = () => {
               center: "title",
               right: "dayGridMonth,timeGridWeek,listWeek", // Add buttons for different views
             }}
-            events={events}
+            events={fullCalendarEvents}
             eventContent={renderEventContent}
           />
         </div>
@@ -135,4 +181,4 @@ const Calendar = () => {
   );
 };
 
-export default withProtectedWrapper(Calendar);
+export default Calendar;

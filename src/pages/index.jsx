@@ -3,7 +3,7 @@ import { useState } from "react";
 import Card from "@/components/card";
 import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
-import  ProtectedLogin, {
+import  {
   withProtectedWrapper,
 } from "@/components/Protected Routes/protected_login";
 import {
@@ -26,7 +26,6 @@ const Home = () => {
   };
 
   const { data, isLoading } = useFetchAllDocumentQuery();
-  console.log(data)
 
   return (
     <Layout>

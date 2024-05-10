@@ -52,7 +52,6 @@ const Scheduler = () => {
   // MUTATIONS
   const { mutate: insertMeeting } = useInsertMeeting({
     onSuccess(data) {
-      console.log(formData)
       console.log(data);
       toast.success("Meeting Scheduled!",{
         position: "top-center",
@@ -75,6 +74,7 @@ const Scheduler = () => {
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
       const {meetingAgenda,file,docName,...rest} =formData
+      console.log({...rest})
       insertMeeting(
         { ...rest, meetingAgenda: data.value },
       );

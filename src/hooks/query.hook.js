@@ -6,6 +6,7 @@ import {
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
+import { getAllMeetings } from "@/services/meeting.sevice,";
 
 export const useFetchAllDocumentQuery = (options) => {
   return useQuery({
@@ -47,3 +48,11 @@ export const useAllDepartments = (options) => {
     queryFn: fetchAllDepartments,
   });
 };
+
+export const useFetchAllMeetings = (options) => {
+  return useQuery({
+    ...options,
+    queryKey: ["meetings"],
+    queryFn: getAllMeetings
+  })
+}

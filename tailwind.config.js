@@ -18,6 +18,7 @@ module.exports = {
         new_document: { max: "450px" },
         calendar_mob: { max: "1200px" },
         calendar_full: { min: "1200px" },
+        calendar_mob_small: {max: "350px"}
       },
     },
   },

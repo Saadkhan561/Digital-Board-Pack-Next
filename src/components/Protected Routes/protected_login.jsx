@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react/display-name */
 import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";

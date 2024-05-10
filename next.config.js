@@ -2,13 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["95bf-39-51-116-9.ngrok-free.app"],
+    domains: ["d601-37-111-158-24.ngrok-free.app"],
   },
   async redirects() {
     return [
       {
         source: "/pdf/:id",
-        destination: "https://95bf-39-51-116-9.ngrok-free.app/document/:id",
+        destination: "https://d601-37-111-158-24.ngrok-free.app/document/:id",
         permanent: false,
       },
     ];

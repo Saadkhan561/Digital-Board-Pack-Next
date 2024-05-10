@@ -1,6 +1,7 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
+import MeetingInfo from "@/components/schedule_meeting/meetingInfo";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import Scheduling from "@/pages/scheduling";
 import useUserStore from "@/stores/useUserStore";
@@ -32,6 +33,12 @@ function Layout({ children }) {
   const renderScheduleModal = () => {
     if (router.query.schedule) {
       return <Scheduler />;
+    }
+  };
+
+  const renderMeetingInfoModal = () => {
+    if (router.query.meeting) {
+      return <MeetingInfo />
     }
   };
 
@@ -220,6 +227,9 @@ function Layout({ children }) {
 
       {/* SCHEDULE MODAL DIV */}
       <div className="absolute top-0">{renderScheduleModal()}</div>
+
+      {/* MEETING INFO MODAL DIV */}
+      <div className="absolute top-0">{renderMeetingInfoModal()}</div>
     </div>
   );
 }

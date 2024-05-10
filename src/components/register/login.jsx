@@ -146,8 +146,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
               Go to admin panel
               <a
                 onClick={() => {
-                  router.query.login = String(false);
-                  router.push(router, undefined, { shallow: true });
+                  router.push('admin_panel')
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >
