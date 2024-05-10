@@ -1,9 +1,9 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
-import MeetingInfo from "@/components/schedule_meeting/meetingInfo";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import Scheduling from "@/pages/scheduling";
+import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -37,7 +37,7 @@ function Layout({ children }) {
   };
 
   const renderMeetingInfoModal = () => {
-    if (router.query.meeting) {
+    if (router.query.modal) {
       return <MeetingInfo />
     }
   };
@@ -50,7 +50,7 @@ function Layout({ children }) {
       {/* SIDE BAR */}
       <div
         className={
-          eval(router.query.open || router.query.schedule)
+          eval(router.query.open || router.query.schedule || router.query.modal)
             ? "p-4 h-screen w-[300px] mob_screen:hidden opacity-50"
             : "p-4 h-screen w-[300px] mob_screen:hidden"
         }
@@ -128,7 +128,7 @@ function Layout({ children }) {
       {/* MIDDLE DIV */}
       <div
         className={
-          menu || eval(router.query.open || router.query.schedule)
+          menu || eval(router.query.open || router.query.schedule || router.query.modal)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }

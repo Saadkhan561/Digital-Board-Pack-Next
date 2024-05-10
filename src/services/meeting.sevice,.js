@@ -17,3 +17,13 @@ export const getAllMeetings = async() => {
         throw new Error(error)
     }
 }
+
+export const getMeetingById = async(params) => {
+    const{id} = params
+    try{
+        const res = await axios.get(`/getMeeting/${id}`)
+        return res.data
+    } catch(error) {
+        throw new Error(error)
+    }
+}

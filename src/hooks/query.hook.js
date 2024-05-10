@@ -6,7 +6,7 @@ import {
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
-import { getAllMeetings } from "@/services/meeting.sevice,";
+import { getAllMeetings, getMeetingById } from "@/services/meeting.sevice,";
 
 export const useFetchAllDocumentQuery = (options) => {
   return useQuery({
@@ -32,14 +32,6 @@ export const useFetchAllUsers = (options) => {
   });
 };
 
-// export const useDocumentOnlyId = (options) => {
-//   return useQuery({
-//     ...options,
-//     queryKey: ["document_only_id"],
-//     queryFn: fetchOnlyDocumentId,
-//   });
-// };
-
 // TO FETCH ALL DEPARTMENTS
 export const useAllDepartments = (options) => {
   return useQuery({
@@ -54,5 +46,13 @@ export const useFetchAllMeetings = (options) => {
     ...options,
     queryKey: ["meetings"],
     queryFn: getAllMeetings
+  })
+}
+
+export const useFetchMeetingById = (params, options) => {
+  return useQuery({
+    ...options,
+    queryKey: ['meeting', JSON.stringify(params)],
+    queryFn: () => getMeetingById(params)
   })
 }

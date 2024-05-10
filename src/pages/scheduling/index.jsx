@@ -7,6 +7,7 @@ import listPlugin from "@fullcalendar/list";
 import { useRouter } from "next/router";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import { useFetchAllMeetings } from "@/hooks/query.hook";
+import Link from "next/link";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
@@ -17,7 +18,6 @@ const Calendar = () => {
 
   // HOOK TO GET ALL MEETINGS
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
-  console.log(meetings);
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -52,28 +52,6 @@ const Calendar = () => {
         meeting_mins: meeting.meeting_mins,
       },
     }));
-  // const events = [
-  //   {
-  //     id: "event1",
-  //     title: "Discuss daily sales",
-  //     start: "2024-04-10T14:00:00",
-  //     end: "2024-04-10T18:00:00",
-  //     extendedProps: {
-  //       members: ["saad", "anas"],
-  //       time: "02:00 PM - 06:00 PM",
-  //     },
-  //   },
-  //   {
-  //     id: "event2",
-  //     title: "Conference",
-  //     start: "2024-04-04T09:00:00",
-  //     end: "2024-04-04T17:00:00",
-  //     extendedProps: {
-  //       members: ["Dave", "Eve"],
-  //       time: "09:00 AM - 05:00 PM",
-  //     },
-  //   },
-  // ];
 
   const renderEventContent = (eventInfo) => {
     const { meeting_id } = eventInfo.event.extendedProps;
@@ -98,7 +76,7 @@ const Calendar = () => {
     } ${period}`;
 
     return (
-      <div onClick={() => meeting("meeting")} className="cursor-pointer event-content">
+      <Link href={`/scheduling?id=${meeting_id}&modal=true`} className="cursor-pointer event-content">
         <div key={meeting._id}>
           <div className="font-semibold text-lg calendar_mob:text-sm mob_screen:text-xs">
             {eventInfo.event.title}
@@ -126,7 +104,7 @@ const Calendar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     );
   };
 
