@@ -99,7 +99,7 @@ const NewDocument = () => {
     onSuccess(data) {
       const docName = data;
       const title = watch("title");
-      console.log("here");
+      // console.log("here");
       insertFile({ docName, title });
     },
     onError(error) {

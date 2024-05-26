@@ -8,7 +8,7 @@ function ViewPDF() {
   const [pageNumber, setPageNumber] = useState(1);
 
   function onDocumentLoadSuccess({ numPages }) {
-    console.log(numPages);
+    // console.log(numPages);
     setNumPages(numPages);
   }
 

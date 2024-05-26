@@ -41,7 +41,7 @@ const Register = () => {
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
-        console.log({ data });
+        // console.log({ data });
         toast.success("Logged In", {
           position: "top-center",
           autoClose: 2000,

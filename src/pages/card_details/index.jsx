@@ -5,12 +5,10 @@ import Comment from "@/components/card_details/comments";
 import NewComment from "@/components/card_details/new_comment";
 import Layout from "@/layout/UserLayout";
 import { useRouter } from "next/router";
-import { useFetchDocumentById } from "@/hooks/query.hook";
+import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
 import moment from "moment";
 import Link from "next/link";
-import ProtectedLogin, {
-  withProtectedWrapper,
-} from "@/components/Protected Routes/protected_login";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -28,16 +26,20 @@ const CardDetails = () => {
 
   // HOOK TO REDIRECT WITH DOCUMENT'S ID
   const router = useRouter();
-  if (!router) {
-    return;
-  }
-  const id = router.query.id;
-  const { data, isLoading } = useFetchDocumentById(
-    { id },
-    { enabled: Boolean(id) }
-  );
-  console.log(data);
 
+  const id = router.query.id;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { data } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
+  console.log({ id });
+  const { data: comments } = useFetchComments(
+    { docId: id },
+    { enabled: id ? true : false }
+  );
+
+  // if (!router) {
+  //   return;
+  // }
   return (
     <Layout>
       <div className="w-full relative">
@@ -130,7 +132,10 @@ const CardDetails = () => {
           </div>
           {/* COMMENT DIV */}
           <div className="p-2">
-            <Comment />
+            {comments?.reverse()?.map((comment, index) => {
+              return <Comment data={comment} key={index} />;
+            })}
+
             <NewComment />
           </div>
         </div>

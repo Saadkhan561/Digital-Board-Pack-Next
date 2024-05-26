@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 const useUserStore = create(
   persist(
     (set, get) => ({
-      currentUser: null,
+      currentUser: {},
       setCurrentUser: (user) =>
         set((state) => {
           return { currentUser: user };

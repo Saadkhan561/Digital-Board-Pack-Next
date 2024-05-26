@@ -159,4 +159,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default withProtectedWrapper(Calendar);

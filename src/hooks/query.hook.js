@@ -7,17 +7,18 @@ import {
 import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
 import { getAllMeetings, getMeetingById } from "@/services/meeting.sevice,";
+import {  fetchCommentsByDocId } from "@/services/comments.service";
 
 export const useFetchAllDocumentQuery = (options) => {
   return useQuery({
     ...options,
-    queryKey: ['document'],
+    queryKey: ["document"],
     queryFn: fetchAllDocument,
   });
-}; 
+};
 export const useFetchDocumentById = (params, options) => {
   return useQuery({
-    queryKey: ['documentById', JSON.stringify(params)],
+    queryKey: ["documentById", JSON.stringify(params)],
     queryFn: () => fetchDocumentById(params),
     ...options,
   });
@@ -27,7 +28,7 @@ export const useFetchDocumentById = (params, options) => {
 export const useFetchAllUsers = (options) => {
   return useQuery({
     ...options,
-    queryKey: ['users'],
+    queryKey: ["users"],
     queryFn: fetchAllUsers,
   });
 };
@@ -45,14 +46,25 @@ export const useFetchAllMeetings = (options) => {
   return useQuery({
     ...options,
     queryKey: ["meetings"],
-    queryFn: getAllMeetings
-  })
-}
+    queryFn: getAllMeetings,
+  });
+};
 
 export const useFetchMeetingById = (params, options) => {
   return useQuery({
     ...options,
-    queryKey: ['meeting', JSON.stringify(params)],
-    queryFn: () => getMeetingById(params)
-  })
-}
+    queryKey: ["meeting", JSON.stringify(params)],
+    queryFn: () => getMeetingById(params),
+  });
+};
+
+export const useFetchComments = (params, options) => {
+  console.log(params);
+ const  test="test"
+
+  return useQuery({
+    querykey: ["comments", JSON.stringify(params)],
+    queryFn: () => fetchCommentsByDocId(test),
+    ...options,
+  });
+};

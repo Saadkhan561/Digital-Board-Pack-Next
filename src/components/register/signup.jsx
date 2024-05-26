@@ -11,15 +11,11 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const SignUp = ({ onUpdateLogin, prevLogin }) => {
-  const [isLogin, setLogin] = useState(prevLogin);
+const SignUp = () => {
+  // const [isLogin, setLogin] = useState(prevLogin);
   const [showPassword1, setShowPassword1] = useState(false);
-  const [dropDown, setDropDown] = useState("None");
-  const [downArrow, setDownArrow] = useState(false);
 
   const { data, isLoading } = useAllDepartments();
-
-  onUpdateLogin(isLogin);
 
   const initialValues = {
     username: null,
@@ -67,7 +63,7 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
     },
     onError(error) {
       console.log(error);
-      toast.error("Account already exist with this gmail", {
+      toast.error((error.message), {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -91,8 +87,9 @@ const SignUp = ({ onUpdateLogin, prevLogin }) => {
     resolver: yupResolver(signupSchema),
   });
   const onSubmit = (data) => {
+    console.log(data)
     mutate({
-      ...data,
+      ...data
     });
   };
 

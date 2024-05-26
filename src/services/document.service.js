@@ -62,3 +62,15 @@ export const fetchDocumentById = async (params) => {
     throw new Error(error);
   }
 };
+
+// INSERT MEETING MINUTES ID INTO MEETING TABLE
+export const meetingMinutesId = async(params) => {
+  const {docId, id} = params
+  try {
+    const res = await axios.post(`/meetingMin?meeting_min=${docId}&meeting_id=${id}`)
+    console.log(res.data)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}

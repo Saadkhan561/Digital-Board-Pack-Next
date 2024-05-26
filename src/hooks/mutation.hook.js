@@ -1,5 +1,7 @@
+import { insertComment } from "@/services/comments.service";
 import {
   insertDocument,
+  meetingMinutesId,
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
@@ -42,6 +44,7 @@ export const useInsertDocumentMutation = (option) => {
 
 // TO GIVE ACCESS OF DOCUMENT TO USERS
 export const userAccessListMutation = (option) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation({
     mutationFn: userAccessList,
     ...option,
@@ -52,6 +55,20 @@ export const userAccessListMutation = (option) => {
 export const useInsertMeeting = (option) => {
   return useMutation({
     mutationFn: insertMeeting,
-    ...option
+    ...option,
+  });
+};
+
+export const useMeetingMinutesId = (options) => {
+  return useMutation({
+    mutationFn: (params) => meetingMinutesId(params),
+    ...options,
+  });
+};
+
+export const useInsertComment = (options) => {
+  return useMutation({
+    mutationFn: insertComment,
+    ...options
   })
 }

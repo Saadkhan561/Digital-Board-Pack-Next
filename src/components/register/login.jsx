@@ -34,7 +34,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
-        console.log({ data });
+        // console.log({ data });
         toast.success("Logged In", {
           position: "top-center",
           autoClose: 2000,
@@ -52,7 +52,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
       }
     },
     onError(err) {
-      console.log(err);
+      console.log(err.message);
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
