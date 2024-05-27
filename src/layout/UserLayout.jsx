@@ -2,13 +2,11 @@ import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
 import Scheduler from "@/components/schedule_meeting/scheduler";
-import Scheduling from "@/pages/scheduling";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useState } from "react";
 
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
@@ -48,7 +46,6 @@ function Layout({ children }) {
 
   const setValue = (value, name) => {
     router.query[name] = value;
-
     router.push(router, undefined, { shallow: true });
   };
 
@@ -144,7 +141,7 @@ function Layout({ children }) {
         {/* SEARCH BAR DIV */}``
         <div className="flex justify-between items-center p-4">
           {/* SEARCH BAR */}
-          <Search setValue={setValue} value={router.query.search || null} />
+          <Search setValue={setValue} value={router?.query?.search} />
           {/* FULL SCREEM NOTIFICATION DIV */}
           <div className="flex items-center mob_screen:hidden">
             <div className="relative cursor-pointer">
