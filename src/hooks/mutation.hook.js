@@ -1,4 +1,4 @@
-import { insertComment } from "@/services/comments.service";
+import { deleteComment, insertComment } from "@/services/comments.service";
 import {
   insertDocument,
   meetingMinutesId,
@@ -6,6 +6,7 @@ import {
   userAccessList,
 } from "@/services/document.service";
 import { insertMeeting } from "@/services/meeting.sevice,";
+import { search } from "@/services/search.service";
 // import { insertAgendaDocument, uploadAgendaDocument } from "@/services/meeting.sevice,";
 import { login, register } from "@/services/user.service";
 import { useMutation } from "@tanstack/react-query";
@@ -72,3 +73,11 @@ export const useInsertComment = (options) => {
     ...options
   })
 }
+
+export const useDeleteComment = (options) => {
+  return useMutation({
+    mutationFn: (params) => deleteComment(params),
+    ...options
+  })
+}
+

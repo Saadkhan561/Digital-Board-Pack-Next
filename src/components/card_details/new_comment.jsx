@@ -10,7 +10,6 @@ import { useFetchComments } from "@/hooks/query.hook";
 const NewComment = () => {
   const router = useRouter();
   const docId = router.query.id;
-  console.log({ hrer: docId });
   const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
 
   const initialValues = {

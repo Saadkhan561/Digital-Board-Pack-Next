@@ -25,10 +25,21 @@ export const fetchComments = async (params) => {
 
 export const fetchCommentsByDocId = async (params) => {
   const { docId } = params;
-  try {
-    const res = await axios.get(`/GetCommentByDoc?docId=${docId}`);
-    return res.data
-  } catch (error) {
-    throw new Error(error);
+  if (docId) {
+    try {
+      const res = await axios.get(`/GetCommentByDoc?docId=${docId}`);
+      return res.data
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 };
+
+export const deleteComment = async(params) => {
+  try {
+    const res = await axios.delete(`DeleteComment/${params}`)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}

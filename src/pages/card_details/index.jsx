@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Share from "@/components/share_doc_popup";
 import Comment from "@/components/card_details/comments";
@@ -31,19 +31,18 @@ const CardDetails = () => {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
-  console.log({ id });
-  const { data: comments } = useFetchComments(
+  const { data: comments, refetch } = useFetchComments(
     { docId: id },
     { enabled: id ? true : false }
   );
+  useEffect(() => {
+    refetch()
+  }, [])
+  console.log(comments)
 
-  // if (!router) {
-  //   return;
-  // }
   return (
     <Layout>
       <div className="w-full relative">
-        <div></div>
         <div className="p-4 mr-4 ml-4">
           <div className="flex justify-between items-center border-b-2 border-b-gray-300 pb-4">
             <div className="flex items-center gap-5">
@@ -64,7 +63,8 @@ const CardDetails = () => {
                 </p>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative flex items-center">
+              <div className="p-1 text-sm rounded-lg text-blue-500 border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200"><button>Update document</button></div>
               <div onClick={() => setDownloadPdf(!downloadPdf)}>
                 <img
                   className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
@@ -106,7 +106,7 @@ const CardDetails = () => {
               />
             </div>
             <div className="flex p-2 items-center">
-              <div className="mr-4 p-2 rounded-lg text-black font-semibold bg-slate-200">
+              <div className="p-1 text-sm rounded-lg text-blue-500 border border-blue-500 cursor-pointer mr-4 hover:bg-slate-100 duration-200">
                 <button>
                   <a
                     href={`/pdf/${data?.value.doc_name}`}
@@ -131,7 +131,7 @@ const CardDetails = () => {
             </div>
           </div>
           {/* COMMENT DIV */}
-          <div className="p-2">
+          <div className="mt-5">
             {comments?.reverse()?.map((comment, index) => {
               return <Comment data={comment} key={index} />;
             })}

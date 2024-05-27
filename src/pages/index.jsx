@@ -25,7 +25,9 @@ const Home = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  const { data, isLoading } = useFetchAllDocumentQuery();
+  const searchParam = router.query.search
+  const { data, isLoading } = useFetchAllDocumentQuery({searchParam});
+  console.log(data)
 
   return (
     <Layout>

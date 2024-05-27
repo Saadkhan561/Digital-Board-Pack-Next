@@ -34,14 +34,14 @@ export const userAccessList = async (data) => {
 };
 
 // FETCH ALL DOCUMENTS
-export const fetchAllDocument = async () => {
+export const fetchAllDocument = async (params) => {
   try {
-    const response = await axios.get("/GetDoc");
-
-    if (response.status !== 200) {
-      throw new Error("Network response was not ok");
-    }
+    // if (searchParam) {
+    const response = await axios.get(`/GetDoc`,null, params ? { params } : null);
     return response.data;
+    // } else {
+
+    // }
   } catch (error) {
     throw new Error(error);
   }
@@ -64,13 +64,21 @@ export const fetchDocumentById = async (params) => {
 };
 
 // INSERT MEETING MINUTES ID INTO MEETING TABLE
-export const meetingMinutesId = async(params) => {
-  const {docId, id} = params
+export const meetingMinutesId = async (params) => {
+  const { docId, id } = params;
   try {
-    const res = await axios.post(`/meetingMin?meeting_min=${docId}&meeting_id=${id}`)
-    console.log(res.data)
-    return res.data
-  } catch(error) {
-    throw new Error(error)
+    const res = await axios.post(
+      `/meetingMin?meeting_min=${docId}&meeting_id=${id}`
+    );
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    throw new Error(error);
   }
-}
+};
+
+// export const updatedDoc = async() => {
+//   try{
+
+//   }
+// }

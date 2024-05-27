@@ -8,12 +8,13 @@ import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
 import { getAllMeetings, getMeetingById } from "@/services/meeting.sevice,";
 import {  fetchCommentsByDocId } from "@/services/comments.service";
+import { search } from "@/services/search.service";
 
-export const useFetchAllDocumentQuery = (options) => {
+export const useFetchAllDocumentQuery = (params,options) => {
   return useQuery({
     ...options,
     queryKey: ["document"],
-    queryFn: fetchAllDocument,
+    queryFn: ()=>fetchAllDocument(params),
   });
 };
 export const useFetchDocumentById = (params, options) => {
@@ -59,12 +60,18 @@ export const useFetchMeetingById = (params, options) => {
 };
 
 export const useFetchComments = (params, options) => {
-  console.log(params);
- const  test="test"
-
   return useQuery({
     querykey: ["comments", JSON.stringify(params)],
-    queryFn: () => fetchCommentsByDocId(test),
+    queryFn: () => fetchCommentsByDocId(params),
     ...options,
   });
 };
+
+export const useSearchDoc = (params, options) => {
+  console.log(params)
+  return useQuery({
+    queryKey: ["search"],
+    queryFn:()=> search(params),
+    ...options
+  })
+}
