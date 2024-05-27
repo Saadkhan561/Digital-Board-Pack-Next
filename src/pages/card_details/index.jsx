@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import Share from "@/components/share_doc_popup";
 import Comment from "@/components/card_details/comments";
@@ -9,6 +10,7 @@ import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
 import moment from "moment";
 import Link from "next/link";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
+import { useDocUploadMutation } from "@/hooks/mutation.hook";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -35,10 +37,46 @@ const CardDetails = () => {
     { docId: id },
     { enabled: id ? true : false }
   );
-  useEffect(() => {
-    refetch()
-  }, [])
-  console.log(comments)
+
+  // console.log(comments);
+
+  const { mutate: uploadFile } = useDocUploadMutation({
+    onSuccess(data) {
+      console.log(data)
+      const docName = data;
+      const title = watch("title");
+      // insertFile({ docName, title });
+    },
+    onError(error) {
+      console.log(error)
+      toast.error("Failed to Upload Document", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data.file[0])
+    const formData = new FormData();
+    formData.append("file", data.file[0]);
+    uploadFile(formData);
+  }
 
   return (
     <Layout>
@@ -64,7 +102,15 @@ const CardDetails = () => {
               </div>
             </div>
             <div className="relative flex items-center">
-              <div className="p-1 text-sm rounded-lg text-blue-500 border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200"><button>Update document</button></div>
+              <div className="relative p-1 text-sm rounded-lg border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
+                <button className="text-blue-500">Update document</button>
+                <div className="absolute top-10 bg-white border border-slate-100 shadow-lg p-4 right-1">
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <input type="file" {...register('file')}/>
+                    <button className="border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3" type="submit">Submit</button>
+                  </form>
+                </div>
+              </div>
               <div onClick={() => setDownloadPdf(!downloadPdf)}>
                 <img
                   className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
