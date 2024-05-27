@@ -36,12 +36,11 @@ export const userAccessList = async (data) => {
 // FETCH ALL DOCUMENTS
 export const fetchAllDocument = async (params) => {
   try {
-    // if (searchParam) {
-    const response = await axios.get(`/GetDoc`,null, params ? { params } : null);
+    console.log(params);
+    const response = await axios.get("/GetDoc", {
+      params: params || {},
+    });
     return response.data;
-    // } else {
-
-    // }
   } catch (error) {
     throw new Error(error);
   }

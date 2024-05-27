@@ -8,6 +8,7 @@ import useUserStore from "@/stores/useUserStore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useDebounce } from "@uidotdev/usehooks";
 
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
@@ -38,12 +39,18 @@ function Layout({ children }) {
 
   const renderMeetingInfoModal = () => {
     if (router.query.modal) {
-      return <MeetingInfo />
+      return <MeetingInfo />;
     }
   };
 
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
+
+  const setValue = (value, name) => {
+    router.query[name] = value;
+
+    router.push(router, undefined, { shallow: true });
+  };
 
   return (
     <div className="flex relative overflow-x-hidden h-screen">
@@ -128,7 +135,8 @@ function Layout({ children }) {
       {/* MIDDLE DIV */}
       <div
         className={
-          menu || eval(router.query.open || router.query.schedule || router.query.modal)
+          menu ||
+          eval(router.query.open || router.query.schedule || router.query.modal)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }
@@ -136,7 +144,7 @@ function Layout({ children }) {
         {/* SEARCH BAR DIV */}``
         <div className="flex justify-between items-center p-4">
           {/* SEARCH BAR */}
-          <Search />
+          <Search setValue={setValue} value={router.query.search || null} />
           {/* FULL SCREEM NOTIFICATION DIV */}
           <div className="flex items-center mob_screen:hidden">
             <div className="relative cursor-pointer">
@@ -214,9 +222,15 @@ function Layout({ children }) {
           </Link>
           <li className="menu-bar-li">Profile</li>
           <hr />
-          <li className="menu-bar-li"><Link href={'/'}>Dashboard</Link></li>
-          <li className="menu-bar-li"><Link href={'/scheduling'}>Scheduling</Link></li>
-          <li onClick={logout} className="menu-bar-li text-red-500">Log Out</li>
+          <li className="menu-bar-li">
+            <Link href={"/"}>Dashboard</Link>
+          </li>
+          <li className="menu-bar-li">
+            <Link href={"/scheduling"}>Scheduling</Link>
+          </li>
+          <li onClick={logout} className="menu-bar-li text-red-500">
+            Log Out
+          </li>
         </ul>
         <div className="border border-slate-500 p-[3px] rounded-2xl hover:bg-slate-400 duration-300">
           <img src="/images/right-arrow.png" alt="" height={20} width={20} />

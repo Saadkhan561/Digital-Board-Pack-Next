@@ -3,31 +3,46 @@ import { useState } from "react";
 import Card from "@/components/card";
 import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
-import  {
-  withProtectedWrapper,
-} from "@/components/Protected Routes/protected_login";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
   useFetchAllDocumentQuery,
   useFetchDocumentById,
 } from "@/hooks/query.hook";
 import { useRouter } from "next/router";
+import { useDebounce } from "@uidotdev/usehooks";
+
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
   const router = useRouter();
 
-  const newDocument = (name) => {
+  // const debouncedValue = useDebounce(router.query.search || "", 500);
+  const setValue = (name, value) => {
     if (router.query[name]) {
       delete router.query[name];
     } else {
-      router.query[name] = true;
+      router.query[name] = value;
     }
     router.push(router, undefined, { shallow: true });
   };
 
-  const searchParam = router.query.search
-  const { data, isLoading } = useFetchAllDocumentQuery({searchParam});
-  console.log(data)
+  // const newDocument = (name) => {
+  //   if (router.query[name]) {
+  //     delete router.query[name];
+  //   } else {
+  //     router.query[name] = true;
+  //   }
+  //   router.push(router, undefined, { shallow: true });
+  // };
+
+  // const searchParam = router?.query?.search;
+  // console.log(searchParam);
+  const debouncedValue = useDebounce(router.query.search || "", 500);
+  const { data, isLoading } = useFetchAllDocumentQuery(
+    { searchParam: debouncedValue || null }
+    // { enabled: Boolean(router.query.search) }
+  );
+  console.log(data);
 
   return (
     <Layout>
@@ -99,7 +114,7 @@ const Home = () => {
               </div>
             </div>
             <div className="fixed bottom-10 right-10 z-10 mob_screen_closed:hidden flex justify-center p-2 bg-slate-100 border border-gray-400 rounded-full items-center cursor-pointer shadow-2xl hover:duration-200">
-              <div onClick={() => newDocument("open")}>
+              <div onClick={() => setValue("open", true)}>
                 <img src="/images/plus.png" alt="" height={22} width={22} />
               </div>
             </div>
@@ -110,7 +125,6 @@ const Home = () => {
             {isLoading ? (
               <div>Loading...</div>
             ) : (
-             
               data?.map((document) => (
                 <Card
                   key={document.doc_id}
