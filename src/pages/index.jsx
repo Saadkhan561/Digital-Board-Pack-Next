@@ -6,6 +6,7 @@ import Layout from "@/layout/UserLayout";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
   useFetchAllDocumentQuery,
+  useFetchDocByUser,
   useFetchDocumentById,
 } from "@/hooks/query.hook";
 import { useRouter } from "next/router";
@@ -16,7 +17,6 @@ const Home = () => {
   const [filter, setFilter] = useState("All");
   const router = useRouter();
 
-  // const debouncedValue = useDebounce(router.query.search || "", 500);
   const setValue = (name, value) => {
     if (router.query[name]) {
       delete router.query[name];
@@ -37,12 +37,13 @@ const Home = () => {
 
   // const searchParam = router?.query?.search;
   // console.log(searchParam);
-  const debouncedValue = useDebounce(router.query.search || "", 500);
-  const { data, isLoading } = useFetchAllDocumentQuery(
-    { searchParam: debouncedValue || null }
-    // { enabled: Boolean(router.query.search) }
-  );
-  console.log(data);
+  // const debouncedValue = useDebounce(router.query.search || "", 500);
+  // const { data, isLoading } = useFetchAllDocumentQuery(
+  //   { searchParam: debouncedValue || null }
+  // );
+
+  const {data, isLoading} = useFetchDocByUser()
+  console.log(data)
 
   return (
     <Layout>
@@ -131,6 +132,7 @@ const Home = () => {
                   docId={document.doc_id}
                   docName={document.doc_name}
                   title={document.title}
+                  versions={document.docVersions.length}
                 />
               ))
             )}

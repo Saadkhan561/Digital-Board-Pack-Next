@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   useDocUploadMutation,
@@ -7,7 +7,7 @@ import {
 } from "../hooks/mutation.hook";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useFetchAllDocumentQuery, useFetchAllUsers } from "@/hooks/query.hook";
+import { useFetchAllDocumentQuery, useFetchAllUsers, useFetchDocByUser } from "@/hooks/query.hook";
 import UserAccessList from "./user_access_list";
 import { useRouter } from "next/router";
 
@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const NewDocument = () => {
   const router = useRouter();
+  const [documentName, setDocName] = useState('')
 
   const newDocument = (name) => {
     if (router.query[name]) {
@@ -28,7 +29,7 @@ const NewDocument = () => {
   };
 
   const { data, isLoading } = useFetchAllUsers();
-  const {data:doc, refetch } = useFetchAllDocumentQuery();
+  const {data:doc, refetch } = useFetchDocByUser();
   
   const initialValues = {
     title: "",
@@ -40,7 +41,7 @@ const NewDocument = () => {
     title: Yup.string().required("Title is required"),
   });
 
-  const { mutate: documentAccess } = userAccessListMutation({
+  const { mutate: documentAccess, isLoading: isAccessLoading } = userAccessListMutation({
     onSuccess(data) {
       console.log(data)
       refetch();
@@ -73,7 +74,7 @@ const NewDocument = () => {
     },
   });
 
-  const { mutate: insertFile } = useInsertDocumentMutation({
+  const { mutate: insertFile, isLoading: isInsertLoading } = useInsertDocumentMutation({
     onSuccess(data) {
       const userId = watch("userId");
       const docId = data.value;
@@ -95,11 +96,10 @@ const NewDocument = () => {
     },
   });
 
-  const { mutate: uploadFile } = useDocUploadMutation({
+  const { mutate: uploadFile, isLoading: isUploadLoading } = useDocUploadMutation({
     onSuccess(data) {
       const docName = data;
       const title = watch("title");
-      // console.log("here");
       insertFile({ docName, title });
     },
     onError(error) {
@@ -132,7 +132,7 @@ const NewDocument = () => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    uploadFile(formData);
+    uploadFile({formData, docName: data.file[0].name});
   };
 
   return (
@@ -169,7 +169,7 @@ const NewDocument = () => {
             <label className="label" htmlFor="file">
               Upload your document:
             </label>
-            <input type="file" {...register("file")} />
+            <input type="file" {...register("file", "docName")} />
             {errors.file && (
               <p className="text-red-500 text-xs">{errors.file.message}</p>
             )}
@@ -185,7 +185,7 @@ const NewDocument = () => {
                   placeholder="Search here"
                 />
               </div>
-              <div className="h-[200px] overflow-y-auto p-4">
+              <div className="h-[200px] overflow-y-auto">
                 {isLoading ? (
                   <div>Loading...</div>
                 ) : (
@@ -216,6 +216,9 @@ const NewDocument = () => {
             </div>
           </div>
           <div className="flex justify-end p-4 mr-4 mt-4">
+            <div>
+              {(isUploadLoading || isInsertLoading || isAccessLoading)?(<div><img src="/images/loading.gif" alt="" height={15} width={15}/></div>):''}
+            </div>
             <button
               className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
               type="submit"

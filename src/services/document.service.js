@@ -2,12 +2,14 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
-  try {
-    const res = await axios.post("/uploads", data);
-
-    return res.data;
-  } catch (error) {
-    throw new Error(error);
+  console.log(data)
+  if (data) {
+    try {
+      const res = await axios.post(`/uploads/${data.docName}`, data.formData);
+      return res.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 };
 
@@ -21,6 +23,16 @@ export const insertDocument = async (data) => {
     throw new Error(error);
   }
 };
+
+// TO INSERT UPDATED DOCUMENT
+export const insertUpdatedDocument = async(data) => {
+  try {
+    const res = await axios.post("/InsertEditDocument", data)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}
 
 // GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT
 export const userAccessList = async (data) => {
@@ -45,6 +57,15 @@ export const fetchAllDocument = async (params) => {
     throw new Error(error);
   }
 };
+
+export const fetchDocByUser = async() => {
+  try {
+    const response = await axios.get("GetDocByUser")
+    return response.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}
 
 // FETCH A PARTICULAR DOCUMENT
 export const fetchDocumentById = async (params) => {

@@ -4,8 +4,8 @@ import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-const ProtectedWrapper = (Component, token) => (props) => {
-  const { currentUser } = useUserStore();
+const ProtectedWrapper = (Component) => (props) => {
+  const { currentUser, isLoading } = useUserStore();
   const [showChildren, setShowChildren] = useState(false);
   const router = useRouter();
 
@@ -15,9 +15,13 @@ const ProtectedWrapper = (Component, token) => (props) => {
     } else {
       setShowChildren(true);
     }
-  }, [currentUser, router, setShowChildren]);
+  }, [currentUser, router, setShowChildren, isLoading]);
 
-  return showChildren ? <Component {...props} /> : <div>Loading...</div>;
+  // if (isLoading) {
+  //   <div>Loading...</div>
+  // }
+
+  return showChildren ? <Component {...props} /> : <div>Redirecting...</div>;
 };
 
 export const withProtectedWrapper = ProtectedWrapper;

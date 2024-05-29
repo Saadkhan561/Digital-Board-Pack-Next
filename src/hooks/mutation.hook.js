@@ -1,6 +1,7 @@
 import { deleteComment, insertComment } from "@/services/comments.service";
 import {
   insertDocument,
+  insertUpdatedDocument,
   meetingMinutesId,
   uploadDocument,
   userAccessList,
@@ -34,6 +35,14 @@ export const useDocUploadMutation = (options) => {
     ...options,
   });
 };
+
+// TO INSERT UPDATED DOCUMENT
+export const useInsertUpdatedDocument = (options) => {
+  return useMutation({
+    mutationFn: insertUpdatedDocument,
+    ...options
+  })
+}
 
 // TO INSERT THE DOCUMENT INTO THE DATABASE
 export const useInsertDocumentMutation = (option) => {

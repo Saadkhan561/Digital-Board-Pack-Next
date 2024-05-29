@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchAllDocument,
+  fetchDocByUser,
   fetchDocumentById,
   fetchOnlyDocumentId,
 } from "@/services/document.service";
@@ -24,6 +25,15 @@ export const useFetchDocumentById = (params, options) => {
     ...options,
   });
 };
+
+// FETCH ALLOWED DOCUMENTS
+export const useFetchDocByUser = (options) => {
+  return useQuery({
+    queryKey: ["documentByUser"],
+    queryFn: fetchDocByUser,
+    ...options
+  })
+}
 
 // QUERY TO FETCH ALL USERS
 export const useFetchAllUsers = (options) => {

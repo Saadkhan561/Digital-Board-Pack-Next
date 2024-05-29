@@ -6,9 +6,10 @@ const useUserStore = create(
   persist(
     (set, get) => ({
       currentUser: {},
+      isLoading: true,
       setCurrentUser: (user) =>
         set((state) => {
-          return { currentUser: user };
+          return { currentUser: user, isLoading: false };
         }),
       logout: () => set({ currentUser: null }),
     }),

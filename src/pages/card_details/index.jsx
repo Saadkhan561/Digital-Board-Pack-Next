@@ -10,11 +10,18 @@ import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
 import moment from "moment";
 import Link from "next/link";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
-import { useDocUploadMutation } from "@/hooks/mutation.hook";
+import {
+  useDocUploadMutation,
+  useInsertUpdatedDocument,
+} from "@/hooks/mutation.hook";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
   const [downloadPdf, setDownloadPdf] = useState(false);
+  const [doc_version, setDocVersion] = useState(1);
+  const [updateDoc, setUpdateDoc] = useState(false);
+  const [docVersionDiv, setDocVersionDiv] = useState(false);
+  const [doc, setDoc] = useState('')
 
   const renderShareDiv = () => {
     if (isShare) {
@@ -31,24 +38,42 @@ const CardDetails = () => {
 
   const id = router.query.id;
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
+  console.log(data); 
+  
+  useEffect(() => {
+    const document = data && data.doc_name.split('.')[0]
+    setDoc(document)
+    // console.log(document)
+  }, [data])
+
+  useEffect(() => {
+    let version = data && data.docVersions.length;
+    setDocVersion(version + 1);
+  }, [data]);
+
   const { data: comments, refetch } = useFetchComments(
     { docId: id },
     { enabled: id ? true : false }
   );
 
-  // console.log(comments);
+  const { mutate: insertUpdatedDoc } = useInsertUpdatedDocument({
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(data) {
+      console.log(data);
+    },
+  });
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
-      console.log(data)
-      const docName = data;
+      const doc_name = data;
       const title = watch("title");
-      // insertFile({ docName, title });
+      insertUpdatedDoc({ doc_name, title, doc_version, root_docId: id });
     },
     onError(error) {
-      console.log(error)
+      console.log(error);
       toast.error("Failed to Upload Document", {
         position: "top-center",
         autoClose: 1000,
@@ -68,15 +93,15 @@ const CardDetails = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch
+    watch,
   } = useForm();
 
+  let docName = data && data.doc_name
   const onSubmit = (data) => {
-    console.log(data.file[0])
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    uploadFile(formData);
-  }
+    data && uploadFile({formData, docName: docName});
+  };
 
   return (
     <Layout>
@@ -93,21 +118,38 @@ const CardDetails = () => {
               </div>
               <div>
                 <p className="text-2xl mob_screen:text-lg menu_bar_mob:text-md font-bold text-blue-600">
-                  {data?.value.title}
+                  {data?.title}
                 </p>
                 <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm text-gray-500 font-semibold">
-                  {data?.value.username} -
+                  {data?.username} -
                   {moment(data?.createdAt).format("DD MMM YYYY")}
                 </p>
               </div>
             </div>
             <div className="relative flex items-center">
-              <div className="relative p-1 text-sm rounded-lg border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
+              <div
+                onClick={() => setUpdateDoc(!updateDoc)}
+                className="relative p-1 text-sm rounded-lg border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200"
+              >
                 <button className="text-blue-500">Update document</button>
-                <div className="absolute top-10 bg-white border border-slate-100 shadow-lg p-4 right-1">
+                <div
+                  className={
+                    updateDoc
+                      ? "absolute top-10 bg-white border border-slate-100 shadow-2xl p-4 right-1"
+                      : "absolute top-10 bg-white border border-slate-100 shadow-lg p-4 right-1 hidden"
+                  }
+                >
+                  <p className="font-semibold mb-4">
+                    Upload the updated document
+                  </p>
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <input type="file" {...register('file')}/>
-                    <button className="border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3" type="submit">Submit</button>
+                    <input type="file" {...register("file")} />
+                    <button
+                      className="border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
                   </form>
                 </div>
               </div>
@@ -129,7 +171,7 @@ const CardDetails = () => {
               >
                 <ul className="flex flex-col items-center">
                   <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold">
-                    <Link href={`/api/download-pdf/${data?.value.doc_name}`}>
+                    <Link href={`/api/download-pdf/${data?.doc_name}`}>
                       Download
                     </Link>
                   </li>
@@ -152,16 +194,39 @@ const CardDetails = () => {
               />
             </div>
             <div className="flex p-2 items-center">
-              <div className="p-1 text-sm rounded-lg text-blue-500 border border-blue-500 cursor-pointer mr-4 hover:bg-slate-100 duration-200">
+              <div className="p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200">
                 <button>
                   <a
-                    href={`/pdf/${data?.value.doc_name}`}
+                    href={data?.docVersions.length === 0 ? `/pdf/${doc}/${data?.doc_name}`:`/pdf/${doc}/${data?.docVersions[0].doc_name}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Open PDF
                   </a>
                 </button>
+              </div>
+              <div
+                onClick={() => setDocVersionDiv(!docVersionDiv)}
+                className={
+                  data?.docVersions.length === 0
+                    ? "hidden"
+                    : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200"
+                }
+              >
+                <button className="flex gap-2 items-center">
+                  <p>View all versions</p>
+                  <img
+                    src="/images/down-arrow.png"
+                    alt=""
+                    height={15}
+                    width={15}
+                  />
+                </button>
+                <div className={docVersionDiv ? "absolute top-5 p-1 border-gray-300":"hidden"}>
+                  {data?.docVersions.map((data, index) => {
+                    <div>Version - {index}</div>
+                  })}
+                </div>
               </div>
               <div>
                 <img
