@@ -2,10 +2,10 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
-  console.log(data)
+  console.log(data.title)
   if (data) {
     try {
-      const res = await axios.post(`/uploads/${data.docName}`, data.formData);
+      const res = await axios.post(`/uploads/${data.title}`, data.formData);
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -32,6 +32,16 @@ export const insertUpdatedDocument = async(data) => {
   } catch(error) {
     throw new Error(error)
   }
+}
+
+// TO DELETE DOCUMENT
+export const deleteDocument = async(data) => {
+  try {
+    const res = await axios.delete(`/delete/${data.folder}/${data.docName}`)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  } 
 }
 
 // GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT

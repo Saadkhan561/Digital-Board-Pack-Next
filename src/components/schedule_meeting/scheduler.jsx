@@ -31,7 +31,7 @@ const Scheduler = () => {
   };
 
   const initialValues = {
-    title: "",
+    meeting_title: "",
     meetingAgenda: "",
     attenders: [],
     meeting_date: "",
@@ -76,7 +76,7 @@ const Scheduler = () => {
       const {meetingAgenda,file,docName,...rest} =formData
       console.log({...rest})
       insertMeeting(
-        { ...rest, meetingAgenda: data.value },
+        { ...rest, meeting_agenda: data.value },
       );
     },
     onError(error) {
@@ -113,7 +113,7 @@ const Scheduler = () => {
       meeting_time: data.meeting_time,
       meeting_date: data.meeting_date,
     });
-    uploadFile(formData);
+    uploadFile({formData, title: data.title});
   };
 
   return (

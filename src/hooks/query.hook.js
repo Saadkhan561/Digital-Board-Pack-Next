@@ -7,7 +7,7 @@ import {
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
-import { getAllMeetings, getMeetingById } from "@/services/meeting.sevice,";
+import { getAllMeetings, getMeetingById, getUserMeetings } from "@/services/meeting.sevice,";
 import { fetchCommentsByDocId } from "@/services/comments.service";
 import { search } from "@/services/search.service";
 
@@ -53,14 +53,25 @@ export const useAllDepartments = (options) => {
   });
 };
 
-export const useFetchAllMeetings = (options) => {
+// TO FETCH ALL MEETINGS
+export const useFetchAllMeetings = (params, options) => {
   return useQuery({
     ...options,
     queryKey: ["meetings"],
-    queryFn: getAllMeetings,
+    queryFn: () => getAllMeetings(params),
   });
 };
 
+// TO FETCH ONLY USER'S MEETINGS
+export const useGetUserMeetings = (options) => {
+  return useQuery({
+    ...options,
+    queryFn: ["userMeetings"],
+    queryFn: getUserMeetings
+  })
+}
+
+// TO FETCH A PARTICULAR MEETING
 export const useFetchMeetingById = (params, options) => {
   return useQuery({
     ...options,

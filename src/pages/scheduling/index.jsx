@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import { useFetchAllMeetings } from "@/hooks/query.hook";
 import Link from "next/link";
+import useUserStore from "@/stores/useUserStore";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
@@ -16,8 +17,10 @@ const Calendar = () => {
   // SCHEDULING DATE
   const [value, onChange] = useState(new Date());
 
+  const {currentUser} = useUserStore()
   // HOOK TO GET ALL MEETINGS
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
+  meetings && console.log(meetings)
 
   // FOR SCHEDULE MODAL
   const router = useRouter();

@@ -11,9 +11,11 @@ import moment from "moment";
 import Link from "next/link";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
+  useDeleteDocument,
   useDocUploadMutation,
   useInsertUpdatedDocument,
 } from "@/hooks/mutation.hook";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -21,31 +23,31 @@ const CardDetails = () => {
   const [doc_version, setDocVersion] = useState(1);
   const [updateDoc, setUpdateDoc] = useState(false);
   const [docVersionDiv, setDocVersionDiv] = useState(false);
-  const [doc, setDoc] = useState('')
+  const [doc, setDoc] = useState("");
 
-  const renderShareDiv = () => {
-    if (isShare) {
-      return (
-        <div className="">
-          <Share />
-        </div>
-      );
-    }
-  };
+  // const renderShareDiv = () => {
+  //   if (isShare) {
+  //     return (
+  //       <div className="">
+  //         <Share />
+  //       </div>
+  //     );
+  //   }
+  // };
 
   // HOOK TO REDIRECT WITH DOCUMENT'S ID
   const router = useRouter();
 
   const id = router.query.id;
 
-  const { data } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
-  console.log(data); 
-  
+  const { data, refetch: docRefetch } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
+  console.log(data);
+  docRefetch()
+
   useEffect(() => {
-    const document = data && data.doc_name.split('.')[0]
-    setDoc(document)
-    // console.log(document)
-  }, [data])
+    const document = data && data.doc_name.split(".")[0];
+    setDoc(document);
+  }, [data]);
 
   useEffect(() => {
     let version = data && data.docVersions.length;
@@ -57,12 +59,67 @@ const CardDetails = () => {
     { enabled: id ? true : false }
   );
 
+  const {mutate: deleteDoc} = useDeleteDocument({
+    onSuccess(data) {
+      console.log(data)
+      toast.success(data +  " " + "successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    },
+    onError(data) {
+      console.log(data)
+      toast.error("Error occured", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+  })
+
   const { mutate: insertUpdatedDoc } = useInsertUpdatedDocument({
     onSuccess(data) {
       console.log(data);
+      toast.success("Document added successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      reset();
+      setUpdateDoc(false)
     },
     onError(data) {
       console.log(data);
+      toast.error("Failed to Upload Document", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     },
   });
 
@@ -96,15 +153,16 @@ const CardDetails = () => {
     watch,
   } = useForm();
 
-  let docName = data && data.doc_name
+  let docName = data && data.doc_name;
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    data && uploadFile({formData, docName: docName});
+    data && uploadFile({ formData, docName: docName });
   };
 
   return (
     <Layout>
+      <ToastContainer />
       <div className="w-full relative">
         <div className="p-4 mr-4 ml-4">
           <div className="flex justify-between items-center border-b-2 border-b-gray-300 pb-4">
@@ -127,16 +185,18 @@ const CardDetails = () => {
               </div>
             </div>
             <div className="relative flex items-center">
-              <div
-                onClick={() => setUpdateDoc(!updateDoc)}
-                className="relative p-1 text-sm rounded-lg border border-blue-500 cursor-pointer mr-2 hover:bg-slate-100 duration-200"
-              >
-                <button className="text-blue-500">Update document</button>
+              <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
+                <button
+                  className="text-gray-500 font-semibold"
+                  onClick={() => setUpdateDoc(!updateDoc)}
+                >
+                  Update document
+                </button>
                 <div
                   className={
                     updateDoc
-                      ? "absolute top-10 bg-white border border-slate-100 shadow-2xl p-4 right-1"
-                      : "absolute top-10 bg-white border border-slate-100 shadow-lg p-4 right-1 hidden"
+                      ? "absolute z-10 top-10 bg-white border border-slate-100 shadow-2xl p-4 right-1"
+                      : "hidden"
                   }
                 >
                   <p className="font-semibold mb-4">
@@ -155,7 +215,7 @@ const CardDetails = () => {
               </div>
               <div onClick={() => setDownloadPdf(!downloadPdf)}>
                 <img
-                  className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
+                  className="cursor-pointer hover:bg-slate-100 rounded-full p-1 duration-200 mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
                   src="/images/dots.png"
                   alt=""
                   height={25}
@@ -165,19 +225,19 @@ const CardDetails = () => {
               <div
                 className={
                   downloadPdf
-                    ? "absolute top-10 right-2 w-[120px] border bg-white rounded-lg border-slate-300 shadow-2xl"
+                    ? "absolute z-10 top-10 right-2 w-[120px] border bg-white border-slate-100 shadow-2xl"
                     : "hidden"
                 }
               >
-                <ul className="flex flex-col items-center">
-                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold">
+                <ul className="flex flex-col items-center text-sm p-1">
+                  <li className="hover:bg-slate-100 text-gray-500 duration-200 p-2 cursor-pointer w-full font-semibold">
                     <Link href={`/api/download-pdf/${data?.doc_name}`}>
                       Download
                     </Link>
                   </li>
-                  <li className="hover:bg-slate-200 p-4 cursor-pointer w-full font-semibold text-red-500">
+                  {/* <li className="hover:bg-slate-100 duration-200 p-2 cursor-pointer w-full font-semibold text-red-500">
                     Delete
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -197,9 +257,14 @@ const CardDetails = () => {
               <div className="p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200">
                 <button>
                   <a
-                    href={data?.docVersions.length === 0 ? `/pdf/${doc}/${data?.doc_name}`:`/pdf/${doc}/${data?.docVersions[0].doc_name}`}
+                    href={
+                      data?.docVersions.length === 0
+                        ? `/pdf/${doc}/${data?.doc_name}`
+                        : `/pdf/${doc}/${data?.docVersions[0].doc_name}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="text-gray-500 font-semibold"
                   >
                     Open PDF
                   </a>
@@ -210,7 +275,7 @@ const CardDetails = () => {
                 className={
                   data?.docVersions.length === 0
                     ? "hidden"
-                    : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200"
+                    : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200 text-gray-500 font-semibold"
                 }
               >
                 <button className="flex gap-2 items-center">
@@ -222,13 +287,34 @@ const CardDetails = () => {
                     width={15}
                   />
                 </button>
-                <div className={docVersionDiv ? "absolute top-5 p-1 border-gray-300":"hidden"}>
-                  {data?.docVersions.map((data, index) => {
-                    <div>Version - {index}</div>
-                  })}
+                <div
+                  className={
+                    docVersionDiv
+                      ? "absolute top-10 p-1 border border-slate-100 bg-white shadow-2xl w-[140px]"
+                      : "hidden"
+                  }
+                >
+                  {data?.docVersions
+                    .map((data, index) => (
+                      <div
+                        className="p-1 flex justify-between cursor-pointer"
+                        key={index}
+                      >
+                        <a
+                          href={`/pdf/${doc}/${data?.doc_name}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:bg-slate-100 duration-200"
+                        >
+                          Version - {data.doc_version}
+                        </a>
+                        <img onClick={() => deleteDoc({folder: doc, docName: data.doc_name})} className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6" src="/images/trash.png" alt=""/>
+                      </div>
+                    ))
+                    .reverse()}
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <img
                   onClick={() => setShare(!isShare)}
                   className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
@@ -238,7 +324,7 @@ const CardDetails = () => {
                   width={25}
                 />
                 {renderShareDiv()}
-              </div>
+              </div> */}
             </div>
           </div>
           {/* COMMENT DIV */}

@@ -1,5 +1,6 @@
 import { deleteComment, insertComment } from "@/services/comments.service";
 import {
+  deleteDocument,
   insertDocument,
   insertUpdatedDocument,
   meetingMinutesId,
@@ -7,8 +8,6 @@ import {
   userAccessList,
 } from "@/services/document.service";
 import { insertMeeting } from "@/services/meeting.sevice,";
-import { search } from "@/services/search.service";
-// import { insertAgendaDocument, uploadAgendaDocument } from "@/services/meeting.sevice,";
 import { login, register } from "@/services/user.service";
 import { useMutation } from "@tanstack/react-query";
 
@@ -51,6 +50,14 @@ export const useInsertDocumentMutation = (option) => {
     ...option,
   });
 };
+
+// TO DELETE A DOCUMENT
+export const useDeleteDocument=(option) => {
+  return useMutation({
+    mutationFn: deleteDocument,
+    ...option
+  })
+}
 
 // TO GIVE ACCESS OF DOCUMENT TO USERS
 export const userAccessListMutation = (option) => {
