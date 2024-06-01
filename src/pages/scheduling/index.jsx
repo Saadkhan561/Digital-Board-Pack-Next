@@ -12,7 +12,6 @@ import useUserStore from "@/stores/useUserStore";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
-  const [period, setPeriod] = useState();
 
   // SCHEDULING DATE
   const [value, onChange] = useState(new Date());

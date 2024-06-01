@@ -54,7 +54,7 @@ const CardDetails = () => {
     setDocVersion(version + 1);
   }, [data]);
 
-  const { data: comments, refetch } = useFetchComments(
+  const { data: comments, refetch: refetchComment } = useFetchComments(
     { docId: id },
     { enabled: id ? true : false }
   );
@@ -330,7 +330,7 @@ const CardDetails = () => {
           {/* COMMENT DIV */}
           <div className="mt-5">
             {comments?.reverse()?.map((comment, index) => {
-              return <Comment data={comment} key={index} />;
+              return <Comment data={comment} key={index} refetchComment={refetchComment}/>;
             })}
 
             <NewComment />

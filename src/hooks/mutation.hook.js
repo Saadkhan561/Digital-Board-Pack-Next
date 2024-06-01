@@ -1,4 +1,4 @@
-import { deleteComment, insertComment } from "@/services/comments.service";
+import { deleteComment, insertComment, updateComment } from "@/services/comments.service";
 import {
   deleteDocument,
   insertDocument,
@@ -86,6 +86,13 @@ export const useMeetingMinutesId = (options) => {
 export const useInsertComment = (options) => {
   return useMutation({
     mutationFn: insertComment,
+    ...options
+  })
+}
+
+export const useUpdateComment = (options) => {
+  return useMutation({
+    mutationFn: updateComment,
     ...options
   })
 }

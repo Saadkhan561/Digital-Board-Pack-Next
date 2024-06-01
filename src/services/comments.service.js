@@ -10,6 +10,17 @@ export const insertComment = async (data) => {
   }
 };
 
+export const updateComment = async (data) => {
+  console.log(data)
+  // const {docId} = params
+  try {
+    const res = await axios.put("/UpdateComment", data);
+    return res.data;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 export const fetchComments = async (params) => {
   const { docId } = params;
   console.log(params);
