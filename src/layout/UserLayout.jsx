@@ -138,7 +138,7 @@ function Layout({ children }) {
             : "w-full opacity-100 duration-200 relative"
         }
       >
-        {/* SEARCH BAR DIV */}``
+        {/* SEARCH BAR DIV */}
         <div className="flex justify-between items-center p-4">
           {/* SEARCH BAR */}
           <Search setValue={setValue} value={router?.query?.search} />

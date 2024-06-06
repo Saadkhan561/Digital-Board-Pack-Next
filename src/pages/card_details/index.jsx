@@ -16,6 +16,7 @@ import {
   useInsertUpdatedDocument,
 } from "@/hooks/mutation.hook";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import useUserStore from "@/stores/useUserStore";
 
 const CardDetails = () => {
   const [isShare, setShare] = useState(false);
@@ -41,7 +42,7 @@ const CardDetails = () => {
   const id = router.query.id;
 
   const { data, refetch: docRefetch } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
-  console.log(data);
+  // console.log(data);
   docRefetch()
 
   useEffect(() => {
@@ -54,10 +55,13 @@ const CardDetails = () => {
     setDocVersion(version + 1);
   }, [data]);
 
+  const {currentUser} = useUserStore()
+  const role = currentUser.roles
   const { data: comments, refetch: refetchComment } = useFetchComments(
-    { docId: id },
-    { enabled: id ? true : false }
+    { docId: id, role: role },
+    { enabled: id && role ? true : false }
   );
+  console.log(comments)
 
   const {mutate: deleteDoc} = useDeleteDocument({
     onSuccess(data) {
@@ -330,7 +334,7 @@ const CardDetails = () => {
           {/* COMMENT DIV */}
           <div className="mt-5">
             {comments?.reverse()?.map((comment, index) => {
-              return <Comment data={comment} key={index} refetchComment={refetchComment}/>;
+              return <Comment data={comment} key={index} comment={comment.comment_id} refetchComment={refetchComment}/>;
             })}
 
             <NewComment />

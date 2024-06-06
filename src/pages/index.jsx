@@ -5,9 +5,7 @@ import NewDocument from "@/components/new_document";
 import Layout from "@/layout/UserLayout";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
-  useFetchAllDocumentQuery,
   useFetchDocByUser,
-  useFetchDocumentById,
 } from "@/hooks/query.hook";
 import { useRouter } from "next/router";
 import { useDebounce } from "@uidotdev/usehooks";

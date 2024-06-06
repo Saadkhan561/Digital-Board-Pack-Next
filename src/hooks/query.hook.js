@@ -3,15 +3,14 @@ import {
   fetchAllDocument,
   fetchDocByUser,
   fetchDocumentById,
-  fetchOnlyDocumentId,
 } from "@/services/document.service";
 import { fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
 import { getAllMeetings, getMeetingById, getUserMeetings } from "@/services/meeting.sevice,";
-import { fetchCommentsByDocId } from "@/services/comments.service";
+import { fetchComments } from "@/services/comments.service";
 import { search } from "@/services/search.service";
 
-export const useFetchAllDocumentQuery = (params, options) => {
+export const useFetchAllDocument = (params, options) => {
   return useQuery({
     queryKey: ["document", params && (JSON.stringify(params))],
     queryFn: () => fetchAllDocument(params),
@@ -83,7 +82,7 @@ export const useFetchMeetingById = (params, options) => {
 export const useFetchComments = (params, options) => {
   return useQuery({
     querykey: ["comments", JSON.stringify(params)],
-    queryFn: () => fetchCommentsByDocId(params),
+    queryFn: () => fetchComments(params),
     ...options,
   });
 };

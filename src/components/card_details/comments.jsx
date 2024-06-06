@@ -11,10 +11,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AddReply from "./add_reply";
 
-const Comment = ({ data: commentData, refetchComment }) => {
-  // const [isReply, setReply] = useState(false);
-  // const [isViewReply, setViewReply] = useState(false);
+const Comment = ({ data: commentData, refetchComment , comment_id}) => {
+  const [isReply, setReply] = useState(false);
+  const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -83,16 +84,16 @@ const Comment = ({ data: commentData, refetchComment }) => {
     }
   );
 
-  const {mutate: updateComment} = useUpdateComment({
+  const { mutate: updateComment } = useUpdateComment({
     onSuccess(data) {
-      console.log(data)
-      setUpdateCommentDiv(false)
-      refetchComment()
+      console.log(data);
+      setUpdateCommentDiv(false);
+      refetchComment();
     },
     onError(data) {
-      console.log(data)
-    }
-  })
+      console.log(data);
+    },
+  });
 
   const {
     register,
@@ -106,24 +107,27 @@ const Comment = ({ data: commentData, refetchComment }) => {
 
   const onSubmit = (data) => {
     // data["comment_id"] = commentData.comment_id;
-    updateComment({comment: data.comment, comment_id: commentData.comment_id});
+    updateComment({
+      comment: data.comment,
+      comment_id: commentData.comment_id,
+    });
   };
 
-  // const reply = () => {
-  //   return (
-  //     <div>
-  //       <NewComment />
-  //     </div>
-  //   );
-  // };
-  // const viewReply = () => {
-  //   return (
-  //     <div>
-  //       <Replies />
-  //       <Replies />
-  //     </div>
-  //   );
-  // };
+  const reply = () => {
+    return (
+      <div>
+        <AddReply comment_id={commentData.comment_id} />
+      </div>
+    );
+  };
+  const viewReply = () => {
+    return (
+      <div>
+        <Replies />
+        <Replies />
+      </div>
+    );
+  };
   return (
     <div>
       <ToastContainer />
@@ -148,10 +152,7 @@ const Comment = ({ data: commentData, refetchComment }) => {
               </p>
             </div>
             {updateCommentDiv ? (
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex gap-5"
-              >
+              <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5">
                 <textarea
                   id="autoResizableTextArea"
                   className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
@@ -167,20 +168,20 @@ const Comment = ({ data: commentData, refetchComment }) => {
             ) : (
               <div className="menu_bar_div:text-xs">{commentData.comment}</div>
             )}
-            {/* <div className="text-gray-400 text-md mt-2">
-          <p className="flex gap-5 menu_bar_mob:text-xs">
-            {" "}
-            <a onClick={() => setViewReply(!isViewReply)} href="#">
-              View Replies
-            </a>
-            |
-            <a onClick={() => setReply(!isReply)} href="#">
-              Reply
-            </a>
-          </p>
-        </div> */}
-            {/* {isViewReply && viewReply()}
-        {isReply && reply()} */}
+            <div className="text-gray-400 text-md mt-2">
+              <p className="flex gap-5 menu_bar_mob:text-xs">
+                {" "}
+                <a onClick={() => setViewReply(!isViewReply)} href="#">
+                  View Replies
+                </a>
+                |
+                <a onClick={() => setReply(!isReply)} href="#">
+                  Reply
+                </a>
+              </p>
+            </div>
+            {isViewReply && viewReply()}
+            {isReply && reply()}
           </div>
         </div>
         <div className="relative">

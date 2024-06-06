@@ -1,16 +1,16 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useInsertComment } from "@/hooks/mutation.hook";
+import { useInsertReply } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
 import { useFetchComments } from "@/hooks/query.hook";
 
-const NewComment = () => {
+const AddReply = ({comment_id}) => {
   const router = useRouter();
-  const docId = router.query.id;
-  const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
+//   const docId = router.query.id;
+//   const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
 
   const initialValues = {
     comment: "",
@@ -41,9 +41,10 @@ const NewComment = () => {
     };
   }, []);
 
-  const { mutate: comment } = useInsertComment({
+  const { mutate: reply } = useInsertReply({
     onSuccess(data) {
-      refetch();
+    //   refetch();
+      reset()
       console.log(data);
     },
     onError(data) {
@@ -62,11 +63,10 @@ const NewComment = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-    data["doc_id"] = docId;
-    // const {...data, docId: docId} = data
+    // console.log(data);
+    data["root_cmntId"] = comment_id;
     // console.log(data)
-    comment(data);
+    reply(data);
   };
 
   return (
@@ -92,4 +92,4 @@ const NewComment = () => {
   );
 };
 
-export default NewComment;
+export default AddReply;

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   useDocUploadMutation,
@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useUserStore from "@/stores/useUserStore";
 
 const NewDocument = () => {
   const router = useRouter();
@@ -74,10 +75,16 @@ const NewDocument = () => {
     },
   });
 
+  const {currentUser} = useUserStore()
+  const role = currentUser.roles
   const { mutate: insertFile, isLoading: isInsertLoading } = useInsertDocumentMutation({
     onSuccess(data) {
       const userId = watch("userId");
+      if (role === 'Secretary') {
+        userId.push(currentUser.user_id)
+      }
       const docId = data.value;
+      console.log(useId)
       documentAccess({ docId, userId });
     },
     onError(error) {
