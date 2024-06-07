@@ -31,6 +31,15 @@ export const insertReply = async(data) => {
   }
 }
 
+export const updateReply = async(data) => {
+  try {
+    const res = await axios.put('/UpdateCommentReply', data)
+    return res.data
+  } catch(err) {
+    throw new Error
+  }
+}
+
 // export const fetchComments = async (params) => {
 //   const { docId } = params;
 //   console.log(params);
@@ -44,19 +53,22 @@ export const insertReply = async(data) => {
 //   }
 // };
 
+
 export const fetchComments = async (params) => {
   // console.log(params)
   const { docId, role } = params;
   if (docId && role === 'Secretary') {
     try {
       const res = await axios.get(`/GetCommentByDoc?docId=${docId}`);
+      console.log("Hitting secretary comments")
       return res.data
     } catch (error) {
       throw new Error(error);
     }
-  } else {
+  } else if(role === 'User') {
     try {
       const res = await axios.get(`/GetCommentByUser?docId=${docId}`);
+      console.log("Hitting User comments")
       return res.data
     } catch (error) {
       throw new Error(error);
@@ -67,6 +79,15 @@ export const fetchComments = async (params) => {
 export const deleteComment = async(params) => {
   try {
     const res = await axios.delete(`DeleteComment/${params}`)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}
+
+export const deleteReply = async(params) => {
+  try {
+    const res = await axios.delete(`DeleteCommentReply/${params}`)
     return res.data
   } catch(error) {
     throw new Error(error)

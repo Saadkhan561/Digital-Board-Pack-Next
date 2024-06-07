@@ -97,15 +97,17 @@ export const fetchDocByUser = async() => {
 export const fetchDocumentById = async (params) => {
   const { id } = params;
 
-  try {
-    const response = await axios.get(`/GetFile/${id}`);
-    if (response.status !== 200) {
-      throw new Error("Network response was not ok");
+  if (id) {
+    try {
+      const response = await axios.get(`/GetFile/${id}`);
+      if (response.status !== 200) {
+        throw new Error("Network response was not ok");
+      }
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
     }
-
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
   }
 };
 

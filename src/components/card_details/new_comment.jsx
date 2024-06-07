@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useInsertComment } from "@/hooks/mutation.hook";
+import { useInsertComment, useInsertReply } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
 import { useFetchComments } from "@/hooks/query.hook";
 
-const NewComment = () => {
+const NewComment = ({commentLength}) => {
   const router = useRouter();
   const docId = router.query.id;
   const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
@@ -62,7 +62,7 @@ const NewComment = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     data["doc_id"] = docId;
     // const {...data, docId: docId} = data
     // console.log(data)

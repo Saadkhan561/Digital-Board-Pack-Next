@@ -208,7 +208,7 @@ const NewDocument = () => {
                           height={20}
                           width={20}
                         />
-                        <p>{user.first_name + " " + user.last_name}</p>
+                        <p>{user.email}</p>
                       </div>
                       <input
                         className="cursor-pointer"

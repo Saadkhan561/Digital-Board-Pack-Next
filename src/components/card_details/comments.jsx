@@ -13,7 +13,13 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddReply from "./add_reply";
 
-const Comment = ({ data: commentData, refetchComment , comment_id}) => {
+const Comment = ({
+  data: commentData,
+  refetchComment,
+  comment_id,
+  username,
+  showReplies,
+}) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
@@ -22,6 +28,8 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
   const initialValues = {
     comment: "",
   };
+
+  // console.log(showReplies)
 
   const commentSchema = Yup.object({
     comment: Yup.string().required("Comment is required"),
@@ -106,7 +114,6 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
   });
 
   const onSubmit = (data) => {
-    // data["comment_id"] = commentData.comment_id;
     updateComment({
       comment: data.comment,
       comment_id: commentData.comment_id,
@@ -116,18 +123,29 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
   const reply = () => {
     return (
       <div>
-        <AddReply comment_id={commentData.comment_id} />
+        <AddReply
+          comment_id={commentData.comment_id}
+          refetchComment={refetchComment}
+        />
       </div>
     );
   };
+
+  const setReplyFunc = () => {
+    setViewReply(!isViewReply);
+    setReply(!isReply);
+  };
+
   const viewReply = () => {
     return (
       <div>
-        <Replies />
-        <Replies />
+        {commentData.replies.map((reply) => (
+          <Replies key={reply.reply_id} replyData={reply} refetchComment={refetchComment} />
+        ))}
       </div>
     );
   };
+
   return (
     <div>
       <ToastContainer />
@@ -145,7 +163,7 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
           <div className="p-2 w-4/5 ml-2">
             <div className="flex gap-5 items-center">
               <p className="text-md menu_bar_mob:text-sm font-semibold">
-                Senior Manager
+                {username}
               </p>
               <p className="text-gray-500 text-sm menu_bar_mob:text-xs">
                 {moment(commentData?.createdAt).format("DD MMM")}
@@ -158,7 +176,6 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
                   className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
                   {...register("comment")}
                   style={{ overflowY: "hidden" }}
-                  // value={commentData.comment}
                   placeholder="Your comment here..."
                 />
                 <button type="submit" className="w=1/10">
@@ -170,14 +187,19 @@ const Comment = ({ data: commentData, refetchComment , comment_id}) => {
             )}
             <div className="text-gray-400 text-md mt-2">
               <p className="flex gap-5 menu_bar_mob:text-xs">
-                {" "}
-                <a onClick={() => setViewReply(!isViewReply)} href="#">
-                  View Replies
-                </a>
-                |
-                <a onClick={() => setReply(!isReply)} href="#">
-                  Reply
-                </a>
+                <div className="flex gap-2">
+                  <a onClick={() => setViewReply(!isViewReply)} href="#">
+                    View Replies
+                  </a>
+                  {showReplies && (
+                    <div className="flex gap-2">
+                      <p>|</p>
+                      <a onClick={() => setReplyFunc()} href="#">
+                        Reply
+                      </a>
+                    </div>
+                  )}
+                </div>
               </p>
             </div>
             {isViewReply && viewReply()}

@@ -7,10 +7,11 @@ import { useInsertReply } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
 import { useFetchComments } from "@/hooks/query.hook";
 
-const AddReply = ({comment_id}) => {
+const AddReply = ({comment_id,refetchComment}) => {
   const router = useRouter();
 //   const docId = router.query.id;
 //   const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
+
 
   const initialValues = {
     comment: "",
@@ -43,8 +44,8 @@ const AddReply = ({comment_id}) => {
 
   const { mutate: reply } = useInsertReply({
     onSuccess(data) {
-    //   refetch();
       reset()
+      refetchComment()
       console.log(data);
     },
     onError(data) {
