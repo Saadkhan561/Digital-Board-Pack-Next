@@ -58,9 +58,9 @@ const CardDetails = () => {
   // }, [data]);
 
   const { currentUser } = useUserStore();
-  const role = currentUser.roles;
+  // const role = currentUser.roles;
   const { data: comments, refetch: refetchComment } = useFetchComments(
-    { docId: id, role: role },
+    { docId: id, role: currentUser.roles },
     { enabled: id && role ? true : false }
   );
   console.log(comments);
@@ -71,8 +71,8 @@ const CardDetails = () => {
     setCommentsLength(comments?.length);
     const document = data && data.doc_name.split(".")[0];
     setDoc(document);
-    let firstComment = comments?.reverse()[0];
-    setFirstComment(firstComment);
+    // let firstComment = comments?.reverse()[0];
+    // setFirstComment(firstComment);
   }, [data, comments]);
 
   const { mutate: deleteDoc } = useDeleteDocument({
@@ -176,44 +176,6 @@ const CardDetails = () => {
     data && uploadFile({ formData, docName: docName });
   };
 
-  const renderComments = () => {
-    if (firstComment?.roles === "Secretary") {
-      return (
-        <div>
-          <Comment
-            username={firstComment.username}
-            data={firstComment}
-            key={firstComment.comment_id}
-            comment={firstComment.comment_id}
-            refetchComment={refetchComment}
-            showReplies={false}
-            firstComment={false}
-          />
-          {comments.slice(1).map((comment, index) => (
-            <Comment
-              username={comment.username}
-              data={comment}
-              key={comment.comment_id}
-              comment={comment.comment_id}
-              refetchComment={refetchComment}
-              showReplies={true}
-            />
-          ))}
-        </div>
-      );
-    } else {
-      return comments?.map((comment, index) => (
-        <Comment
-          username={comment.username}
-          data={comment}
-          key={comment.comment_id}
-          comment={comment.comment_id}
-          refetchComment={refetchComment}
-          showReplies={true}
-        />
-      ));
-    }
-  };
   return (
     <Layout>
       <ToastContainer />
@@ -393,32 +355,8 @@ const CardDetails = () => {
           </div>
           {/* COMMENT DIV */}
           <div className="mt-5">
-            {/* {firstComment?.roles === "Secretary" ? (
-              <div>
-                <Comment
-                  username={firstComment.username}
-                  data={firstComment.comment}
-                  key={firstComment.comment_id}
-                  comment={firstComment.comment_id}
-                  refetchComment={refetchComment}
-                  showReplies={false}
-                  firstComment={false}
-                />
-                {comments?.splice(1).map((comment, index) => {
-                  return (
-                    <Comment
-                      username={comment.username}
-                      data={comment}
-                      key={index}
-                      comment={comment.comment_id}
-                      refetchComment={refetchComment}
-                      showReplies={true}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              comments?.map((comment, index) => {
+            {comments
+              ?.map((comment, index) => {
                 return (
                   <Comment
                     username={comment.username}
@@ -426,12 +364,12 @@ const CardDetails = () => {
                     key={index}
                     comment={comment.comment_id}
                     refetchComment={refetchComment}
-                    showReplies={true}
+                    roles={comment.roles}
+                    commentator_id={comment.commentator_id}
                   />
                 );
               })
-            )} */}
-            {renderComments()}
+              .reverse()}
             <NewComment commentLength={commentsLength} />
           </div>
         </div>

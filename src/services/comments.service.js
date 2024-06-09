@@ -77,6 +77,7 @@ export const fetchComments = async (params) => {
 };
 
 export const deleteComment = async(params) => {
+  console.log("delete api hit")
   try {
     const res = await axios.delete(`DeleteComment/${params}`)
     return res.data

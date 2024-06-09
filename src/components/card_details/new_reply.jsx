@@ -1,11 +1,12 @@
 import moment from "moment";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { useDeleteReply, useUpdateReply } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
+import useUserStore from "@/stores/useUserStore";
 
-const Replies = ({ replyData, refetchComment }) => {
+const Replies = ({ replyData, refetchComment, commentator_id }) => {
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -38,28 +39,28 @@ const Replies = ({ replyData, refetchComment }) => {
     };
   }, []);
 
-  const {mutate: updateReply} = useUpdateReply({
+  const { mutate: updateReply } = useUpdateReply({
     onSuccess(data) {
-      console.log(data)
-      reset()
-      setCommentDiv(false)
-      setUpdateCommentDiv(false)
-      refetchComment()
+      console.log(data);
+      reset();
+      setCommentDiv(false);
+      setUpdateCommentDiv(false);
+      refetchComment();
     },
     onError(data) {
-      console.log(data)
-    }
-  })
+      console.log(data);
+    },
+  });
 
-  const {mutate: deleteReply} = useDeleteReply({
+  const { mutate: deleteReply } = useDeleteReply({
     onSuccess(data) {
-      console.log(data)
-      refetchComment()
+      console.log(data);
+      refetchComment();
     },
     onError(data) {
-      console.log(data)
-    }
-  })
+      console.log(data);
+    },
+  });
 
   const {
     register,
@@ -77,6 +78,9 @@ const Replies = ({ replyData, refetchComment }) => {
       comment_id: replyData.reply_id,
     });
   };
+
+  const {currentUser} = useUserStore()
+
   return (
     <div className="flex justify-between gap-2 items-center">
       <div className="flex gap-5 p-2">
@@ -91,52 +95,54 @@ const Replies = ({ replyData, refetchComment }) => {
             </p>
           </div>
           {updateCommentDiv ? (
-              <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5">
-                <textarea
-                  id="autoResizableTextArea"
-                  className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
-                  {...register("comment")}
-                  style={{ overflowY: "hidden" }}
-                  placeholder="Your comment here..."
-                />
-                <button type="submit" className="w=1/10">
-                  <img src="/images/send.png" alt="" height={25} width={25} />
-                </button>
-              </form>
-            ) : (
-              <div className="menu_bar_div:text-xs">{replyData.comment}</div>
-            )}
+            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5">
+              <textarea
+                id="autoResizableTextArea"
+                className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+                {...register("comment")}
+                style={{ overflowY: "hidden" }}
+                placeholder="Your comment here..."
+              />
+              <button type="submit" className="w=1/10">
+                <img src="/images/send.png" alt="" height={25} width={25} />
+              </button>
+            </form>
+          ) : (
+            <div className="menu_bar_div:text-xs">{replyData.comment}</div>
+          )}
         </div>
       </div>
-      <div className="relative">
-        <img
-          onClick={() => setCommentDiv(!commentDiv)}
-          src="/images/dots.png"
-          alt=""
-          height={25}
-          width={25}
-          className="cursor-pointer p-1 hover:bg-slate-100 duration-200"
-        />
-        {commentDiv && (
-          <div className="absolute top-5 right-1 w-[150px] bg-white shadow-2xl p-1">
-            <div className="text-sm font-semibold">
-              <div
-                onClick={() => setUpdateCommentDiv(!updateCommentDiv)}
-                className="cursor-pointer hover:bg-slate-100 duration-200 p-1"
-              >
-                Edit comment
-              </div>
-              <div
-                onClick={() => deleteReply(replyData.reply_id)}
-                className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
-              >
-                <p className="text-red-500">Delete</p>
-                <img src="/images/trash.png" alt="" height={15} width={15} />
+      {commentator_id === currentUser.user_id && (
+        <div className="relative">
+          <img
+            onClick={() => setCommentDiv(!commentDiv)}
+            src="/images/dots.png"
+            alt=""
+            height={25}
+            width={25}
+            className="cursor-pointer p-1 hover:bg-slate-100 duration-200"
+          />
+          {commentDiv && (
+            <div className="absolute top-5 right-1 w-[150px] bg-white shadow-2xl p-1">
+              <div className="text-sm font-semibold">
+                <div
+                  onClick={() => setUpdateCommentDiv(!updateCommentDiv)}
+                  className="cursor-pointer hover:bg-slate-100 duration-200 p-1"
+                >
+                  Edit comment
+                </div>
+                <div
+                  onClick={() => deleteReply(replyData.reply_id)}
+                  className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
+                >
+                  <p className="text-red-500">Delete</p>
+                  <img src="/images/trash.png" alt="" height={15} width={15} />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
