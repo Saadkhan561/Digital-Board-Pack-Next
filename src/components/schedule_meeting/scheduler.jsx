@@ -14,6 +14,7 @@ import {
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
@@ -53,7 +54,7 @@ const Scheduler = () => {
   const { mutate: insertMeeting } = useInsertMeeting({
     onSuccess(data) {
       console.log(data);
-      toast.success("Meeting Scheduled!",{
+      toast.success("Meeting Scheduled!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -63,8 +64,8 @@ const Scheduler = () => {
         progress: undefined,
         theme: "dark",
         transition: Bounce,
-      })
-      reset()
+      });
+      reset();
     },
     onError(error) {
       console.log(error);
@@ -73,11 +74,9 @@ const Scheduler = () => {
 
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      const {meetingAgenda,file,docName,...rest} =formData
-      console.log({...rest})
-      insertMeeting(
-        { ...rest, meeting_agenda: data.value },
-      );
+      const { meetingAgenda, file, docName, ...rest } = formData;
+      console.log({ ...rest });
+      insertMeeting({ ...rest, meeting_agenda: data.value });
     },
     onError(error) {
       console.log(error);
@@ -85,7 +84,7 @@ const Scheduler = () => {
   });
 
   const { mutate: uploadFile } = useDocUploadMutation({
-    onSuccess(data) { 
+    onSuccess(data) {
       const docName = data;
       const title = watch("title");
       insertFile({ docName, title });
@@ -108,12 +107,20 @@ const Scheduler = () => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
+ 
+    const utcDateTime = moment(`${data.meeting_date} ${data.meeting_time}`, "YYYY-MM-DD HH:mm").utc().toDate()
+    console.log(utcDateTime)
+    // const currentDateTimeInUtc= Date.UTC(currentDateTime.getUTCFullYear(), currentDateTime.getUTCMonth(),
+    // currentDateTime.getUTCDate(), currentDateTime.getUTCHours(),
+    // currentDateTime.getUTCMinutes(), currentDateTime.getUTCSeconds());
+    // console.log(currentDateTime)
+    // console.log(currentDateTimeInUtc)
     setFormData({
       ...data,
-      meeting_time: data.meeting_time,
-      meeting_date: data.meeting_date,
+      meeting_datetime: utcDateTime,
+    
     });
-    uploadFile({formData, title: data.title});
+    uploadFile({ formData, title: data.title });
   };
 
   return (
