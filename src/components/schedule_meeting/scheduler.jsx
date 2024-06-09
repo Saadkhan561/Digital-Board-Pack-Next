@@ -108,16 +108,13 @@ const Scheduler = () => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
  
-    const utcDateTime = moment(`${data.meeting_date} ${data.meeting_time}`, "YYYY-MM-DD HH:mm").utc().toDate()
-    console.log(utcDateTime)
-    // const currentDateTimeInUtc= Date.UTC(currentDateTime.getUTCFullYear(), currentDateTime.getUTCMonth(),
-    // currentDateTime.getUTCDate(), currentDateTime.getUTCHours(),
-    // currentDateTime.getUTCMinutes(), currentDateTime.getUTCSeconds());
-    // console.log(currentDateTime)
-    // console.log(currentDateTimeInUtc)
+    const dateTime = moment(`${data.meeting_date} ${data.meeting_time}`, "YYYY-MM-DD HH:mm").utc().toDate()
+    // dateTime.setMinutes(dateTime.getMinutes() - dateTime.getTimezoneOffset())
+    
+   
     setFormData({
       ...data,
-      meeting_datetime: utcDateTime,
+      meeting_datetime: dateTime,
     
     });
     uploadFile({ formData, title: data.title });
