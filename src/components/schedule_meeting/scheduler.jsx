@@ -118,7 +118,6 @@ const Scheduler = () => {
     setFormData({
       ...data,
       meeting_datetime: utcDateTime,
-    
     });
     uploadFile({ formData, title: data.title });
   };
