@@ -2,7 +2,7 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
-  console.log(data)
+  console.log(data);
   if (data) {
     try {
       const res = await axios.post(`/uploads/${data.docName}`, data.formData);
@@ -24,24 +24,24 @@ export const insertDocument = async (data) => {
 };
 
 // TO INSERT UPDATED DOCUMENT
-export const insertUpdatedDocument = async(data) => {
+export const insertUpdatedDocument = async (data) => {
   try {
-    const res = await axios.post("/InsertEditDocument", data)
-    return res.data
-  } catch(error) {
-    throw new Error(error)
+    const res = await axios.post("/InsertEditDocument", data);
+    return res.data;
+  } catch (error) {
+    throw new Error(error);
   }
-}
+};
 
 // TO DELETE DOCUMENT
-export const deleteDocument = async(data) => {
+export const deleteDocument = async (data) => {
   try {
-    const res = await axios.delete(`/delete/${data.folder}/${data.docName}`)
-    return res.data
-  } catch(error) {
-    throw new Error(error)
-  } 
-}
+    const res = await axios.delete(`/delete/${data.folder}/${data.docName}`);
+    return res.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 // GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT
 export const userAccessList = async (data) => {
@@ -53,7 +53,6 @@ export const userAccessList = async (data) => {
     throw new Error(error);
   }
 };
-
 
 // try {
 //   const response = await axios.get("/GetDoc", {
@@ -83,14 +82,14 @@ export const userAccessList = async (data) => {
 //   }
 // };
 
-export const fetchDocByUser = async() => {
+export const fetchDocByUser = async () => {
   try {
-    const response = await axios.get("GetDocByUser")
-    return response.data
-  } catch(error) {
-    throw new Error(error)
+    const response = await axios.get("GetDocByUser");
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
   }
-}
+};
 
 // FETCH A PARTICULAR DOCUMENT
 export const fetchDocumentById = async (params) => {
@@ -101,7 +100,7 @@ export const fetchDocumentById = async (params) => {
       if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
-  
+
       return response.data;
     } catch (error) {
       throw new Error(error);
