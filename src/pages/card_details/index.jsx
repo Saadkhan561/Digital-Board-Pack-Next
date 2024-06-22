@@ -25,6 +25,8 @@ const CardDetails = () => {
   const [updateDoc, setUpdateDoc] = useState(false);
   const [docVersionDiv, setDocVersionDiv] = useState(false);
   const [doc, setDoc] = useState("");
+  const [commentsLength, setCommentsLength] = useState(0);
+  const [firstComment, setFirstComment] = useState();
 
   // const renderShareDiv = () => {
   //   if (isShare) {
@@ -41,32 +43,42 @@ const CardDetails = () => {
 
   const id = router.query.id;
 
-  const { data, refetch: docRefetch } = useFetchDocumentById({ id }, { enabled: Boolean(id) });
+  const { data, refetch: docRefetch } = useFetchDocumentById(
+    { id },
+    { enabled: Boolean(id) }
+  );
   // console.log(data);
-  docRefetch()
+  docRefetch();
 
-  useEffect(() => {
-    const document = data && data.doc_name.split(".")[0];
-    setDoc(document);
-  }, [data]);
+  // useEffect(() => {
+  //   const document = data && data.doc_name.split(".")[0];
+  //   setDoc(document);
+  //   let firstComment = comments?.reverse()[0]
+  //   setFirstComment(firstComment)
+  // }, [data]);
+
+  const { currentUser } = useUserStore();
+  // const role = currentUser.roles;
+  const { data: comments, refetch: refetchComment } = useFetchComments(
+    { docId: id, role: currentUser.roles },
+    { enabled: id && role ? true : false }
+  );
+  console.log(comments);
 
   useEffect(() => {
     let version = data && data.docVersions.length;
     setDocVersion(version + 1);
-  }, [data]);
+    setCommentsLength(comments?.length);
+    const document = data && data.doc_name.split(".")[0];
+    setDoc(document);
+    // let firstComment = comments?.reverse()[0];
+    // setFirstComment(firstComment);
+  }, [data, comments]);
 
-  const {currentUser} = useUserStore()
-  const role = currentUser.roles
-  const { data: comments, refetch: refetchComment } = useFetchComments(
-    { docId: id, role: role },
-    { enabled: id && role ? true : false }
-  );
-  console.log(comments)
-
-  const {mutate: deleteDoc} = useDeleteDocument({
+  const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
-      console.log(data)
-      toast.success(data +  " " + "successfully!", {
+      console.log(data);
+      toast.success(data + " " + "successfully!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -79,7 +91,7 @@ const CardDetails = () => {
       });
     },
     onError(data) {
-      console.log(data)
+      console.log(data);
       toast.error("Error occured", {
         position: "top-center",
         autoClose: 1000,
@@ -91,8 +103,8 @@ const CardDetails = () => {
         theme: "dark",
         transition: Bounce,
       });
-    }
-  })
+    },
+  });
 
   const { mutate: insertUpdatedDoc } = useInsertUpdatedDocument({
     onSuccess(data) {
@@ -109,7 +121,7 @@ const CardDetails = () => {
         transition: Bounce,
       });
       reset();
-      setUpdateDoc(false)
+      setUpdateDoc(false);
     },
     onError(data) {
       console.log(data);
@@ -182,10 +194,13 @@ const CardDetails = () => {
                 <p className="text-2xl mob_screen:text-lg menu_bar_mob:text-md font-bold text-blue-600">
                   {data?.title}
                 </p>
-                <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm text-gray-500 font-semibold">
-                  {data?.username} -
-                  {moment(data?.createdAt).format("DD MMM YYYY")}
-                </p>
+                <div className="flex gap-2 text-gray-500 font-semibold">
+                  <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm">
+                    {data?.username}
+                  </p>
+                  <p>|</p>
+                  <p>{moment(data?.created_at).format("DD MMM YYYY")}</p>
+                </div>
               </div>
             </div>
             <div className="relative flex items-center">
@@ -312,7 +327,14 @@ const CardDetails = () => {
                         >
                           Version - {data.doc_version}
                         </a>
-                        <img onClick={() => deleteDoc({folder: doc, docName: data.doc_name})} className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6" src="/images/trash.png" alt=""/>
+                        <img
+                          onClick={() =>
+                            deleteDoc({ folder: doc, docName: data.doc_name })
+                          }
+                          className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
+                          src="/images/trash.png"
+                          alt=""
+                        />
                       </div>
                     ))
                     .reverse()}
@@ -333,11 +355,22 @@ const CardDetails = () => {
           </div>
           {/* COMMENT DIV */}
           <div className="mt-5">
-            {comments?.reverse()?.map((comment, index) => {
-              return <Comment data={comment} key={index} comment={comment.comment_id} refetchComment={refetchComment}/>;
-            })}
-
-            <NewComment />
+            {comments
+              ?.map((comment, index) => {
+                return (
+                  <Comment
+                    username={comment.username}
+                    data={comment}
+                    key={index}
+                    comment={comment.comment_id}
+                    refetchComment={refetchComment}
+                    roles={comment.roles}
+                    commentator_id={comment.commentator_id}
+                  />
+                );
+              })
+              .reverse()}
+            <NewComment commentLength={commentsLength} />
           </div>
         </div>
       </div>
@@ -346,3 +379,15 @@ const CardDetails = () => {
 };
 
 export default withProtectedWrapper(CardDetails);
+
+// {comments?.map((comment, index) => {
+// return (
+// <Comment
+//   username={comment.username}
+//   data={comment}
+//   key={index}
+//   comment={comment.comment_id}
+//   refetchComment={refetchComment}
+// />
+// );
+// }).reverse()}

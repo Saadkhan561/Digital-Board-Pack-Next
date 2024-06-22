@@ -1,4 +1,4 @@
-import { deleteComment, insertComment, insertReply, updateComment } from "@/services/comments.service";
+import { deleteComment, deleteReply, insertComment, insertReply, updateComment, updateReply } from "@/services/comments.service";
 import {
   deleteDocument,
   insertDocument,
@@ -104,9 +104,23 @@ export const useUpdateComment = (options) => {
   })
 }
 
+export const useUpdateReply = (options) => {
+  return useMutation({
+    mutationFn: updateReply,
+    ...options
+  })
+}
+
 export const useDeleteComment = (options) => {
   return useMutation({
     mutationFn: (params) => deleteComment(params),
+    ...options
+  })
+}
+
+export const useDeleteReply = (options) => {
+  return useMutation({
+    mutationFn: (params) => deleteReply(params),
     ...options
   })
 }
