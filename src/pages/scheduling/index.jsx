@@ -16,10 +16,10 @@ const Calendar = () => {
   // SCHEDULING DATE
   const [value, onChange] = useState(new Date());
 
-  const {currentUser} = useUserStore()
+  const { currentUser } = useUserStore();
   // HOOK TO GET ALL MEETINGS
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
-  meetings && console.log(meetings)
+  meetings && console.log(meetings);
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -46,8 +46,8 @@ const Calendar = () => {
     meetings &&
     meetings.map((meeting) => ({
       title: meeting.meeting_title,
-      start: `${meeting.meeting_date}T${meeting.meeting_time}`,
-      end: `${meeting.meeting_date}T${meeting.meeting_time}`,
+      start: `${meeting.meeting_datetime}`,
+      end: `${meeting.meeting_datetime}`,
       extendedProps: {
         agenda: meeting.agenda,
         meeting_id: meeting.meeting_id,
@@ -56,36 +56,54 @@ const Calendar = () => {
     }));
 
   const renderEventContent = (eventInfo) => {
+    console.log(eventInfo.event.start);
     const { meeting_id } = eventInfo.event.extendedProps;
     const isExpanded = meeting_id === expandedEventId;
 
-    let hours = eventInfo.event.start.getHours();
-    let minutes = eventInfo.event.start.getMinutes();
-    let period = 'AM' 
+    // let hours = eventInfo.event.start.getHours();
+    // let minutes = eventInfo.event.start.getMinutes();
+    // let period = 'AM'
 
-    if (hours >= 12) {
-      period = "PM"
-      hours = hours === 12 ? 12 : hours - 12;
-    } else {
-      period = "AM"
-      if (hours === 0) {
-        hours = 12;
-      }
-    }
+    // if (hours >= 12) {
+    //   period = "PM"
+    //   hours = hours === 12 ? 12 : hours - 12;
+    // } else {
+    //   period = "AM"
+    //   if (hours === 0) {
+    //     hours = 12;
+    //   }
+    // }
 
-    const formattedTime = `${hours}:${
-      minutes < 10 ? "0" + minutes : minutes
-    } ${period}`;
+    // const formattedTime = `${hours}:${
+    //   minutes < 10 ? "0" + minutes : minutes
+    // } ${period}`;
+
+    // let date = new Date(eventInfo.event.meeting_datetime);
+
+    // Extract the time components
+    let hours = eventInfo.event.start.getHours(); // Use getHours() for local time, getUTCHours() for UTC
+    let minutes = eventInfo.event.start.getMinutes(); // Use getMinutes() for local time, getUTCMinutes() for UTC
+    let seconds = eventInfo.event.start.getSeconds(); // Use getSeconds() for local time, getUTCSeconds() for UTC
+
+    // Format the time as HH:MM:SS
+    let time = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+    console.log(time);
 
     return (
-      <Link href={`/scheduling?id=${meeting_id}&modal=true`} className="cursor-pointer event-content">
-        <div key={meeting._id}>
+      <Link
+        href={`/scheduling?id=${meeting_id}&modal=true`}
+        className="cursor-pointer event-content"
+      >
+        <div key={eventInfo.event.meeting_id}>
           <div className="font-semibold text-lg calendar_mob:text-sm mob_screen:text-xs">
             {eventInfo.event.title}
           </div>
           <div className="text-xs calendar_mob:hidden">
             {/* {members && <div>{`Members: ${members.join(", ")}`}</div>} */}
-            <div>{`Time: ${formattedTime}`}</div>
+            <div>{`Time: ${time}`}</div>
           </div>
           <div className="calendar_full:hidden">
             <div className="relative">

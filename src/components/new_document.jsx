@@ -139,7 +139,7 @@ const NewDocument = () => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    uploadFile({formData, docName: data.file[0].name});
+    uploadFile({formData, docName: data.file[0].name.split('.')[0]});
   };
 
   return (
@@ -208,7 +208,7 @@ const NewDocument = () => {
                           height={20}
                           width={20}
                         />
-                        <p>{user.first_name + " " + user.last_name}</p>
+                        <p>{user.email}</p>
                       </div>
                       <input
                         className="cursor-pointer"

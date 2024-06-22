@@ -7,7 +7,7 @@ import {
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
-import { insertMeeting } from "@/services/meeting.sevice,";
+import { insertMeeting, updateAgendaDocument } from "@/services/meeting.sevice,";
 import { login, register } from "@/services/user.service";
 import { useMutation } from "@tanstack/react-query";
 
@@ -111,3 +111,9 @@ export const useDeleteComment = (options) => {
   })
 }
 
+export const useUpdateAgendaDocument= (options) => {
+  return useMutation({
+    mutationFn: updateAgendaDocument,
+    ...options
+  })
+}

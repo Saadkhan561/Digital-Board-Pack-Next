@@ -74,9 +74,12 @@ const Scheduler = () => {
 
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      const { meetingAgenda, file, docName, ...rest } = formData;
-      console.log({ ...rest });
-      insertMeeting({ ...rest, meeting_agenda: data.value });
+      const { meetingAgenda,meeting_title, file, docName, ...rest } = formData;
+      const newData = {...rest}
+      newData['meeting_title'] = newData.title
+      newData['meeting_agenda'] = data.value
+      console.log(newData)
+      insertMeeting(newData);
     },
     onError(error) {
       console.log(error);
@@ -111,13 +114,13 @@ const Scheduler = () => {
     const dateTime = moment(`${data.meeting_date} ${data.meeting_time}`, "YYYY-MM-DD HH:mm").utc().toDate()
     // dateTime.setMinutes(dateTime.getMinutes() - dateTime.getTimezoneOffset())
     
-   
+   console.log(dateTime)
     setFormData({
       ...data,
       meeting_datetime: dateTime,
     
     });
-    uploadFile({ formData, title: data.title });
+    uploadFile(formData);
   };
 
   return (
@@ -208,7 +211,7 @@ const Scheduler = () => {
                             height={20}
                             width={20}
                           />
-                          <p>{user.first_name + " " + user.last_name}</p>
+                          <p>{user.email}</p>
                         </div>
                         <input
                           className="cursor-pointer"

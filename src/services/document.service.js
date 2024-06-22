@@ -2,10 +2,10 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
-  console.log(data.title)
+  console.log(data)
   if (data) {
     try {
-      const res = await axios.post(`/uploads/${data.title}`, data.formData);
+      const res = await axios.post(`/uploads/${data.docName}`, data.formData);
       return res.data;
     } catch (error) {
       throw new Error(error);
@@ -17,7 +17,6 @@ export const uploadDocument = async (data) => {
 export const insertDocument = async (data) => {
   try {
     const res = await axios.post("/InsertDocument", data);
-
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -96,16 +95,17 @@ export const fetchDocByUser = async() => {
 // FETCH A PARTICULAR DOCUMENT
 export const fetchDocumentById = async (params) => {
   const { id } = params;
-
-  try {
-    const response = await axios.get(`/GetFile/${id}`);
-    if (response.status !== 200) {
-      throw new Error("Network response was not ok");
+  if (id) {
+    try {
+      const response = await axios.get(`/GetFile/${id}`);
+      if (response.status !== 200) {
+        throw new Error("Network response was not ok");
+      }
+  
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
     }
-
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
   }
 };
 
