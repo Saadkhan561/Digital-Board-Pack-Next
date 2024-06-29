@@ -117,10 +117,6 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
                 <input
                   className="input_field"
                   type={showpassword ? "text" : "password"}
-                  // id="pwd"
-                  // name="pwd"
-                  // values={values.pwd}
-                  // onChange={handleChange}
                   {...register("pwd")}
                 />
                 <img
@@ -146,7 +142,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
               Go to admin panel
               <a
                 onClick={() => {
-                  router.push('admin_panel')
+                  router.push('?admin=true')
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >

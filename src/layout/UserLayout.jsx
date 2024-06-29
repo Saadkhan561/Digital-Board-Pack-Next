@@ -88,7 +88,7 @@ function Layout({ children }) {
                 </div>
                 <div>Dashboard</div>
               </Link>
-              <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img
                     src="/images/calendar.png"
@@ -98,13 +98,13 @@ function Layout({ children }) {
                   />
                 </div>
                 <div>Calendar</div>
-              </li>
-              <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              </li> */}
+              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img src="/images/tools.png" alt="" height={20} width={20} />
                 </div>
                 <div>Tools</div>
-              </li>
+              </li> */}
               <Link
                 href={"scheduling"}
                 className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
@@ -119,12 +119,12 @@ function Layout({ children }) {
                 </div>
                 <div>Scheduling</div>
               </Link>
-              <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
+              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
                   <img src="/images/email.png" alt="" height={20} width={20} />
                 </div>
                 <div>Share Document</div>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

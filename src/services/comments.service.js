@@ -40,22 +40,8 @@ export const updateReply = async(data) => {
   }
 }
 
-// export const fetchComments = async (params) => {
-//   const { docId } = params;
-//   console.log(params);
-//   console.log(docId);
-//   try {
-//     const res = await axios.get(`/GetCommentByUser?docId=${docId}`);
-//     console.log(res);
-//     return res.data;
-//   } catch (err) {
-//     throw new Error(err);
-//   }
-// };
-
-
 export const fetchComments = async (params) => {
-  // console.log(params)
+  console.log(params)
   const { docId, role } = params;
   if (docId && role === 'Secretary') {
     try {

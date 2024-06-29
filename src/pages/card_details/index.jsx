@@ -47,7 +47,7 @@ const CardDetails = () => {
     { id },
     { enabled: Boolean(id) }
   );
-  // console.log(data);
+  console.log(data);
   docRefetch();
 
   // useEffect(() => {
@@ -61,7 +61,7 @@ const CardDetails = () => {
   // const role = currentUser.roles;
   const { data: comments, refetch: refetchComment } = useFetchComments(
     { docId: id, role: currentUser.roles },
-    { enabled: id && role ? true : false }
+    { enabled: Boolean(id) }
   );
   console.log(comments);
 
@@ -71,8 +71,6 @@ const CardDetails = () => {
     setCommentsLength(comments?.length);
     const document = data && data.doc_name.split(".")[0];
     setDoc(document);
-    // let firstComment = comments?.reverse()[0];
-    // setFirstComment(firstComment);
   }, [data, comments]);
 
   const { mutate: deleteDoc } = useDeleteDocument({

@@ -6,6 +6,7 @@ import {
   useInsertDocumentMutation,
   useMeetingMinutesId,
   useUpdateAgendaDocument,
+  useUpdateMeetingMinDocument,
 } from "@/hooks/mutation.hook";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -15,9 +16,9 @@ import { useFetchDocumentById } from "@/hooks/query.hook";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Link from "next/link";
 
 const MeetingInfo = () => {
+  const [meetingUpdateOption, setMeetingUpdateOption] = useState('')
   const router = useRouter();
 
   const meeting = (name) => {
@@ -28,7 +29,7 @@ const MeetingInfo = () => {
   };
 
   const id = router.query.id;
-  const { data: meetingDoc, isLoading } = useFetchMeetingById(
+  const { data: meetingDoc, isLoading, refetch: refetchMeetingDoc } = useFetchMeetingById(
     { id },
     { enabled: Boolean(id) }
   );
@@ -48,7 +49,7 @@ const MeetingInfo = () => {
       { id: meetingAgendaId },
       { enabled: Boolean(meetingAgendaId) }
     );
-  console.log(meetingAgenda);
+  // console.log(meetingAgenda);
 
   const docId = meetingDoc && meetingDoc[0].agenda;
   const { data: agendaDocument } = useFetchDocumentById({ docId });
@@ -62,18 +63,74 @@ const MeetingInfo = () => {
     file: Yup.mixed().required("File is required"),
   });
 
-  const {mutate: updateAgendaDocument} = useUpdateAgendaDocument({
+  const {mutate: updateMeetingMin} = useUpdateMeetingMinDocument({
     onSuccess(data) {
       console.log(data)
+      toast.success("Document updated successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      reset();
+      refetchMeetingDoc()
     },
     onError(data) {
       console.log(data)
+      toast.error("Failed to update Document", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+  }
+  })
+
+  const {mutate: updateAgendaDocument} = useUpdateAgendaDocument({
+    onSuccess(data) {
+      console.log(data)
+      toast.success("Document updated successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      reset();
+      refetchMeetingDoc()
+    },
+    onError(data) {
+      console.log(data)
+      toast.error("Failed to update Document", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
   })
 
   const { mutate: meetingMinutes } = useMeetingMinutesId({
     onSuccess(data) {
-      console.log(data);
       toast.success("Document added successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -86,7 +143,6 @@ const MeetingInfo = () => {
         transition: Bounce,
       });
       reset();
-      // router.push('/scheduling')
     },
     onError(error) {
       console.log(error);
@@ -107,8 +163,11 @@ const MeetingInfo = () => {
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
       const docId = data.value;
-      if (meetingDoc[0]?.meeting_agenda !==null) {
-        updateAgendaDocument({newId: docId, id, docId: meetingAgenda?.doc_id})
+      if (meetingUpdateOption === 'agenda') {
+        updateAgendaDocument({newId: docId, meetingId: id})
+      }
+      else if(meetingUpdateOption === 'meetingMin') {
+        updateMeetingMin({newId: docId, meetingId: id})
       } else {
         meetingMinutes({ docId, id });
       }
@@ -131,9 +190,8 @@ const MeetingInfo = () => {
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
-      console.log(data)
       const docName = data;
-      const title = watch("title");
+      const title = meetingAgenda.title
       insertFile({ docName, title });
     },
     onError(error) {
@@ -166,6 +224,7 @@ const MeetingInfo = () => {
 
   const onAgendaSubmit = (data) => {
     console.log(data)
+    setMeetingUpdateOption('agenda')
     const formData = new FormData();
     formData.append("file", data.file[0]);
     uploadFile({ formData, docName: meetingDoc[0].meeting_title });
@@ -173,15 +232,14 @@ const MeetingInfo = () => {
 
   const onMeetingMinSubmit = (data) => {
     console.log(data)
+    setMeetingUpdateOption('meetingMin')
     const formData = new FormData();
-    formData.append("file", data.meetingMin[0]);
+    formData.append("file", data.meetingMinFile[0]);
     uploadFile({ formData, docName: meetingDoc[0].meeting_title });
   }
 
   const onUploadMeetingMinSubmit = (data) => {
     console.log(data)
-    // console.log(data.formType)
-    console.log(data.file[0])
     const formData = new FormData();
     formData.append("file", data.uploadMin[0]);
     uploadFile({ formData, docName: meetingDoc[0].meeting_title });

@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SignUp from "@/components/register/signup";
+import AdminPanelDiv from "@/components/admin_panel";
 
 const Register = () => {
   // const router = useRouter();
@@ -74,6 +74,7 @@ const Register = () => {
       });
     },
   });
+  
   const {
     register,
     formState: { errors },
@@ -87,9 +88,15 @@ const Register = () => {
     mutate({ ...data });
   };
 
+  const renderAdminPanelDiv = () => {
+    if (router.query.admin) {
+      return <AdminPanelDiv />;
+    }
+  };
+
   return (
-    <div className="border border-black h-screen flex justify-center items-center">
-      <div className="flex shadow-2xl rounded-lg border border-slate-300">
+    <div className="h-screen flex justify-center items-center relative">
+      <div className={router.query.admin ? "flex shadow-2xl rounded-lg border border-slate-300 opacity-50 duration-200": "flex shadow-2xl rounded-lg border border-slate-300"}>
         <div className="h-[600px] w-[400px] relative md:hidden">
           <img
             className="object-cover h-full"
@@ -163,7 +170,7 @@ const Register = () => {
               Go to admin panel
               <a
                 onClick={() => {
-                  router.push("admin_panel");
+                  router.push("?admin=true");
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >
@@ -184,6 +191,8 @@ const Register = () => {
           <SignUp prevLogin={isLogin} onUpdateLogin={updateLogin} />
         )} */}
       </div>
+      {/* ADMIN PANEL DIV */}
+      <div className="absolute top-0 h-full">{renderAdminPanelDiv()}</div>
     </div>
   );
 };

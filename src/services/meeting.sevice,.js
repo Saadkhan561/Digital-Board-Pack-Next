@@ -20,6 +20,16 @@ export const updateAgendaDocument = async(data) => {
     }
 }
 
+export const updateMeetingMinDocument = async(data) => {
+    console.log(data)
+    try {
+        const res = await axios.put('/UpdateMeetingMin', data)
+        return res.data
+    } catch(error) {
+        throw new Error(error)
+    }
+}
+
 export const getAllMeetings = async(params) => {
     try {
         // if (params.role === "User") {

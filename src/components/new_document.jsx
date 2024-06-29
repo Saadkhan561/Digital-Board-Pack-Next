@@ -107,6 +107,7 @@ const NewDocument = () => {
     onSuccess(data) {
       const docName = data;
       const title = watch("title");
+      console.log(title)
       insertFile({ docName, title });
     },
     onError(error) {

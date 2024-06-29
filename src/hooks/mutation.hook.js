@@ -7,7 +7,7 @@ import {
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
-import { insertMeeting, updateAgendaDocument } from "@/services/meeting.sevice,";
+import { insertMeeting, updateAgendaDocument, updateMeetingMinDocument } from "@/services/meeting.sevice,";
 import { login, register } from "@/services/user.service";
 import { useMutation } from "@tanstack/react-query";
 
@@ -124,6 +124,14 @@ export const useUpdateAgendaDocument= (options) => {
     ...options
   })
 }
+
+export const useUpdateMeetingMinDocument= (options) => {
+  return useMutation({
+    mutationFn: updateMeetingMinDocument,
+    ...options
+  })
+}
+
 export const useDeleteReply = (options) => {
   return useMutation({
     mutationFn: (params) => deleteReply(params),
