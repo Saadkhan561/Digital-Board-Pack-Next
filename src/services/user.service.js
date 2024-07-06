@@ -12,6 +12,7 @@ export const register = async (data) => {
 export const login = async (data) => {
   try {
     const res = await axios.post("/login", data);
+    console.log(res)
     return res.data;
   } catch (err) {
     throw new Error(err.response.data.message);

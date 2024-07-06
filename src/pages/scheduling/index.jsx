@@ -6,6 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -55,7 +56,6 @@ const Calendar = () => {
     const minutes = eventInfo.event.start.getMinutes();
     const seconds = eventInfo.event.start.getSeconds();
 
-
     const time = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
@@ -99,48 +99,54 @@ const Calendar = () => {
   return (
     <Layout>
       <div className="p-2">
-        <div onClick={() => schedule("schedule")}>
-          <button className="flex justify-center items-center w-[170px] p-1 rounded-sm bg-black text-white font-semibold text-md">
-            Schedule a meeting
-          </button>
-        </div>
-        <div>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-            initialView="dayGridMonth"
-            views={{
-              dayGridMonth: {
-                titleFormat: {
-                  // Custom title format for dayGridMonth view
-                  month: "long",
-                  year: "numeric",
+        <div className="flex justify-center">
+          <div className="h-[550px] w-11/12">
+            <div
+              className="mb-4 flex items-center gap-2 cursor-pointer border border-slate-300 rounded-lg hover:bg-slate-200 duration-200 w-max p-1 font-semibold shadow-2xl"
+              onClick={() => schedule("schedule")}
+            >
+              <Image src="/images/plus.png" alt="" height={15} width={15} />
+              <button>Schedule a meeting</button>
+            </div>
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+              initialView="dayGridMonth"
+              views={{
+                dayGridMonth: {
+                  titleFormat: {
+                    // Custom title format for dayGridMonth view
+                    month: "long",
+                    year: "numeric",
+                  },
                 },
-              },
-              timeGridWeek: {
-                titleFormat: {
-                  // Custom title format for timeGridWeek view
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
+                timeGridWeek: {
+                  titleFormat: {
+                    // Custom title format for timeGridWeek view
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
                 },
-              },
-              listWeek: {
-                titleFormat: {
-                  // Custom title format for listWeek view
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
+                listWeek: {
+                  titleFormat: {
+                    // Custom title format for listWeek view
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
                 },
-              },
-            }}
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "dayGridMonth,timeGridWeek,listWeek", // Add buttons for different views
-            }}
-            events={fullCalendarEvents}
-            eventContent={renderEventContent}
-          />
+              }}
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,listWeek", // Add buttons for different views
+              }}
+              events={fullCalendarEvents}
+              eventContent={renderEventContent}
+              height="100%"
+              style={{ width: "100%" }}
+            />
+          </div>
         </div>
       </div>
     </Layout>

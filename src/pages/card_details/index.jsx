@@ -28,11 +28,12 @@ const CardDetails = ({ id }) => {
 
   const { currentUser } = useUserStore();
 
-  const { data: comments } = useFetchComments({
+  const { data: comments, refetch: refetchComments } = useFetchComments({
     docId: id,
     role: currentUser.roles,
   });
-
+  console.log(comments)
+  
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
       toast.success(data + " " + "successfully!", {
@@ -121,6 +122,7 @@ const CardDetails = ({ id }) => {
     watch,
   } = useForm();
 
+  // const doc = document?.doc_name.split('.')[0]
   let docName = document?.doc_name;
   const onSubmit = (data) => {
     const formData = new FormData();
@@ -139,6 +141,8 @@ const CardDetails = ({ id }) => {
                   className="rounded-full mob_screen:h-[50px] mob_screen:w-[50px] h-[50px] w-[50px] menu_bar_mob:h-[30px] menu_bar_mob:w-[30px]"
                   src="/images/account.png"
                   alt=""
+                  height={50}
+                  width={50}
                 />
               </div>
               <div>
@@ -288,6 +292,8 @@ const CardDetails = ({ id }) => {
                           className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
                           src="/images/trash.png"
                           alt=""
+                          height={6}
+                          width={6}
                         />
                       </div>
                     ))
@@ -302,17 +308,18 @@ const CardDetails = ({ id }) => {
               ?.map((comment, index) => {
                 return (
                   <Comment
-                    username={comment.username}
+                    user_name={comment.user_name}
                     data={comment}
                     key={index}
                     comment={comment.comment_id}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
+                    refetchComments={refetchComments}
                   />
                 );
               })
               .reverse()}
-            <NewComment />
+            <NewComment refetchComments={refetchComments} />
           </div>
         </div>
       </div>

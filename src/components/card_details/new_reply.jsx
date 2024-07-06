@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Replies = ({ replyData, commentator_id }) => {
+const Replies = ({ replyData, commentator_id, refetchComments }) => {
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -45,6 +45,7 @@ const Replies = ({ replyData, commentator_id }) => {
       reset();
       setCommentDiv(false);
       setUpdateCommentDiv(false);
+      refetchComments()
     },
     onError(data) {},
   });
@@ -69,9 +70,12 @@ const Replies = ({ replyData, commentator_id }) => {
   const onSubmit = (data) => {
     updateReply({
       comment: data.comment,
-      comment_id: replyData.reply_id,
+      comment_id: replyData.comment_id,
     });
   };
+
+  // const time = `${replyData.created_at.getHours()}:${replyData.getMinutes()}`
+  // console.log(time)
 
   const { currentUser } = useUserStore();
 
@@ -83,9 +87,12 @@ const Replies = ({ replyData, commentator_id }) => {
         </div>
         <div className="p-2 w-4/5 ml-2">
           <div className="flex gap-5 items-center">
-            <p className="text-md font-semibold">{replyData.username}</p>
+            <p className="text-md font-semibold">{replyData.user_name}</p>
             <p className="text-gray-500 text-sm">
               {moment(replyData.created_at).format("DD MMM")}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {moment(replyData.created_at).format("HH:mm")}
             </p>
           </div>
           {updateCommentDiv ? (

@@ -15,12 +15,13 @@ import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Comment = ({ data: commentData, username, roles, commentator_id }) => {
+const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments }) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
+  
   const initialValues = {
     comment: "",
   };
@@ -67,6 +68,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
           theme: "dark",
           transition: Bounce,
         });
+        refetchComments()
       },
       onError(error) {
         toast.error(error, {
@@ -87,6 +89,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
   const { mutate: updateComment } = useUpdateComment({
     onSuccess(data) {
       setUpdateCommentDiv(false);
+      refetchComments()
     },
     onError(data) {},
   });
@@ -133,10 +136,13 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               <div>
                 <div className="flex gap-5 items-center">
                   <p className="text-md menu_bar_mob:text-sm font-semibold">
-                    {username}
+                    {user_name}
                   </p>
                   <p className="text-gray-500 text-sm menu_bar_mob:text-xs">
-                    {moment(commentData?.createdAt).format("DD MMM")}
+                    {moment(commentData?.created_at).format("DD MMM")}
+                  </p>
+                  <p className="text-gray-500 text-sm menu_bar_mob:text-xs">
+                    {moment(commentData?.created_at).format("HH:mm")}
                   </p>
                 </div>
                 {updateCommentDiv && commentDiv ? (
@@ -209,7 +215,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                   <a onClick={() => setViewReply(!isViewReply)} href="#">
                     View Replies
                   </a>
-                  {(roles === "User" || currentUser.roles === "Secretary") && (
+                  {(roles === "user" || currentUser.roles === "secretary") && (
                     <div className="flex gap-2">
                       <p>|</p>
                       <a onClick={() => setReplyFunc()} href="#">
@@ -224,8 +230,9 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               <div>
                 {commentData.replies.map((reply) => (
                   <Replies
-                    key={reply.reply_id}
+                    key={reply.comment_id}
                     replyData={reply}
+                    refetchComments={refetchComments}
                     commentator_id={reply.commentator_id}
                   />
                 ))}

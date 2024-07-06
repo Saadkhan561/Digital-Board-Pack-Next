@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const NewComment = () => {
+const NewComment = ({refetchComments}) => {
   const router = useRouter();
   const docId = router.query.id;
   // const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
@@ -43,6 +43,7 @@ const NewComment = () => {
   const { mutate: comment } = useInsertComment({
     onSuccess() {
       reset();
+      refetchComments()
     },
     onError(data) {},
   });

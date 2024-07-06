@@ -41,11 +41,11 @@ export const fetchComments = async (params) => {
   try {
     const { docId, role } = params;
 
-    if (docId && role === "Secretary") {
+    if (docId && role === "secretary") {
       const res = await axios.get(`/GetCommentByDoc?docId=${docId}`);
 
       return res.data;
-    } else if (role === "User") {
+    } else if (role === "user") {
       const res = await axios.get(`/GetCommentByUser?docId=${docId}`);
       return res.data;
     }

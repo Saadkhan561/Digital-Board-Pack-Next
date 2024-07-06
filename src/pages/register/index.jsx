@@ -20,12 +20,12 @@ const Register = () => {
 
   const initialValues = {
     email: "",
-    pwd: "",
+    password: "",
   };
 
   const loginSchema = Yup.object({
     email: Yup.string().required("Email is required"),
-    pwd: Yup.string().required("Password is required"),
+    password: Yup.string().required("Password is required"),
   });
 
   const router = useRouter();
@@ -33,26 +33,40 @@ const Register = () => {
   const { mutate } = useLoginMutation({
     async onSuccess(data) {
       if (data) {
-        const { token, userData } = data;
-        const { pwd, ...rest } = userData;
-        setCurrentUser({ ...rest, token: token });
         reset();
-        toast.success("Logged In", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
-
-        router.push("/");
+        if (data.userData.roles === "user" || data.userData.roles === "secretary") {
+          const { token, userData } = data;
+          const { password, ...rest } = userData;
+          setCurrentUser({ ...rest, token: token });
+          toast.success("Logged In", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+          router.push("/");
+        } else {
+          toast.error("Access denied", {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        }
       }
     },
     onError(err) {
+      console.log(err)
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -98,8 +112,10 @@ const Register = () => {
         <div className="h-[600px] w-[400px] relative md:hidden">
           <Image
             className="object-cover h-full"
-            src="/images/login_Image.jpg"
+            src="/images/login_img.jpg"
             alt=""
+            layout="fill"
+            objectFit="cover"
           />
           <p className="absolute top-1/3 left-5 text-3xl font-semibold">
             Digital Board Pack
@@ -126,9 +142,11 @@ const Register = () => {
                   {...register("email")}
                 />
                 <Image
-                  className="h-4 w-4"
+                className="h-4 w-4"
                   src="/images/account_sm.png"
                   alt=""
+                  height="4"
+                  width="4"
                 />
               </div>
               {errors.email && (
@@ -136,28 +154,26 @@ const Register = () => {
               )}
             </div>
             <div>
-              <label className="label" htmlFor="pwd">
+              <label className="label" htmlFor="password">
                 Password
               </label>
               <div className="flex gap-1 border-b border-b-gray-300">
                 <input
                   className="input_field"
                   type={showpassword ? "text" : "password"}
-                  // id="pwd"
-                  // name="pwd"
-                  // values={values.pwd}
-                  // onChange={handleChange}
-                  {...register("pwd")}
+                  {...register("password")}
                 />
                 <Image
                   onClick={() => setShowpassword(!showpassword)}
                   className="cursor-pointer h-4 w-4"
                   src="/images/pass_eye.png"
                   alt=""
+                  height={4}
+                  width={4}
                 />
               </div>
-              {errors.pwd && (
-                <p className="text-red-500 text-xs">{errors.pwd.message}</p>
+              {errors.password && (
+                <p className="text-red-500 text-xs">{errors.password.message}</p>
               )}
             </div>
             <button
