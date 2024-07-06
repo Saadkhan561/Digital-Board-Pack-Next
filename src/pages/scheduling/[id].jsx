@@ -16,6 +16,7 @@ import { useFetchDocumentById } from "@/hooks/query.hook";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const MeetingInfo = () => {
   const [meetingUpdateOption, setMeetingUpdateOption] = useState('')
@@ -261,7 +262,7 @@ const MeetingInfo = () => {
             className="border border-slate-200 rounded-md w-[600px] h-4/5 z-10 shadow-2xl bg-white"
           >
             <div className="flex justify-end p-2 bg-gray-900">
-              <img
+              <Image
                 className="cursor-pointer"
                 onClick={() => meeting("modal")}
                 src="/images/cross-white.png"
