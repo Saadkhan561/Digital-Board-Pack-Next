@@ -1,24 +1,26 @@
-import { React, useId, useState } from "react";
+import {
+  useFetchAllUsers,
+  useFetchDocByUser
+} from "@/hooks/query.hook";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import {
   useDocUploadMutation,
   useInsertDocumentMutation,
   userAccessListMutation,
 } from "../hooks/mutation.hook";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useFetchAllDocumentQuery, useFetchAllUsers, useFetchDocByUser } from "@/hooks/query.hook";
-import UserAccessList from "./user_access_list";
-import { useRouter } from "next/router";
 
 // FOR TOAST
+import useUserStore from "@/stores/useUserStore";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useUserStore from "@/stores/useUserStore";
 
 const NewDocument = () => {
   const router = useRouter();
-  const [documentName, setDocName] = useState('')
+  const [documentName, setDocName] = useState("");
 
   const newDocument = (name) => {
     if (router.query[name]) {
@@ -30,8 +32,8 @@ const NewDocument = () => {
   };
 
   const { data, isLoading } = useFetchAllUsers();
-  const {data:doc, refetch } = useFetchDocByUser();
-  
+  const { data: doc, refetch } = useFetchDocByUser();
+
   const initialValues = {
     title: "",
     docName: null,
@@ -42,89 +44,91 @@ const NewDocument = () => {
     title: Yup.string().required("Title is required"),
   });
 
-  const { mutate: documentAccess, isLoading: isAccessLoading } = userAccessListMutation({
-    onSuccess(data) {
-      console.log(data)
-      refetch();
+  const { mutate: documentAccess, isLoading: isAccessLoading } =
+    userAccessListMutation({
+      onSuccess(data) {
+        refetch();
 
-      toast.success("Document added successfully!",{
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      })
-      reset();
-    },
-    onError(error) {
-      toast.error("Failed to Upload Document", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-    },
-  });
+        toast.success("Document added successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        reset();
+      },
+      onError(error) {
+        toast.error("Failed to Upload Document", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      },
+    });
 
-  const {currentUser} = useUserStore()
-  const role = currentUser.roles
-  const { mutate: insertFile, isLoading: isInsertLoading } = useInsertDocumentMutation({
-    onSuccess(data) {
-      const userId = watch("userId");
-      if (role === 'Secretary') {
-        userId.push(currentUser.user_id)
-      }
-      const docId = data.value;
-      console.log(useId)
-      documentAccess({ docId, userId });
-    },
-    onError(error) {
-      console.log(error)
-      toast.error("Failed to Upload Document", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-    },
-  });
+  const { currentUser } = useUserStore();
+  const role = currentUser.roles;
+  const { mutate: insertFile, isLoading: isInsertLoading } =
+    useInsertDocumentMutation({
+      onSuccess(data) {
+        const userId = watch("userId");
+        if (role === "Secretary") {
+          userId.push(currentUser.user_id);
+        }
+        const docId = data.value;
+        console.log(useId);
+        documentAccess({ docId, userId });
+      },
+      onError(error) {
+        console.log(error);
+        toast.error("Failed to Upload Document", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      },
+    });
 
-  const { mutate: uploadFile, isLoading: isUploadLoading } = useDocUploadMutation({
-    onSuccess(data) {
-      const docName = data;
-      const title = watch("title");
-      console.log(title)
-      insertFile({ docName, title });
-    },
-    onError(error) {
-      console.log(error)
-      toast.error("Failed to Upload Document", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-    },
-  });
+  const { mutate: uploadFile, isLoading: isUploadLoading } =
+    useDocUploadMutation({
+      onSuccess(data) {
+        const docName = data;
+        const title = watch("title");
+        console.log(title);
+        insertFile({ docName, title });
+      },
+      onError(error) {
+        console.log(error);
+        toast.error("Failed to Upload Document", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      },
+    });
 
   const {
     register,
@@ -140,7 +144,7 @@ const NewDocument = () => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    uploadFile({formData, docName: data.file[0].name.split('.')[0]});
+    uploadFile({ formData, docName: data.file[0].name.split(".")[0] });
   };
 
   return (
@@ -177,7 +181,11 @@ const NewDocument = () => {
             <label className="label" htmlFor="file">
               Upload your document:
             </label>
-            <input type="file" {...register("file", "docName")} />
+            <input
+              className="ms-2"
+              type="file"
+              {...register("file", "docName")}
+            />
             {errors.file && (
               <p className="text-red-500 text-xs">{errors.file.message}</p>
             )}
@@ -225,7 +233,18 @@ const NewDocument = () => {
           </div>
           <div className="flex justify-end p-4 mr-4 mt-4">
             <div>
-              {(isUploadLoading || isInsertLoading || isAccessLoading)?(<div><img src="/images/loading.gif" alt="" height={15} width={15}/></div>):''}
+              {isUploadLoading || isInsertLoading || isAccessLoading ? (
+                <div>
+                  <img
+                    src="/images/loading.gif"
+                    alt=""
+                    height={15}
+                    width={15}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
             </div>
             <button
               className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"

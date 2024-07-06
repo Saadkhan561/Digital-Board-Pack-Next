@@ -1,20 +1,15 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { useMeetingScheduleMutation } from "@/hooks/mutation.hook";
 import { useFetchAllUsers } from "@/hooks/query.hook";
-import {
-  useDocUploadMutation,
-  useInsertDocumentMutation,
-  useInsertMeeting,
-} from "@/hooks/mutation.hook";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
 // FOR TOAST
+import moment from "moment";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import moment from "moment";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
@@ -31,29 +26,20 @@ const Scheduler = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  const initialValues = {
-    meeting_title: "",
-    meetingAgenda: "",
-    attenders: [],
-    meeting_date: "",
-    meeting_time: "",
-    docName: null,
-  };
-
-  const [formData, setFormData] = useState(initialValues);
-
-  const scheduleSchema = Yup.object({
-    title: Yup.string().required("Agenda is required"),
-    meeting_date: Yup.string().required("Meeting date is required"),
-    meeting_time: Yup.string().required("Meeting time is required"),
-    // docName: Yup.string().required("Document is required"),
-    // attenders: Yup.required("attenders are required")
+  const scheduleSchema = Yup.object().shape({
+    meeting_date: Yup.string().required("Meeting date is required."),
+    meeting_time: Yup.string().required("Meeting time is required."),
+    meeting_title: Yup.string().required("Meeting title is required."),
+    attenders: Yup.array()
+      .of(Yup.string().typeError("Attenders must be an array of strings."))
+      .min(1, "At least one attender should be selected.")
+      .required("Please select attenders."),
+    file: Yup.mixed().required("File is required."),
   });
 
   // MUTATIONS
-  const { mutate: insertMeeting } = useInsertMeeting({
+  const { mutate: scheduleMeeting, isPending } = useMeetingScheduleMutation({
     onSuccess(data) {
-      console.log(data);
       toast.success("Meeting Scheduled!", {
         position: "top-center",
         autoClose: 2000,
@@ -65,35 +51,20 @@ const Scheduler = () => {
         theme: "dark",
         transition: Bounce,
       });
-      reset();
+      // reset();
     },
     onError(error) {
-      console.log(error);
-    },
-  });
-
-  const { mutate: insertFile } = useInsertDocumentMutation({
-    onSuccess(data) {
-      const { meetingAgenda, meeting_title, file, docName, ...rest } = formData;
-      const newData = { ...rest };
-      newData["meeting_title"] = newData.title;
-      newData["meeting_agenda"] = data.value;
-      console.log(newData);
-      insertMeeting(newData);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
-
-  const { mutate: uploadFile } = useDocUploadMutation({
-    onSuccess(data) {
-      const docName = data;
-      const title = watch("title");
-      insertFile({ docName, title });
-    },
-    onError(error) {
-      console.log(error);
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     },
   });
 
@@ -102,12 +73,11 @@ const Scheduler = () => {
     formState: { errors },
     handleSubmit,
     reset,
-    watch,
   } = useForm({
-    values: initialValues,
     resolver: yupResolver(scheduleSchema),
   });
   const onSubmit = (data) => {
+    const { meeting_date, meeting_time, ...rest } = data;
     const formData = new FormData();
     formData.append("file", data.file[0]);
 
@@ -117,14 +87,8 @@ const Scheduler = () => {
     )
       .utc()
       .toDate();
-    // dateTime.setMinutes(dateTime.getMinutes() - dateTime.getTimezoneOffset())
 
-    console.log(dateTime);
-    setFormData({
-      ...data,
-      meeting_datetime: dateTime,
-    });
-    uploadFile(formData);
+    scheduleMeeting({ meeting_datetime: dateTime, formData, ...rest });
   };
 
   return (
@@ -159,7 +123,7 @@ const Scheduler = () => {
                 <input
                   className="input_field"
                   type="text"
-                  {...register("title")}
+                  {...register("meeting_title")}
                 />
                 {errors.title && (
                   <p className="text-red-500 text-xs">{errors.title.message}</p>
@@ -240,6 +204,7 @@ const Scheduler = () => {
               <button
                 className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
                 type="submit"
+                disabled={isPending}
               >
                 Submit
               </button>

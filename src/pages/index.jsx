@@ -1,14 +1,9 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import Card from "@/components/card";
-import NewDocument from "@/components/new_document";
-import Layout from "@/layout/UserLayout";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
-import {
-  useFetchDocByUser,
-} from "@/hooks/query.hook";
+import Card from "@/components/card";
+import { useFetchDocByUser } from "@/hooks/query.hook";
+import Layout from "@/layout/UserLayout";
 import { useRouter } from "next/router";
-import { useDebounce } from "@uidotdev/usehooks";
+import { useState } from "react";
 
 const Home = () => {
   const [dropdown, setDropdown] = useState(false);
@@ -24,31 +19,14 @@ const Home = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  // const newDocument = (name) => {
-  //   if (router.query[name]) {
-  //     delete router.query[name];
-  //   } else {
-  //     router.query[name] = true;
-  //   }
-  //   router.push(router, undefined, { shallow: true });
-  // };
-
-  // const searchParam = router?.query?.search;
-  // console.log(searchParam);
-  // const debouncedValue = useDebounce(router.query.search || "", 500);
-  // const { data, isLoading } = useFetchAllDocumentQuery(
-  //   { searchParam: debouncedValue || null }
-  // );
-
-  const {data, isLoading} = useFetchDocByUser()
-  console.log(data)
+  const { data, isLoading } = useFetchDocByUser();
 
   return (
     <Layout>
       <>
         <div
           className={
-            eval(router.query.open)
+            Boolean(router.query.open)
               ? "opacity-50 duration-200"
               : "opacity-100 duration-200"
           }

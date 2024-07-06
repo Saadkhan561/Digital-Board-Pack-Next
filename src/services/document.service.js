@@ -2,7 +2,7 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
-  console.log(data);
+ 
   if (data) {
     try {
       const res = await axios.post(`/uploads/${data.docName}`, data.formData);

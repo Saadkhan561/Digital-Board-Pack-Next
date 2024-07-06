@@ -54,7 +54,9 @@ function Layout({ children }) {
       {/* SIDE BAR */}
       <div
         className={
-          eval(router.query.open || router.query.schedule || router.query.modal)
+          Boolean(router.query.open) ||
+          Boolean(router.query.schedule) ||
+          Boolean(router.query.modal)
             ? "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900  h-screen w-[300px] mob_screen:hidden opacity-50"
             : "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
         }
@@ -133,7 +135,9 @@ function Layout({ children }) {
       <div
         className={
           menu ||
-          eval(router.query.open || router.query.schedule || router.query.modal)
+          Boolean(router.query.open) ||
+          Boolean(router.query.schedule) ||
+          Boolean(router.query.modal)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }
@@ -148,7 +152,7 @@ function Layout({ children }) {
               <div onClick={() => setNotify(!notify)}>
                 <img src="/images/notify.png" alt="" height={25} width={25} />
               </div>
-              {/* NOTIFICATION DIV */}
+
               <div
                 className={
                   notify ? "notification-div" : "notification-div hidden"
@@ -180,7 +184,7 @@ function Layout({ children }) {
             <div className="cursor-pointer" onClick={() => setNotify(!notify)}>
               <img src="/images/notify.png" alt="" height={25} width={25} />
             </div>
-            {/* NOTIFICATION DIV */}
+
             <div
               className={
                 notify ? "notification-div" : "notification-div hidden"

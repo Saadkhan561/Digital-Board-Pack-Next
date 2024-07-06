@@ -21,7 +21,7 @@ export const login = async (data) => {
   }
 };
 
-export const fetchAllUsers = async () => {
+export orgconst fetchAllUsers = async () => {
   try {
     const res = await axios.get("/Users")
     return res.data

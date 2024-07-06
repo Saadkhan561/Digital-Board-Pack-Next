@@ -1,4 +1,12 @@
-import { deleteComment, deleteReply, insertComment, insertReply, updateComment, updateReply } from "@/services/comments.service";
+import {
+  deleteComment,
+  deleteReply,
+  fetchComments,
+  insertComment,
+  insertReply,
+  updateComment,
+  updateReply,
+} from "@/services/comments.service";
 import {
   deleteDocument,
   insertDocument,
@@ -7,135 +15,155 @@ import {
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
-import { insertMeeting, updateAgendaDocument, updateMeetingMinDocument } from "@/services/meeting.sevice,";
+import {
+  insertMeeting,
+  scheduleMeeting,
+  updateAgendaDocument,
+  updateMeetingMinDocument,
+} from "@/services/meeting.sevice,";
 import { login, register } from "@/services/user.service";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // TO REGISTER USER
 export const useRegisterUser = (options) => {
   return useMutation({
-    mutationFn: register,
     ...options,
+    mutationFn: register,
   });
 };
 
 // TO LOGIN USER
 export const useLoginMutation = (options) => {
   return useMutation({
-    mutationFn: login,
     ...options,
+    mutationFn: login,
   });
 };
 
 // TO UPLOAD THE DOCUMENt ON CLOUD
 export const useDocUploadMutation = (options) => {
   return useMutation({
-    mutationFn: uploadDocument,
     ...options,
+    mutationFn: uploadDocument,
+  });
+};
+
+export const useMeetingScheduleMutation = (options) => {
+  return useMutation({
+    ...options,
+    mutationFn: scheduleMeeting,
   });
 };
 
 // TO INSERT UPDATED DOCUMENT
 export const useInsertUpdatedDocument = (options) => {
   return useMutation({
+    ...options,
     mutationFn: insertUpdatedDocument,
-    ...options
-  })
-}
+  });
+};
 
 // TO INSERT THE DOCUMENT INTO THE DATABASE
 export const useInsertDocumentMutation = (option) => {
   return useMutation({
-    mutationFn: insertDocument,
     ...option,
+    mutationFn: insertDocument,
   });
 };
 
 // TO DELETE A DOCUMENT
-export const useDeleteDocument=(option) => {
+export const useDeleteDocument = (option) => {
   return useMutation({
+    ...option,
     mutationFn: deleteDocument,
-    ...option
-  })
-}
+  });
+};
 
 // TO GIVE ACCESS OF DOCUMENT TO USERS
 export const userAccessListMutation = (option) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation({
-    mutationFn: userAccessList,
     ...option,
+    mutationFn: userAccessList,
   });
 };
 
 // TO SAVE THE MEETING
 export const useInsertMeeting = (option) => {
   return useMutation({
-    mutationFn: insertMeeting,
     ...option,
+    mutationFn: insertMeeting,
   });
 };
 
 export const useMeetingMinutesId = (options) => {
   return useMutation({
-    mutationFn: (params) => meetingMinutesId(params),
     ...options,
+    mutationFn: async (params) => await meetingMinutesId(params),
   });
 };
 
 export const useInsertComment = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
+    ...options,
     mutationFn: insertComment,
-    ...options
-  })
-}
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: [fetchComments.name] });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
 
 export const useInsertReply = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
+    ...options,
     mutationFn: insertReply,
-    ...options
-  })
-}
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: [fetchComments.name] });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
 
 export const useUpdateComment = (options) => {
   return useMutation({
     mutationFn: updateComment,
-    ...options
-  })
-}
+    ...options,
+  });
+};
 
 export const useUpdateReply = (options) => {
   return useMutation({
     mutationFn: updateReply,
-    ...options
-  })
-}
+    ...options,
+  });
+};
 
 export const useDeleteComment = (options) => {
   return useMutation({
     mutationFn: (params) => deleteComment(params),
-    ...options
-  })
-}
+    ...options,
+  });
+};
 
-export const useUpdateAgendaDocument= (options) => {
+export const useUpdateAgendaDocument = (options) => {
   return useMutation({
     mutationFn: updateAgendaDocument,
-    ...options
-  })
-}
+    ...options,
+  });
+};
 
-export const useUpdateMeetingMinDocument= (options) => {
+export const useUpdateMeetingMinDocument = (options) => {
   return useMutation({
     mutationFn: updateMeetingMinDocument,
-    ...options
-  })
-}
+    ...options,
+  });
+};
 
 export const useDeleteReply = (options) => {
   return useMutation({
     mutationFn: (params) => deleteReply(params),
-    ...options
-  })
-}
-
+    ...options,
+  });
+};
