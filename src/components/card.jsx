@@ -9,7 +9,7 @@ const Card = ({ docId, docName, title, versions }) => {
       className="w-[170px] mob_screen:w-[130px] card_div_sm:w-screen border border-slate-400 rounded-2xl cursor-pointer hover:scale-105 duration-100"
     >
       <div>
-        <img className="object-contain" src="/images/word.png" alt="" />
+        <img className="object-contain" src="/images/pdf.png" alt=""/>
       </div>
       <div className="p-2">
         <div className="font-semibold text-md">{title}</div>

@@ -74,11 +74,11 @@ const Scheduler = () => {
 
   const { mutate: insertFile } = useInsertDocumentMutation({
     onSuccess(data) {
-      const { meetingAgenda,meeting_title, file, docName, ...rest } = formData;
-      const newData = {...rest}
-      newData['meeting_title'] = newData.title
-      newData['meeting_agenda'] = data.value
-      console.log(newData)
+      const { meetingAgenda, meeting_title, file, docName, ...rest } = formData;
+      const newData = { ...rest };
+      newData["meeting_title"] = newData.title;
+      newData["meeting_agenda"] = data.value;
+      console.log(newData);
       insertMeeting(newData);
     },
     onError(error) {
@@ -110,15 +110,19 @@ const Scheduler = () => {
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
- 
-    const dateTime = moment(`${data.meeting_date} ${data.meeting_time}`, "YYYY-MM-DD HH:mm").utc().toDate()
+
+    const dateTime = moment(
+      `${data.meeting_date} ${data.meeting_time}`,
+      "YYYY-MM-DD HH:mm"
+    )
+      .utc()
+      .toDate();
     // dateTime.setMinutes(dateTime.getMinutes() - dateTime.getTimezoneOffset())
-    
-   console.log(dateTime)
+
+    console.log(dateTime);
     setFormData({
       ...data,
       meeting_datetime: dateTime,
-    
     });
     uploadFile(formData);
   };
@@ -126,26 +130,28 @@ const Scheduler = () => {
   return (
     <div className="flex justify-center items-center w-screen h-screen">
       <ToastContainer />
-      <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px] p-6 z-10">
-        <div className="flex justify-between items-center">
-          <div className="text-3xl font-semibold">Schedule your meeting</div>
+      <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[500px] new_document:w-[350px] z-10 mob_screen:h-[600px]">
+        <div className="flex justify-between items-center text-white bg-slate-900 p-4">
+          <div className="text-2xl font-semibold mob_screen:text-lg">
+            Schedule your meeting
+          </div>
           <div>
             <img
               onClick={() => schedule("schedule")}
               className="cursor-pointer"
-              src="/images/cross.png"
+              src="/images/cross-white.png"
               alt=""
               height={20}
               width={20}
             />
           </div>
         </div>
-        <div className="p-1 mt-5">
+        <div className="p-6 mt-3 mob_screen:mt-0">
           <form
-            className="flex flex-col gap-5"
+            className="flex flex-col gap-5 mob_screen:gap-2"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex gap-10">
+            <div className="flex gap-10 mob_screen:flex-col mob_screen:text-sm mob_screen:gap-2">
               <div className="">
                 <label className="label" htmlFor="agenda">
                   Meeting Agenda
@@ -159,21 +165,26 @@ const Scheduler = () => {
                   <p className="text-red-500 text-xs">{errors.title.message}</p>
                 )}
               </div>
-              <div className="mt-5">
-                <input type="date" {...register("meeting_date")} />
-                {errors.meeting_date?.message && (
-                  <p className="text-red-500 text-xs">
-                    {errors.meeting_date.message}
-                  </p>
-                )}
-              </div>
-              <div className="mt-5">
-                <input type="time" {...register("meeting_time")} />
-                {errors.meeting_time?.message && (
-                  <p className="text-red-500 text-xs">
-                    {errors.meeting_time.message}
-                  </p>
-                )}
+              <div>
+                <p className="text-gray-400 text-sm">Schedule your time and date</p>
+                <div className="flex justify-between">
+                  <div className="mt-2">
+                    <input type="date" {...register("meeting_date")} />
+                    {errors.meeting_date?.message && (
+                      <p className="text-red-500 text-xs">
+                        {errors.meeting_date.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="mt-2">
+                    <input type="time" {...register("meeting_time")} />
+                    {errors.meeting_time?.message && (
+                      <p className="text-red-500 text-xs">
+                        {errors.meeting_time.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
             <div>
@@ -225,7 +236,7 @@ const Scheduler = () => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-end p-4 mr-4 mt-4">
+            <div className="flex justify-end p-4 mr-4 mt-4 mob_screen:mt-0 mob_screen:p-0">
               <button
                 className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
                 type="submit"

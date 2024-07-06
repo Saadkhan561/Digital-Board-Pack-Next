@@ -55,8 +55,8 @@ function Layout({ children }) {
       <div
         className={
           eval(router.query.open || router.query.schedule || router.query.modal)
-            ? "p-4 h-screen w-[300px] mob_screen:hidden opacity-50"
-            : "p-4 h-screen w-[300px] mob_screen:hidden"
+            ? "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900  h-screen w-[300px] mob_screen:hidden opacity-50"
+            : "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
         }
       >
         {/* SIDE BAR DIV */}
@@ -64,10 +64,10 @@ function Layout({ children }) {
           <div className="text-xl font-semibold">Digital Board Pack</div>
           <div
             onClick={() => newDocument("open")}
-            className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-100"
+            className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
           >
             <div className="mr-2">
-              <img src="/images/plus.png" alt="" height={15} width={15} />
+              <img src="/images/plus2.png" alt="" height={15} width={15} />
             </div>
             <div className="text-sm font-semibold">New</div>
           </div>
@@ -76,11 +76,11 @@ function Layout({ children }) {
             <ul className="text-md">
               <Link
                 href={"/"}
-                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
+                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-700 hover:duration-200"
               >
                 <div className="mr-2">
                   <img
-                    src="/images/dashboard.png"
+                    src="/images/dashboard2.png"
                     alt=""
                     height={20}
                     width={20}
@@ -107,11 +107,11 @@ function Layout({ children }) {
               </li> */}
               <Link
                 href={"scheduling"}
-                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
+                className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-700 hover:duration-200"
               >
                 <div className="mr-2">
                   <img
-                    src="/images/meeting.png"
+                    src="/images/meeting2.png"
                     alt=""
                     height={20}
                     width={20}
