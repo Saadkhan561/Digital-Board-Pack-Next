@@ -4,6 +4,7 @@ import NewDocument from "@/components/new_document";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -69,7 +70,7 @@ function Layout({ children }) {
             className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-100"
           >
             <div className="mr-2">
-              <img src="/images/plus.png" alt="" height={15} width={15} />
+              <Image src="/images/plus.png" alt="" height={15} width={15} />
             </div>
             <div className="text-sm font-semibold">New</div>
           </div>
@@ -81,7 +82,7 @@ function Layout({ children }) {
                 className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
               >
                 <div className="mr-2">
-                  <img
+                  <Image
                     src="/images/dashboard.png"
                     alt=""
                     height={20}
@@ -92,7 +93,7 @@ function Layout({ children }) {
               </Link>
               {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
-                  <img
+                  <Image
                     src="/images/calendar.png"
                     alt=""
                     height={20}
@@ -103,7 +104,7 @@ function Layout({ children }) {
               </li> */}
               {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
-                  <img src="/images/tools.png" alt="" height={20} width={20} />
+                  <Image src="/images/tools.png" alt="" height={20} width={20} />
                 </div>
                 <div>Tools</div>
               </li> */}
@@ -112,7 +113,7 @@ function Layout({ children }) {
                 className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200"
               >
                 <div className="mr-2">
-                  <img
+                  <Image
                     src="/images/meeting.png"
                     alt=""
                     height={20}
@@ -123,7 +124,7 @@ function Layout({ children }) {
               </Link>
               {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
                 <div className="mr-2">
-                  <img src="/images/email.png" alt="" height={20} width={20} />
+                  <Image src="/images/email.png" alt="" height={20} width={20} />
                 </div>
                 <div>Share Document</div>
               </li> */}
@@ -150,7 +151,7 @@ function Layout({ children }) {
           <div className="flex items-center mob_screen:hidden">
             <div className="relative cursor-pointer">
               <div onClick={() => setNotify(!notify)}>
-                <img src="/images/notify.png" alt="" height={25} width={25} />
+                <Image src="/images/notify.png" alt="" height={25} width={25} />
               </div>
 
               <div
@@ -167,7 +168,12 @@ function Layout({ children }) {
                 onClick={() => setLogout(!logOut)}
                 className="cursor-pointer rounded-full w-8 h-8 ml-2"
               >
-                <img src="/images/account.png" alt="" height={28} width={28} />
+                <Image
+                  src="/images/account.png"
+                  alt=""
+                  height={28}
+                  width={28}
+                />
               </Link>
               {logOut ? (
                 <div
@@ -182,7 +188,7 @@ function Layout({ children }) {
           {/* SMALL SCREEM NOTIFICATION DIV */}
           <div className="relative flex gap-2 items-center mob_screen_closed:hidden">
             <div className="cursor-pointer" onClick={() => setNotify(!notify)}>
-              <img src="/images/notify.png" alt="" height={25} width={25} />
+              <Image src="/images/notify.png" alt="" height={25} width={25} />
             </div>
 
             <div
@@ -196,7 +202,7 @@ function Layout({ children }) {
               onClick={() => setMenu(!menu)}
               className="hover:shadow-2xl cursor-pointer"
             >
-              <img src="/images/menu.png" alt="" height={25} width={25} />
+              <Image src="/images/menu.png" alt="" height={25} width={25} />
             </div>
           </div>
         </div>
@@ -216,7 +222,12 @@ function Layout({ children }) {
             onClick={() => setMenu(!menu)}
             className="float-right mt-3 mb-2 border w-[28px] p-[3px] rounded-2xl hover:bg-slate-300 duration-300 cursor-pointer"
           >
-            <img src="/images/right-arrow.png" alt="" height={20} width={20} />
+            <Image
+              src="/images/right-arrow.png"
+              alt=""
+              height={20}
+              width={20}
+            />
           </div>
           <Link href={"register"} className="menu-bar-li flex justify-between">
             Account
@@ -234,7 +245,7 @@ function Layout({ children }) {
           </li>
         </ul>
         <div className="border border-slate-500 p-[3px] rounded-2xl hover:bg-slate-400 duration-300">
-          <img src="/images/right-arrow.png" alt="" height={20} width={20} />
+          <Image src="/images/right-arrow.png" alt="" height={20} width={20} />
         </div>
       </div>
       {/* NEW DOCUMENT DIV  */}

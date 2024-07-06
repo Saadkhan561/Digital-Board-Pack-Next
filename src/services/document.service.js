@@ -2,7 +2,6 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
- 
   if (data) {
     try {
       const res = await axios.post(`/uploads/${data.docName}`, data.formData);
@@ -115,7 +114,7 @@ export const meetingMinutesId = async (params) => {
     const res = await axios.post(
       `/meetingMin?meeting_min=${docId}&meeting_id=${id}`
     );
-    console.log(res.data);
+
     return res.data;
   } catch (error) {
     throw new Error(error);

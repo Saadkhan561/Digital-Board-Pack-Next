@@ -7,15 +7,14 @@ import { useLoginMutation } from "../../hooks/mutation.hook";
 import useUserStore from "../../stores/useUserStore";
 
 // FOR TOAST
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import Image from "next/image";
+import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSocketStore } from "@/hooks/useSocket.hook";
 
 const Login = ({ onUpdateLogin, prevLogin }) => {
   const [isLogin, setLogin] = useState(prevLogin);
   const [showpassword, setShowpassword] = useState(false);
   const { setCurrentUser } = useUserStore();
-  const { startConnection } = useSocketStore();
 
   onUpdateLogin(isLogin);
 
@@ -37,8 +36,6 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
-        await startConnection();
-
         toast.success("Logged In", {
           position: "top-center",
           autoClose: 2000,
@@ -50,12 +47,9 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
           theme: "dark",
           transition: Bounce,
         });
-
-        // router.push("/");
       }
     },
     onError(err) {
-      console.log(err.message);
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -84,7 +78,6 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
 
   return (
     <>
-      <ToastContainer />
       <div className="relative">
         {/* LOGIN DIV */}
         <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[400px] menu_bar_mob:w-[240px] p-8">
@@ -106,7 +99,12 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
                   type="text"
                   {...register("email")}
                 />
-                <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+                <Image
+                  src="/images/account_sm.png"
+                  alt=""
+                  width={16}
+                  height={16}
+                />
               </div>
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -122,7 +120,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
                   type={showpassword ? "text" : "password"}
                   {...register("pwd")}
                 />
-                <img
+                <Image
                   onClick={() => setShowpassword(!showpassword)}
                   className="cursor-pointer h-4 w-4"
                   src="/images/pass_eye.png"
@@ -150,7 +148,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >
-                <img
+                <Image
                   className="-rotate-90"
                   src="/images/down-arrow.png"
                   alt=""

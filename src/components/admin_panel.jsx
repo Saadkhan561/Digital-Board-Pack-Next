@@ -1,19 +1,18 @@
-import { React, useState } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-// FOR TOAST
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import { useLoginMutation } from "@/hooks/mutation.hook";
 import useUserStore from "@/stores/useUserStore";
+import { useRouter } from "next/router";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const AdminPanelDiv = () => {
   const [showpassword, setShowpassword] = useState(false);
   const router = useRouter();
-  const { currentUser, setCurrentUser } = useUserStore();
+  const { setCurrentUser } = useUserStore();
 
   const initialValues = {
     email: "",
@@ -32,7 +31,7 @@ const AdminPanelDiv = () => {
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
-        // console.log({ data });
+
         toast.success("Logged In", {
           position: "top-center",
           autoClose: 2000,
@@ -50,7 +49,6 @@ const AdminPanelDiv = () => {
       }
     },
     onError(err) {
-      console.log(err);
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -93,7 +91,7 @@ const AdminPanelDiv = () => {
           onClick={() => admin("admin")}
           className="flex justify-end cursor-pointer"
         >
-          <img src="/images/cross.png" alt="" height={15} width={15} />
+          <Image src="/images/cross.png" alt="" height={15} width={15} />
         </div>
         <p className="font-semibold text-lg">Login to admin panel</p>
         <form
@@ -110,7 +108,7 @@ const AdminPanelDiv = () => {
                 type="text"
                 {...register("email")}
               />
-              <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+              <Image className="h-4 w-4" src="/images/account_sm.png" alt="" />
             </div>
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -126,7 +124,7 @@ const AdminPanelDiv = () => {
                 type={showpassword ? "text" : "password"}
                 {...register("pwd")}
               />
-              <img
+              <Image
                 onClick={() => setShowpassword(!showpassword)}
                 className="cursor-pointer h-4 w-4"
                 src="/images/pass_eye.png"

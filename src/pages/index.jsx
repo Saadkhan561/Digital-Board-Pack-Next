@@ -2,6 +2,7 @@ import { withProtectedWrapper } from "@/components/Protected Routes/protected_lo
 import Card from "@/components/card";
 import { useFetchDocByUser } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -47,7 +48,7 @@ const Home = () => {
                 >
                   <div>{filter}</div>
                   <div>
-                    <img
+                    <Image
                       className={
                         dropdown
                           ? "rotate-180 duration-150"
@@ -92,7 +93,7 @@ const Home = () => {
             </div>
             <div className="fixed bottom-10 right-10 z-10 mob_screen_closed:hidden flex justify-center p-2 bg-slate-100 border border-gray-400 rounded-full items-center cursor-pointer shadow-2xl hover:duration-200">
               <div onClick={() => setValue("open", true)}>
-                <img src="/images/plus.png" alt="" height={22} width={22} />
+                <Image src="/images/plus.png" alt="" height={22} width={22} />
               </div>
             </div>
           </div>

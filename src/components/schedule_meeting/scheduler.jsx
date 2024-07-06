@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import moment from "moment";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
@@ -92,12 +93,11 @@ const Scheduler = () => {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px] p-6 z-10">
         <div className="flex justify-between items-center">
           <div className="text-3xl font-semibold">Schedule your meeting</div>
           <div>
-            <img
+            <Image
               onClick={() => schedule("schedule")}
               className="cursor-pointer"
               src="/images/cross.png"
@@ -172,7 +172,7 @@ const Scheduler = () => {
                         key={index}
                       >
                         <div className="flex gap-2 items-center">
-                          <img
+                          <Image
                             src="/images/account.png"
                             alt=""
                             height={20}

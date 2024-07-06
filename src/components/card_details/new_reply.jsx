@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDeleteReply, useUpdateReply } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useUserStore from "@/stores/useUserStore";
+import Image from "next/image";
 
 const Replies = ({ replyData, commentator_id }) => {
   const [commentDiv, setCommentDiv] = useState(false);
@@ -41,24 +42,18 @@ const Replies = ({ replyData, commentator_id }) => {
 
   const { mutate: updateReply } = useUpdateReply({
     onSuccess(data) {
-      console.log(data);
       reset();
       setCommentDiv(false);
       setUpdateCommentDiv(false);
     },
-    onError(data) {
-      console.log(data);
-    },
+    onError(data) {},
   });
 
   const { mutate: deleteReply } = useDeleteReply({
     onSuccess(data) {
-      console.log(data);
       refetchComment();
     },
-    onError(data) {
-      console.log(data);
-    },
+    onError(data) {},
   });
 
   const {
@@ -84,7 +79,7 @@ const Replies = ({ replyData, commentator_id }) => {
     <div className="flex justify-between gap-2 items-center">
       <div className="flex gap-5 p-2">
         <div className="border h-fit mt-2 rounded-full p-2">
-          <img src="/images/account.png" alt="" height={20} width={20} />
+          <Image src="/images/account.png" alt="" height={20} width={20} />
         </div>
         <div className="p-2 w-4/5 ml-2">
           <div className="flex gap-5 items-center">
@@ -103,7 +98,7 @@ const Replies = ({ replyData, commentator_id }) => {
                 placeholder="Your comment here..."
               />
               <button type="submit" className="w=1/10">
-                <img src="/images/send.png" alt="" height={25} width={25} />
+                <Image src="/images/send.png" alt="" height={25} width={25} />
               </button>
             </form>
           ) : (
@@ -113,7 +108,7 @@ const Replies = ({ replyData, commentator_id }) => {
       </div>
       {commentator_id === currentUser.user_id && (
         <div className="relative">
-          <img
+          <Image
             onClick={() => setCommentDiv(!commentDiv)}
             src="/images/dots.png"
             alt=""
@@ -135,7 +130,12 @@ const Replies = ({ replyData, commentator_id }) => {
                   className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                 >
                   <p className="text-red-500">Delete</p>
-                  <img src="/images/trash.png" alt="" height={15} width={15} />
+                  <Image
+                    src="/images/trash.png"
+                    alt=""
+                    height={15}
+                    width={15}
+                  />
                 </div>
               </div>
             </div>

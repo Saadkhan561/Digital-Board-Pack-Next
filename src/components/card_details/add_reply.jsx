@@ -1,8 +1,10 @@
 import { useInsertReply } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 const AddReply = ({ comment_id }) => {
@@ -40,19 +42,24 @@ const AddReply = ({ comment_id }) => {
   const { mutate: reply } = useInsertReply({
     onSuccess(data) {
       reset();
-      console.log(data);
     },
-    onError(data) {
-      console.log(data);
+    onError(error) {
+      error.error.message,
+        {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        };
     },
   });
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     values: initialValues,
     resolver: yupResolver(commentSchema),
   });
@@ -65,7 +72,7 @@ const AddReply = ({ comment_id }) => {
     <div>
       <div className="flex items-center gap-5 p-2">
         <div className="border rounded-full p-2 cursor-pointer w-1/10">
-          <img src="/images/account.png" alt="" height={25} width={25} />
+          <Image src="/images/account.png" alt="" height={25} width={25} />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
@@ -76,7 +83,7 @@ const AddReply = ({ comment_id }) => {
             placeholder="Your comment here..."
           />
           <button type="submit" className="w=1/10">
-            <img src="/images/send.png" alt="" height={25} width={25} />
+            <Image src="/images/send.png" alt="" height={25} width={25} />
           </button>
         </form>
       </div>

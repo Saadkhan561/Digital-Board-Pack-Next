@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import Share from "@/components/share_doc_popup";
 import Comment from "@/components/card_details/comments";
 import NewComment from "@/components/card_details/new_comment";
-import Layout from "@/layout/UserLayout";
-import { useRouter } from "next/router";
-import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
-import moment from "moment";
-import Link from "next/link";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
   useDeleteDocument,
   useDocUploadMutation,
   useInsertUpdatedDocument,
 } from "@/hooks/mutation.hook";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
+import Layout from "@/layout/UserLayout";
 import useUserStore from "@/stores/useUserStore";
-import { useParams, useSearchParams } from "next/navigation";
+import moment from "moment";
+import Link from "next/link";
+import { Bounce, toast } from "react-toastify";
+import Image from "next/image";
 
 const CardDetails = ({ id }) => {
   const [downloadPdf, setDownloadPdf] = useState(false);
@@ -81,7 +79,6 @@ const CardDetails = ({ id }) => {
       setUpdateDoc(false);
     },
     onError(data) {
-      console.log(data);
       toast.error("Failed to Upload Document", {
         position: "top-center",
         autoClose: 1000,
@@ -102,7 +99,6 @@ const CardDetails = ({ id }) => {
       insertUpdatedDoc({ doc_name: data, title, doc_version, root_docId: id });
     },
     onError(error) {
-      console.log(error);
       toast.error("Failed to Upload Document", {
         position: "top-center",
         autoClose: 1000,
@@ -134,13 +130,12 @@ const CardDetails = ({ id }) => {
 
   return (
     <Layout>
-      <ToastContainer />
       <div className="w-full relative">
         <div className="p-4 mr-4 ml-4">
           <div className="flex justify-between items-center border-b-2 border-b-gray-300 pb-4">
             <div className="flex items-center gap-5">
               <div>
-                <img
+                <Image
                   className="rounded-full mob_screen:h-[50px] mob_screen:w-[50px] h-[50px] w-[50px] menu_bar_mob:h-[30px] menu_bar_mob:w-[30px]"
                   src="/images/account.png"
                   alt=""
@@ -189,7 +184,7 @@ const CardDetails = ({ id }) => {
                 </div>
               </div>
               <div onClick={() => setDownloadPdf(!downloadPdf)}>
-                <img
+                <Image
                   className="cursor-pointer hover:bg-slate-100 rounded-full p-1 duration-200 mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
                   src="/images/dots.png"
                   alt=""
@@ -220,7 +215,7 @@ const CardDetails = ({ id }) => {
           {/* DOCUMENT DIV */}
           <div className="items-center flex justify-between p-4 pb-4 border-b-2 border-b-gray-300">
             <div>
-              <img
+              <Image
                 className="mob_screen:h-[70px] mob_screen:w-[70px] menu_bar_mob:h-[50px] menu_bar_mob:w-[50px]"
                 src="/images/word.png"
                 alt=""
@@ -255,7 +250,7 @@ const CardDetails = ({ id }) => {
               >
                 <button className="flex gap-2 items-center">
                   <p>View all versions</p>
-                  <img
+                  <Image
                     src="/images/down-arrow.png"
                     alt=""
                     height={15}
@@ -283,7 +278,7 @@ const CardDetails = ({ id }) => {
                         >
                           Version - {document.doc_version}
                         </a>
-                        <img
+                        <Image
                           onClick={() =>
                             deleteDoc({
                               folder: doc,
@@ -299,20 +294,9 @@ const CardDetails = ({ id }) => {
                     .reverse()}
                 </div>
               </div>
-              {/* <div>
-                <img
-                  onClick={() => setShare(!isShare)}
-                  className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
-                  src="/images/share.png"
-                  alt=""
-                  height={25}
-                  width={25}
-                />
-                {renderShareDiv()}
-              </div> */}
             </div>
           </div>
-          {/* COMMENT DIV */}
+
           <div className="mt-5">
             {comments
               ?.map((comment, index) => {

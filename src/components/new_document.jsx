@@ -1,7 +1,4 @@
-import {
-  useFetchAllUsers,
-  useFetchDocByUser
-} from "@/hooks/query.hook";
+import { useFetchAllUsers, useFetchDocByUser } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { useId, useState } from "react";
@@ -10,13 +7,14 @@ import * as Yup from "yup";
 import {
   useDocUploadMutation,
   useInsertDocumentMutation,
-  userAccessListMutation,
+  useAccessListMutation,
 } from "../hooks/mutation.hook";
 
 // FOR TOAST
 import useUserStore from "@/stores/useUserStore";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const NewDocument = () => {
   const router = useRouter();
@@ -45,7 +43,7 @@ const NewDocument = () => {
   });
 
   const { mutate: documentAccess, isLoading: isAccessLoading } =
-    userAccessListMutation({
+    useAccessListMutation({
       onSuccess(data) {
         refetch();
 
@@ -87,11 +85,10 @@ const NewDocument = () => {
           userId.push(currentUser.user_id);
         }
         const docId = data.value;
-        console.log(useId);
+
         documentAccess({ docId, userId });
       },
       onError(error) {
-        console.log(error);
         toast.error("Failed to Upload Document", {
           position: "top-center",
           autoClose: 1000,
@@ -111,11 +108,10 @@ const NewDocument = () => {
       onSuccess(data) {
         const docName = data;
         const title = watch("title");
-        console.log(title);
+
         insertFile({ docName, title });
       },
       onError(error) {
-        console.log(error);
         toast.error("Failed to Upload Document", {
           position: "top-center",
           autoClose: 1000,
@@ -149,14 +145,13 @@ const NewDocument = () => {
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
-      <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px] p-6">
         <div className="flex justify-between items-center">
           <div className="text-2xl font-semibold mob_screen:text-lg">
             Add a new document
           </div>
           <div>
-            <img
+            <Image
               onClick={() => newDocument("open")}
               className="cursor-pointer"
               src="
@@ -211,7 +206,7 @@ const NewDocument = () => {
                       key={index}
                     >
                       <div className="flex gap-2 items-center">
-                        <img
+                        <Image
                           src="/images/account.png"
                           alt=""
                           height={20}
@@ -235,7 +230,7 @@ const NewDocument = () => {
             <div>
               {isUploadLoading || isInsertLoading || isAccessLoading ? (
                 <div>
-                  <img
+                  <Image
                     src="/images/loading.gif"
                     alt=""
                     height={15}

@@ -13,6 +13,7 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
+import Image from "next/image";
 
 const Comment = ({ data: commentData, username, roles, commentator_id }) => {
   const [isReply, setReply] = useState(false);
@@ -55,7 +56,6 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
     { id },
     {
       onSuccess(data) {
-        console.log(data);
         toast.success("Comment " + data, {
           position: "top-center",
           autoClose: 2000,
@@ -69,7 +69,6 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
         });
       },
       onError(error) {
-        console.log(error);
         toast.error(error, {
           position: "top-center",
           autoClose: 1000,
@@ -87,12 +86,9 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
 
   const { mutate: updateComment } = useUpdateComment({
     onSuccess(data) {
-      console.log(data);
       setUpdateCommentDiv(false);
     },
-    onError(data) {
-      console.log(data);
-    },
+    onError(data) {},
   });
 
   const {
@@ -121,11 +117,10 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
 
   return (
     <div>
-      <ToastContainer />
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 w-4/5">
           <div className="border h-fit mt-2 rounded-full p-2">
-            <img
+            <Image
               className="menu_bar_div:h-[10px] menu_bar_mob:w-[10px]"
               src="/images/account.png"
               alt=""
@@ -157,7 +152,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                       placeholder="Your comment here..."
                     />
                     <button type="submit" className="w=1/10">
-                      <img
+                      <Image
                         src="/images/send.png"
                         alt=""
                         height={25}
@@ -173,7 +168,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               </div>
               {commentator_id === currentUser.user_id ? (
                 <div className="relative">
-                  <img
+                  <Image
                     onClick={() => setCommentDiv(!commentDiv)}
                     src="/images/dots.png"
                     alt=""
@@ -195,7 +190,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                           className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                         >
                           <p className="text-red-500">Delete</p>
-                          <img
+                          <Image
                             src="/images/trash.png"
                             alt=""
                             height={15}

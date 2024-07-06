@@ -17,7 +17,6 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <NextNProgress />
       <ToastContainer />
-
       <Component {...pageProps} />
     </QueryClientProvider>
   );

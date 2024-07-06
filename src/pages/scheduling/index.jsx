@@ -12,7 +12,6 @@ import { useState } from "react";
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
-  meetings && console.log(meetings);
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -49,20 +48,17 @@ const Calendar = () => {
     }));
 
   const renderEventContent = (eventInfo) => {
-    console.log(eventInfo.event.start);
     const { meeting_id } = eventInfo.event.extendedProps;
     const isExpanded = meeting_id === expandedEventId;
 
-    let hours = eventInfo.event.start.getHours();
-    let minutes = eventInfo.event.start.getMinutes();
-    let seconds = eventInfo.event.start.getSeconds();
+    const hours = eventInfo.event.start.getHours();
+    const minutes = eventInfo.event.start.getMinutes();
+    const seconds = eventInfo.event.start.getSeconds();
 
-    // Format the time as HH:MM:SS
-    let time = `${hours.toString().padStart(2, "0")}:${minutes
+
+    const time = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-    console.log(time);
 
     return (
       <Link

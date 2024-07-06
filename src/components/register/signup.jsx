@@ -9,6 +9,7 @@ import { useAllDepartments } from "@/hooks/query.hook";
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const SignUp = () => {
   // const [isLogin, setLogin] = useState(prevLogin);
@@ -61,7 +62,6 @@ const SignUp = () => {
       }, 2000);
     },
     onError(error) {
-      console.log(error);
       toast.error(error.message, {
         position: "top-center",
         autoClose: 2000,
@@ -86,7 +86,6 @@ const SignUp = () => {
     resolver: yupResolver(signupSchema),
   });
   const onSubmit = (data) => {
-    console.log(data);
     mutate({
       ...data,
     });
@@ -103,9 +102,11 @@ const SignUp = () => {
 
   return (
     <div className="rounded-lg bg-white shadow-2xl">
-      <ToastContainer />
-      <div onClick={() => signUp("signUp")} className="flex justify-end cursor-pointer p-5">
-        <img src="/images/cross.png" alt="" height={15} width={15} />
+      <div
+        onClick={() => signUp("signUp")}
+        className="flex justify-end cursor-pointer p-5"
+      >
+        <Image src="/images/cross.png" alt="" height={15} width={15} />
       </div>
 
       <div className="flex flex-col items-center h-[550px] w-[400px] menu_bar_mob:h-[450px] menu_bar_mob:w-[240px] p-4">
@@ -124,7 +125,7 @@ const SignUp = () => {
                 type="text"
                 {...register("username")}
               />
-              <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+              <Image className="h-4 w-4" src="/images/account_sm.png" alt="" />
             </div>
             {errors.username && (
               <p className="text-red-500 text-xs">{errors.username.message}</p>
@@ -140,7 +141,7 @@ const SignUp = () => {
                 type="text"
                 {...register("first_name")}
               />
-              <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+              <Image className="h-4 w-4" src="/images/account_sm.png" alt="" />
             </div>
             {errors.first_name && (
               <p className="text-red-500 text-xs">
@@ -158,7 +159,7 @@ const SignUp = () => {
                 type="text"
                 {...register("last_name")}
               />
-              <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+              <Image className="h-4 w-4" src="/images/account_sm.png" alt="" />
             </div>
             {errors.last_name && (
               <p className="text-red-500 text-xs">{errors.last_name.message}</p>
@@ -174,7 +175,7 @@ const SignUp = () => {
                 type="email"
                 {...register("email")}
               />
-              <img className="h-4 w-4" src="/images/input_email.png" alt="" />
+              <Image className="h-4 w-4" src="/images/input_email.png" alt="" />
             </div>
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -190,7 +191,7 @@ const SignUp = () => {
                 type={showPassword1 ? "text" : "password"}
                 {...register("pwd")}
               />
-              <img
+              <Image
                 onClick={() => setShowPassword1(!showPassword1)}
                 className="cursor-pointer h-4 w-4"
                 src="/images/pass_eye.png"
@@ -211,7 +212,7 @@ const SignUp = () => {
                 type="text"
                 {...register("designation")}
               />
-              <img className="h-4 w-4" src="/images/role.png" alt="" />
+              <Image className="h-4 w-4" src="/images/role.png" alt="" />
             </div>
             {errors.designation && (
               <p className="text-red-500 text-xs">
