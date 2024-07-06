@@ -1,16 +1,12 @@
-import React from "react";
-import { useEffect } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useInsertReply } from "@/hooks/mutation.hook";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import { useFetchComments } from "@/hooks/query.hook";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
-const AddReply = ({ comment_id, refetchComment }) => {
-  const router = useRouter();
+const AddReply = ({ comment_id }) => {
   //   const docId = router.query.id;
-  //   const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
 
   const initialValues = {
     comment: "",
@@ -44,7 +40,6 @@ const AddReply = ({ comment_id, refetchComment }) => {
   const { mutate: reply } = useInsertReply({
     onSuccess(data) {
       reset();
-      refetchComment();
       console.log(data);
     },
     onError(data) {
@@ -63,8 +58,7 @@ const AddReply = ({ comment_id, refetchComment }) => {
   });
 
   const onSubmit = (data) => {
-    data["root_cmntId"] = comment_id;
-    reply(data);
+    reply({ root_cmntId: comment_id, ...data });
   };
 
   return (

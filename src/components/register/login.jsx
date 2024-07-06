@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { useLoginMutation } from "../../hooks/mutation.hook";
 import useUserStore from "../../stores/useUserStore";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/router";
 
 // FOR TOAST
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSocketStore } from "@/hooks/useSocket.hook";
 
 const Login = ({ onUpdateLogin, prevLogin }) => {
   const [isLogin, setLogin] = useState(prevLogin);
   const [showpassword, setShowpassword] = useState(false);
-  const { currentUser, setCurrentUser } = useUserStore();
+  const { setCurrentUser } = useUserStore();
+  const { startConnection } = useSocketStore();
+
   onUpdateLogin(isLogin);
 
   const initialValues = {
@@ -27,14 +30,15 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
   });
 
   const router = useRouter();
-  const { mutate } = useLoginMutation({
-    onSuccess(data) {
+  const { mutate, isPending } = useLoginMutation({
+    async onSuccess(data) {
       if (data) {
         const { token, userData } = data;
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
-        // console.log({ data });
+        await startConnection();
+
         toast.success("Logged In", {
           position: "top-center",
           autoClose: 2000,
@@ -46,9 +50,8 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
           theme: "dark",
           transition: Bounce,
         });
-        setTimeout(() => {
-          router.push("/");
-        }, 2000);
+
+        // router.push("/");
       }
     },
     onError(err) {
@@ -133,6 +136,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
             <button
               className="border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
               type="submit"
+              disabled={isPending}
             >
               Submit
             </button>
@@ -142,7 +146,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
               Go to admin panel
               <a
                 onClick={() => {
-                  router.push('?admin=true')
+                  router.push("?admin=true");
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >

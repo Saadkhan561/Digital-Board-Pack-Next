@@ -6,7 +6,7 @@ import { useDeleteReply, useUpdateReply } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useUserStore from "@/stores/useUserStore";
 
-const Replies = ({ replyData, refetchComment, commentator_id }) => {
+const Replies = ({ replyData, commentator_id }) => {
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -45,7 +45,6 @@ const Replies = ({ replyData, refetchComment, commentator_id }) => {
       reset();
       setCommentDiv(false);
       setUpdateCommentDiv(false);
-      refetchComment();
     },
     onError(data) {
       console.log(data);
@@ -79,7 +78,7 @@ const Replies = ({ replyData, refetchComment, commentator_id }) => {
     });
   };
 
-  const {currentUser} = useUserStore()
+  const { currentUser } = useUserStore();
 
   return (
     <div className="flex justify-between gap-2 items-center">

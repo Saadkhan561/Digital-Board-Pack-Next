@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
   images: {
     domains: ["4176-37-111-139-188.ngrok-free.app"],
   },

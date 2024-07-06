@@ -12,17 +12,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminPanelDiv from "@/components/admin_panel";
+import { useSocketStore } from "@/hooks/useSocket.hook";
 
 const Register = () => {
-  // const router = useRouter();
-  // const { currentUser } = useUserStore();
-  // if (currentUser?.token) {
-  //   router.push("/");
-  //   return null;
-  // }
-
   const [showpassword, setShowpassword] = useState(false);
-  const { currentUser, setCurrentUser } = useUserStore();
+  const { setCurrentUser } = useUserStore();
 
   const initialValues = {
     email: "",
@@ -35,13 +29,15 @@ const Register = () => {
   });
 
   const router = useRouter();
+  const { startConnection } = useSocketStore();
   const { mutate } = useLoginMutation({
-    onSuccess(data) {
+    async onSuccess(data) {
       if (data) {
         const { token, userData } = data;
         const { pwd, ...rest } = userData;
         setCurrentUser({ ...rest, token: token });
         reset();
+        await startConnection(data.user_id);
         // console.log({ data });
         toast.success("Logged In", {
           position: "top-center",
@@ -54,9 +50,9 @@ const Register = () => {
           theme: "dark",
           transition: Bounce,
         });
-        setTimeout(() => {
-          router.push("/");
-        }, 2000);
+        // setTimeout(() => {
+        router.push("/");
+        // }, 2000);
       }
     },
     onError(err) {
@@ -74,7 +70,7 @@ const Register = () => {
       });
     },
   });
-  
+
   const {
     register,
     formState: { errors },
@@ -96,7 +92,13 @@ const Register = () => {
 
   return (
     <div className="h-screen flex justify-center items-center relative">
-      <div className={router.query.admin ? "flex shadow-2xl rounded-lg border border-slate-300 opacity-50 duration-200": "flex shadow-2xl rounded-lg border border-slate-300"}>
+      <div
+        className={
+          router.query.admin
+            ? "flex shadow-2xl rounded-lg border border-slate-300 opacity-50 duration-200"
+            : "flex shadow-2xl rounded-lg border border-slate-300"
+        }
+      >
         <div className="h-[600px] w-[400px] relative md:hidden">
           <img
             className="object-cover h-full"
@@ -185,11 +187,7 @@ const Register = () => {
             </p>
           </div>
         </div>
-        {/* {eval(router.query.login) ? (
-          <Login prevLogin={isLogin} onUpdateLogin={updateLogin} />
-        ) : (
-          <SignUp prevLogin={isLogin} onUpdateLogin={updateLogin} />
-        )} */}
+    
       </div>
       {/* ADMIN PANEL DIV */}
       <div className="absolute top-0 h-full">{renderAdminPanelDiv()}</div>

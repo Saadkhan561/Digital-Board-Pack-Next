@@ -1,23 +1,16 @@
-import React, { useState } from "react";
-import Layout from "@/layout/UserLayout";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
-import { useRouter } from "next/router";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import { useFetchAllMeetings } from "@/hooks/query.hook";
+import Layout from "@/layout/UserLayout";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import Link from "next/link";
-import useUserStore from "@/stores/useUserStore";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
-
-  // SCHEDULING DATE
-  const [value, onChange] = useState(new Date());
-
-  const { currentUser } = useUserStore();
-  // HOOK TO GET ALL MEETINGS
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
   meetings && console.log(meetings);
 
@@ -60,30 +53,9 @@ const Calendar = () => {
     const { meeting_id } = eventInfo.event.extendedProps;
     const isExpanded = meeting_id === expandedEventId;
 
-    // let hours = eventInfo.event.start.getHours();
-    // let minutes = eventInfo.event.start.getMinutes();
-    // let period = 'AM'
-
-    // if (hours >= 12) {
-    //   period = "PM"
-    //   hours = hours === 12 ? 12 : hours - 12;
-    // } else {
-    //   period = "AM"
-    //   if (hours === 0) {
-    //     hours = 12;
-    //   }
-    // }
-
-    // const formattedTime = `${hours}:${
-    //   minutes < 10 ? "0" + minutes : minutes
-    // } ${period}`;
-
-    // let date = new Date(eventInfo.event.meeting_datetime);
-
-    // Extract the time components
-    let hours = eventInfo.event.start.getHours(); // Use getHours() for local time, getUTCHours() for UTC
-    let minutes = eventInfo.event.start.getMinutes(); // Use getMinutes() for local time, getUTCMinutes() for UTC
-    let seconds = eventInfo.event.start.getSeconds(); // Use getSeconds() for local time, getUTCSeconds() for UTC
+    let hours = eventInfo.event.start.getHours();
+    let minutes = eventInfo.event.start.getMinutes();
+    let seconds = eventInfo.event.start.getSeconds();
 
     // Format the time as HH:MM:SS
     let time = `${hours.toString().padStart(2, "0")}:${minutes

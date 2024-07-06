@@ -17,65 +17,26 @@ import {
 } from "@/hooks/mutation.hook";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import useUserStore from "@/stores/useUserStore";
+import { useParams, useSearchParams } from "next/navigation";
 
-const CardDetails = () => {
-  const [isShare, setShare] = useState(false);
+const CardDetails = ({ id }) => {
   const [downloadPdf, setDownloadPdf] = useState(false);
   const [doc_version, setDocVersion] = useState(1);
   const [updateDoc, setUpdateDoc] = useState(false);
   const [docVersionDiv, setDocVersionDiv] = useState(false);
   const [doc, setDoc] = useState("");
-  const [commentsLength, setCommentsLength] = useState(0);
-  const [firstComment, setFirstComment] = useState();
 
-  // const renderShareDiv = () => {
-  //   if (isShare) {
-  //     return (
-  //       <div className="">
-  //         <Share />
-  //       </div>
-  //     );
-  //   }
-  // };
-
-  // HOOK TO REDIRECT WITH DOCUMENT'S ID
-  const router = useRouter();
-
-  const id = router.query.id;
-
-  const { data, refetch: docRefetch } = useFetchDocumentById(
-    { id },
-    { enabled: Boolean(id) }
-  );
-  console.log(data);
-  docRefetch();
-
-  // useEffect(() => {
-  //   const document = data && data.doc_name.split(".")[0];
-  //   setDoc(document);
-  //   let firstComment = comments?.reverse()[0]
-  //   setFirstComment(firstComment)
-  // }, [data]);
+  const { data: document } = useFetchDocumentById({ id });
 
   const { currentUser } = useUserStore();
-  // const role = currentUser.roles;
-  const { data: comments, refetch: refetchComment } = useFetchComments(
-    { docId: id, role: currentUser.roles },
-    { enabled: Boolean(id) }
-  );
-  console.log(comments);
 
-  useEffect(() => {
-    let version = data && data.docVersions.length;
-    setDocVersion(version + 1);
-    setCommentsLength(comments?.length);
-    const document = data && data.doc_name.split(".")[0];
-    setDoc(document);
-  }, [data, comments]);
+  const { data: comments } = useFetchComments({
+    docId: id,
+    role: currentUser.roles,
+  });
 
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
-      console.log(data);
       toast.success(data + " " + "successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -88,8 +49,7 @@ const CardDetails = () => {
         transition: Bounce,
       });
     },
-    onError(data) {
-      console.log(data);
+    onError() {
       toast.error("Error occured", {
         position: "top-center",
         autoClose: 1000,
@@ -105,8 +65,7 @@ const CardDetails = () => {
   });
 
   const { mutate: insertUpdatedDoc } = useInsertUpdatedDocument({
-    onSuccess(data) {
-      console.log(data);
+    onSuccess() {
       toast.success("Document added successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -139,9 +98,8 @@ const CardDetails = () => {
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
-      const doc_name = data;
       const title = watch("title");
-      insertUpdatedDoc({ doc_name, title, doc_version, root_docId: id });
+      insertUpdatedDoc({ doc_name: data, title, doc_version, root_docId: id });
     },
     onError(error) {
       console.log(error);
@@ -167,7 +125,7 @@ const CardDetails = () => {
     watch,
   } = useForm();
 
-  let docName = data && data.doc_name;
+  let docName = document?.doc_name;
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
@@ -190,14 +148,14 @@ const CardDetails = () => {
               </div>
               <div>
                 <p className="text-2xl mob_screen:text-lg menu_bar_mob:text-md font-bold text-blue-600">
-                  {data?.title}
+                  {document?.title}
                 </p>
                 <div className="flex gap-2 text-gray-500 font-semibold">
                   <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm">
-                    {data?.username}
+                    {document?.username}
                   </p>
                   <p>|</p>
-                  <p>{moment(data?.created_at).format("DD MMM YYYY")}</p>
+                  <p>{moment(document?.created_at).format("DD MMM YYYY")}</p>
                 </div>
               </div>
             </div>
@@ -248,7 +206,7 @@ const CardDetails = () => {
               >
                 <ul className="flex flex-col items-center text-sm p-1">
                   <li className="hover:bg-slate-100 text-gray-500 duration-200 p-2 cursor-pointer w-full font-semibold">
-                    <Link href={`/api/download-pdf/${data?.doc_name}`}>
+                    <Link href={`/api/download-pdf/${document?.doc_name}`}>
                       Download
                     </Link>
                   </li>
@@ -275,9 +233,9 @@ const CardDetails = () => {
                 <button>
                   <a
                     href={
-                      data?.docVersions.length === 0
-                        ? `/pdf/${doc}/${data?.doc_name}`
-                        : `/pdf/${doc}/${data?.docVersions[0].doc_name}`
+                      document?.docVersions.length === 0
+                        ? `/pdf/${doc}/${document?.doc_name}`
+                        : `/pdf/${doc}/${document?.docVersions[0].doc_name}`
                     }
                     target="_blank"
                     rel="noopener noreferrer"
@@ -290,7 +248,7 @@ const CardDetails = () => {
               <div
                 onClick={() => setDocVersionDiv(!docVersionDiv)}
                 className={
-                  data?.docVersions.length === 0
+                  document?.docVersions.length === 0
                     ? "hidden"
                     : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200 text-gray-500 font-semibold"
                 }
@@ -311,23 +269,26 @@ const CardDetails = () => {
                       : "hidden"
                   }
                 >
-                  {data?.docVersions
+                  {document?.docVersions
                     .map((data, index) => (
                       <div
                         className="p-1 flex justify-between cursor-pointer"
                         key={index}
                       >
                         <a
-                          href={`/pdf/${doc}/${data?.doc_name}`}
+                          href={`/pdf/${doc}/${document?.doc_name}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:bg-slate-100 duration-200"
                         >
-                          Version - {data.doc_version}
+                          Version - {document.doc_version}
                         </a>
                         <img
                           onClick={() =>
-                            deleteDoc({ folder: doc, docName: data.doc_name })
+                            deleteDoc({
+                              folder: doc,
+                              docName: document.doc_name,
+                            })
                           }
                           className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
                           src="/images/trash.png"
@@ -361,14 +322,13 @@ const CardDetails = () => {
                     data={comment}
                     key={index}
                     comment={comment.comment_id}
-                    refetchComment={refetchComment}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
                   />
                 );
               })
               .reverse()}
-            <NewComment commentLength={commentsLength} />
+            <NewComment />
           </div>
         </div>
       </div>
@@ -376,16 +336,8 @@ const CardDetails = () => {
   );
 };
 
-export default withProtectedWrapper(CardDetails);
+export const getServerSideProps = async (context) => {
+  return { props: { id: context.query.id } };
+};
 
-// {comments?.map((comment, index) => {
-// return (
-// <Comment
-//   username={comment.username}
-//   data={comment}
-//   key={index}
-//   comment={comment.comment_id}
-//   refetchComment={refetchComment}
-// />
-// );
-// }).reverse()}
+export default withProtectedWrapper(CardDetails);

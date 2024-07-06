@@ -14,13 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
 
-const Comment = ({
-  data: commentData,
-  refetchComment,
-  username,
-  roles,
-  commentator_id,
-}) => {
+const Comment = ({ data: commentData, username, roles, commentator_id }) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
@@ -29,8 +23,6 @@ const Comment = ({
   const initialValues = {
     comment: "",
   };
-
-  // console.log(showReplies)
 
   const commentSchema = Yup.object({
     comment: Yup.string().required("Comment is required"),
@@ -55,10 +47,6 @@ const Comment = ({
         textarea.removeEventListener("input", handleScroll);
       }
     };
-    
-    if (!commentDiv){
-      setUpdateCommentDiv(false)
-    }
   }, [commentDiv]);
 
   const router = useRouter();
@@ -101,7 +89,6 @@ const Comment = ({
     onSuccess(data) {
       console.log(data);
       setUpdateCommentDiv(false);
-      refetchComment();
     },
     onError(data) {
       console.log(data);
@@ -125,35 +112,9 @@ const Comment = ({
     });
   };
 
-  const reply = () => {
-    return (
-      <div>
-        <AddReply
-          comment_id={commentData.comment_id}
-          refetchComment={refetchComment}
-        />
-      </div>
-    );
-  };
-
   const setReplyFunc = () => {
     setViewReply(!isViewReply);
     setReply(!isReply);
-  };
-
-  const viewReply = () => {
-    return (
-      <div>
-        {commentData.replies.map((reply) => (
-          <Replies
-            key={reply.reply_id}
-            replyData={reply}
-            refetchComment={refetchComment}
-            commentator_id={reply.commentator_id}
-          />
-        ))}
-      </div>
-    );
   };
 
   const { currentUser } = useUserStore();
@@ -264,8 +225,22 @@ const Comment = ({
                 </div>
               </p>
             </div>
-            {isViewReply && viewReply()}
-            {isReply && reply()}
+            {isViewReply && (
+              <div>
+                {commentData.replies.map((reply) => (
+                  <Replies
+                    key={reply.reply_id}
+                    replyData={reply}
+                    commentator_id={reply.commentator_id}
+                  />
+                ))}
+              </div>
+            )}
+            {isReply && (
+              <div>
+                <AddReply comment_id={commentData.comment_id} />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -2,17 +2,11 @@ import Card from "@/components/card";
 import { useSearchDoc } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
 import { useRouter } from "next/router";
-import {React, useEffect, useState
-} from "react";
+import { useState } from "react";
 
 const Search = () => {
   const router = useRouter();
-  const searchParam = router.query.search
-  useEffect(() => {
-    if (!searchParam) {
-      router.push("/");
-    }
-  });
+  const searchParam = router.query.search;
   const [dropdown, setDropdown] = useState(false);
   const [filter, setFilter] = useState("All");
   const newDocument = (name) => {
@@ -24,14 +18,14 @@ const Search = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  const {data: searchResults, isLoading} = useSearchDoc({searchParam})
+  const { data: searchResults, isLoading } = useSearchDoc({ searchParam });
   // console.log(searchResults)
 
   return (
     <Layout>
       <div
         className={
-          eval(router.query.open)
+          Boolean(router.query.open)
             ? "opacity-50 duration-200"
             : "opacity-100 duration-200"
         }
