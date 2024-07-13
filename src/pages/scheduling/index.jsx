@@ -13,6 +13,7 @@ import { useState } from "react";
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
+  console.log(meetings)
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -100,7 +101,7 @@ const Calendar = () => {
     <Layout>
       <div className="p-2">
         <div className="flex justify-center">
-          <div className="h-[550px] w-11/12">
+          <div className="h-[450px] w-11/12">
             <div
               className="mb-4 flex items-center gap-2 cursor-pointer border border-slate-300 rounded-lg hover:bg-slate-200 duration-200 w-max p-1 font-semibold shadow-2xl"
               onClick={() => schedule("schedule")}

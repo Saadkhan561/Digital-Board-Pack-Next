@@ -72,7 +72,7 @@ export const scheduleMeeting = async (data) => {
     });
     const { value: documentId } = await insertDocument({
       title: data.meeting_title,
-      docName: documentName,
+      doc_name: documentName,
     });
 
     await insertMeeting({

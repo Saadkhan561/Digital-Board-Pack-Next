@@ -1,4 +1,5 @@
 import { useInsertComment } from "@/hooks/mutation.hook";
+import { useFetchComments } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -6,10 +7,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const NewComment = ({refetchComments}) => {
+const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
   const router = useRouter();
-  const docId = router.query.id;
-  // const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
+  const { refetch: refetchComments } = useFetchComments(
+    { docId: docId },
+    { enabled: false }
+  );
 
   const initialValues = {
     comment: "",
@@ -50,7 +53,7 @@ const NewComment = ({refetchComments}) => {
 
   const {
     register,
-    formState: { errors },
+    // formState: { errors },
     handleSubmit,
     reset,
   } = useForm({
@@ -59,7 +62,11 @@ const NewComment = ({refetchComments}) => {
   });
 
   const onSubmit = (data) => {
-    comment({ ...data, doc_id: docId });
+    comment({
+      comment: data.comment,
+      doc_id: docId,
+      docVersionStatus: docVersionStatus,
+    });
   };
 
   return (

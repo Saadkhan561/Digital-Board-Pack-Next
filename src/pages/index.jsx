@@ -101,7 +101,9 @@ const Home = () => {
           <div className="p-4 flex flex-wrap gap-4 mob_screen:justify-center">
             {/* CARD */}
             {isLoading ? (
-              <div>Loading...</div>
+              <div className="flex h-full w-full items-center justify-center">
+                <Image src="/images/loading.gif" alt="" height={20} width={20}/>
+              </div>
             ) : (
               data?.map((document) => (
                 <Card

@@ -1,6 +1,7 @@
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
@@ -44,11 +45,16 @@ function Layout({ children }) {
 
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
-
+  const handleLogoutHandler =() =>{
+    router.push('/register?login=true')
+    logout()
+  }
   const setValue = (value, name) => {
     router.query[name] = value;
     router.push(router, undefined, { shallow: true });
   };
+
+  const { currentUser } = useUserStore();
 
   return (
     <div className="flex relative overflow-x-hidden h-screen">
@@ -65,21 +71,23 @@ function Layout({ children }) {
         {/* SIDE BAR DIV */}
         <div>
           <div className="text-xl font-semibold">Digital Board Pack</div>
-          <div
-            onClick={() => newDocument("open")}
-            className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-100"
-          >
-            <div className="mr-2">
-              <Image src="/images/plus2.png" alt="" height={15} width={15} />
+          {currentUser.roles === "secretary" && (
+            <div
+              onClick={() => newDocument("open")}
+              className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
+            >
+              <div className="mr-2">
+                <Image src="/images/plus2.png" alt="" height={15} width={15} />
+              </div>
+              <div className="text-sm font-semibold">New</div>
             </div>
-            <div className="text-sm font-semibold">New</div>
-          </div>
+          )}
           {/* SIDE BAR FULL SCREEN */}
           <div className="mt-4">
             <ul className="text-md">
               <Link
                 href={"/"}
-                className="flex items-center mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-100 hover:duration-200"
+                className="flex items-center mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-700 hover:duration-200"
               >
                 <div className="mr-2">
                   <Image
@@ -110,7 +118,7 @@ function Layout({ children }) {
               </li> */}
               <Link
                 href={"scheduling"}
-                className="flex items-center mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-100 hover:duration-200"
+                className="flex items-center mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-700 hover:duration-200"
               >
                 <div className="mr-2">
                   <Image
@@ -177,7 +185,7 @@ function Layout({ children }) {
               </Link>
               {logOut ? (
                 <div
-                  onClick={logout}
+                  onClick={handleLogoutHandler}
                   className="absolute z-10 top-8 -left-5 rounded-md border border-slate-300 p-1 pl-2 pr-2 shadow-2xl mt-1 text-sm font-semibold text-red-500 hover:bg-slate-100 duration-200 cursor-pointer"
                 >
                   Logout
@@ -256,8 +264,9 @@ function Layout({ children }) {
 
       {/* MEETING INFO MODAL DIV */}
       <div className="absolute top-0">{renderMeetingInfoModal()}</div>
+
     </div>
   );
 }
 
-export default Layout;
+export default withProtectedWrapper(Layout);

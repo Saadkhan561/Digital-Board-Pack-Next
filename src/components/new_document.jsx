@@ -30,6 +30,7 @@ const NewDocument = () => {
   };
 
   const { data, isLoading } = useFetchAllUsers();
+  console.log(data)
   const { data: doc, refetch } = useFetchDocByUser();
 
   const {currentUser} = useUserStore()
@@ -150,8 +151,8 @@ const NewDocument = () => {
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
-      <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px] p-6">
-        <div className="flex justify-between items-center bg-slate-900 text-white">
+      <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[400px] new_document:w-[300px]">
+        <div className="flex justify-between items-center bg-slate-900 text-white p-2">
           <div className="text-2xl font-semibold mob_screen:text-lg">
             Add a new document
           </div>
@@ -166,7 +167,7 @@ const NewDocument = () => {
             />
           </div>
         </div>
-        <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className=" p-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="label" htmlFor="title">
               Title
@@ -176,7 +177,7 @@ const NewDocument = () => {
               <p className="text-red-500 text-xs">{errors.title.message}</p>
             )}
           </div>
-          <div>
+          <div className="mt-4">
             <label className="label" htmlFor="file">
               Upload your document:
             </label>
