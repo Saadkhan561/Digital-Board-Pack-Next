@@ -10,10 +10,14 @@ import * as Yup from "yup";
 import moment from "moment";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
+import useUserStore from "@/stores/useUserStore";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
   const { data, isLoading } = useFetchAllUsers();
+
+  const { currentUser } = useUserStore();
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -26,14 +30,21 @@ const Scheduler = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  const scheduleSchema = Yup.object().shape({
+  // const initialValues = {
+  //   meeting_date: "",
+  //   meeting_time: "",
+  //   meeting_title: "",
+  //   attenders: [],
+  //   file: "",
+  // };
+
+  const scheduleSchema = Yup.object({
     meeting_date: Yup.string().required("Meeting date is required."),
     meeting_time: Yup.string().required("Meeting time is required."),
     meeting_title: Yup.string().required("Meeting title is required."),
     attenders: Yup.array()
       .of(Yup.string().typeError("Attenders must be an array of strings."))
-      .min(1, "At least one attender should be selected.")
-      .required("Please select attenders."),
+      .min(1, "At least one attender should be selected."),
     file: Yup.mixed().required("File is required."),
   });
 
@@ -51,7 +62,7 @@ const Scheduler = () => {
         theme: "dark",
         transition: Bounce,
       });
-      // reset();
+      reset();
     },
     onError(error) {
       toast.error(error.message, {
@@ -77,6 +88,8 @@ const Scheduler = () => {
     resolver: yupResolver(scheduleSchema),
   });
   const onSubmit = (data) => {
+    data.attenders.push(currentUser.user_id);
+    console.log(data);
     const { meeting_date, meeting_time, ...rest } = data;
     const formData = new FormData();
     formData.append("file", data.file[0]);
@@ -100,7 +113,7 @@ const Scheduler = () => {
             Schedule your meeting
           </div>
           <div>
-            <img
+            <Image
               onClick={() => schedule("schedule")}
               className="cursor-pointer"
               src="/images/cross-white.png"
@@ -130,7 +143,9 @@ const Scheduler = () => {
                 )}
               </div>
               <div>
-                <p className="text-gray-400 text-sm">Schedule your time and date</p>
+                <p className="text-gray-400 text-sm">
+                  Schedule your time and date
+                </p>
                 <div className="flex justify-between">
                   <div className="mt-2">
                     <input type="date" {...register("meeting_date")} />
@@ -156,46 +171,45 @@ const Scheduler = () => {
                 Upload your document:
               </label>
               <input type="file" {...register("file")} />
-              {errors.docName && (
-                <p className="text-red-500 text-xs">{errors.docName.message}</p>
+              {errors.file && (
+                <p className="text-red-500 text-xs">{errors.file.message}</p>
               )}
             </div>
             <div>
               <div className="p-2">
-                <div className="sticky top-0 shadow-md bg-white w-full mb-4">
-                  <input
-                    className="w-full border border-slate-300 rounded-md p-1 mt-2 focus:outline-blue-400"
-                    type="text"
-                    id="search"
-                    placeholder="Search here"
-                  />
-                </div>
+                {" "}
+                <div className="font-semibold text-xl">
+                Add Permissions
+              </div>
                 <div className="h-[200px] overflow-y-auto p-4">
                   {isLoading ? (
                     <div>Loading...</div>
                   ) : (
-                    data?.map((user, index) => (
-                      <div
-                        className="flex justify-between mt-4 border-b pb-2"
-                        key={index}
-                      >
-                        <div className="flex gap-2 items-center">
-                          <img
-                            src="/images/account.png"
-                            alt=""
-                            height={20}
-                            width={20}
-                          />
-                          <p>{user.email}</p>
-                        </div>
-                        <input
-                          className="cursor-pointer"
-                          type="checkbox"
-                          {...register("attenders")}
-                          value={user?.user_id}
-                        />
-                      </div>
-                    ))
+                    data?.map(
+                      (user, index) =>
+                        user.roles === "user" && (
+                          <div
+                            className="flex justify-between mt-4 border-b pb-2"
+                            key={index}
+                          >
+                            <div className="flex gap-2 items-center">
+                              <Image
+                                src="/images/account.png"
+                                alt=""
+                                height={20}
+                                width={20}
+                              />
+                              <p>{user.email}</p>
+                            </div>
+                            <input
+                              className="cursor-pointer"
+                              type="checkbox"
+                              {...register("attenders")}
+                              value={user?.user_id}
+                            />
+                          </div>
+                        )
+                    )
                   )}
                 </div>
               </div>

@@ -1,14 +1,18 @@
 import { useInsertComment } from "@/hooks/mutation.hook";
+import { useFetchComments } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const NewComment = () => {
+const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
   const router = useRouter();
-  const docId = router.query.id;
-  // const { refetch } = useFetchComments({ docId: docId }, { enabled: false });
+  const { refetch: refetchComments } = useFetchComments(
+    { docId: docId },
+    { enabled: false }
+  );
 
   const initialValues = {
     comment: "",
@@ -42,15 +46,14 @@ const NewComment = () => {
   const { mutate: comment } = useInsertComment({
     onSuccess() {
       reset();
+      refetchComments()
     },
-    onError(data) {
-      console.log(data);
-    },
+    onError(data) {},
   });
 
   const {
     register,
-    formState: { errors },
+    // formState: { errors },
     handleSubmit,
     reset,
   } = useForm({
@@ -59,15 +62,18 @@ const NewComment = () => {
   });
 
   const onSubmit = (data) => {
-    
-    comment({ ...data, doc_id: docId });
+    comment({
+      comment: data.comment,
+      doc_id: docId,
+      docVersionStatus: docVersionStatus,
+    });
   };
 
   return (
     <div>
       <div className="flex items-center gap-5 p-2">
         <div className="border rounded-full p-2 cursor-pointer w-1/10">
-          <img src="/images/account.png" alt="" height={25} width={25} />
+          <Image src="/images/account.png" alt="" height={25} width={25} />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
@@ -78,7 +84,7 @@ const NewComment = () => {
             placeholder="Your comment here..."
           />
           <button type="submit" className="w=1/10">
-            <img src="/images/send.png" alt="" height={25} width={25} />
+            <Image src="/images/send.png" alt="" height={25} width={25} />
           </button>
         </form>
       </div>
@@ -86,7 +92,4 @@ const NewComment = () => {
   );
 };
 
-
 export default NewComment;
-
-

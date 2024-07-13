@@ -79,8 +79,7 @@ export const useDeleteDocument = (option) => {
   });
 };
 
-// TO GIVE ACCESS OF DOCUMENT TO USERS
-export const userAccessListMutation = (option) => {
+export const useAccessListMutation = (option) => {
   return useMutation({
     ...option,
     mutationFn: userAccessList,

@@ -6,13 +6,14 @@ import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
-  meetings && console.log(meetings);
+  console.log(meetings)
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -49,20 +50,16 @@ const Calendar = () => {
     }));
 
   const renderEventContent = (eventInfo) => {
-    console.log(eventInfo.event.start);
     const { meeting_id } = eventInfo.event.extendedProps;
     const isExpanded = meeting_id === expandedEventId;
 
-    let hours = eventInfo.event.start.getHours();
-    let minutes = eventInfo.event.start.getMinutes();
-    let seconds = eventInfo.event.start.getSeconds();
+    const hours = eventInfo.event.start.getHours();
+    const minutes = eventInfo.event.start.getMinutes();
+    const seconds = eventInfo.event.start.getSeconds();
 
-    // Format the time as HH:MM:SS
-    let time = `${hours.toString().padStart(2, "0")}:${minutes
+    const time = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-    console.log(time);
 
     return (
       <Link
@@ -104,12 +101,13 @@ const Calendar = () => {
     <Layout>
       <div className="p-2">
         <div className="flex justify-center">
-          <div className="h-[550px] w-11/12">
-            <div className="mb-4 flex items-center gap-2 cursor-pointer border border-slate-300 rounded-lg hover:bg-slate-200 duration-200 w-max p-1 font-semibold shadow-2xl" onClick={() => schedule("schedule")}>
-              <img src="/images/plus.png" alt="" height={15} width={15}/>
-              <button>
-                Schedule a meeting
-              </button>
+          <div className="h-[450px] w-11/12">
+            <div
+              className="mb-4 flex items-center gap-2 cursor-pointer border border-slate-300 rounded-lg hover:bg-slate-200 duration-200 w-max p-1 font-semibold shadow-2xl"
+              onClick={() => schedule("schedule")}
+            >
+              <Image src="/images/plus.png" alt="" height={15} width={15} />
+              <button>Schedule a meeting</button>
             </div>
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}

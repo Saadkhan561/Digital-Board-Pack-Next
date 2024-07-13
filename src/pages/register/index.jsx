@@ -1,18 +1,18 @@
 // import Login from "@/components/register/login";
 // import SignUp from "@/components/register/signup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { useLoginMutation } from "../../hooks/mutation.hook";
 import useUserStore from "../../stores/useUserStore";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 
 // FOR TOAST
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import AdminPanelDiv from "@/components/admin_panel";
-import { useSocketStore } from "@/hooks/useSocket.hook";
+import Image from "next/image";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);
@@ -20,43 +20,53 @@ const Register = () => {
 
   const initialValues = {
     email: "",
-    pwd: "",
+    password: "",
   };
 
   const loginSchema = Yup.object({
     email: Yup.string().required("Email is required"),
-    pwd: Yup.string().required("Password is required"),
+    password: Yup.string().required("Password is required"),
   });
 
   const router = useRouter();
-  const { startConnection } = useSocketStore();
+
   const { mutate } = useLoginMutation({
     async onSuccess(data) {
       if (data) {
-        const { token, userData } = data;
-        const { pwd, ...rest } = userData;
-        setCurrentUser({ ...rest, token: token });
         reset();
-        await startConnection(data.user_id);
-        // console.log({ data });
-        toast.success("Logged In", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
-        // setTimeout(() => {
-        router.push("/");
-        // }, 2000);
+        if (data.userData.roles === "user" || data.userData.roles === "secretary") {
+          const { token, userData } = data;
+          const { password, ...rest } = userData;
+          setCurrentUser({ ...rest, token: token });
+          toast.success("Logged In", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+          router.push("/");
+        } else {
+          toast.error("Access denied", {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        }
       }
     },
     onError(err) {
-      console.log(err);
+      console.log(err)
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -100,10 +110,12 @@ const Register = () => {
         }
       >
         <div className="h-[600px] w-[400px] relative md:hidden">
-          <img
+          <Image
             className="object-cover h-full"
             src="/images/login_img.jpg"
             alt=""
+            layout="fill"
+            objectFit="cover"
           />
           <p className="absolute top-1/3 left-5 text-3xl font-semibold">
             Digital Board Pack
@@ -129,35 +141,39 @@ const Register = () => {
                   type="text"
                   {...register("email")}
                 />
-                <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+                <Image
+                className="h-4 w-4"
+                  src="/images/account_sm.png"
+                  alt=""
+                  height="4"
+                  width="4"
+                />
               </div>
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
               )}
             </div>
             <div>
-              <label className="label" htmlFor="pwd">
+              <label className="label" htmlFor="password">
                 Password
               </label>
               <div className="flex gap-1 border-b border-b-gray-300">
                 <input
                   className="input_field"
                   type={showpassword ? "text" : "password"}
-                  // id="pwd"
-                  // name="pwd"
-                  // values={values.pwd}
-                  // onChange={handleChange}
-                  {...register("pwd")}
+                  {...register("password")}
                 />
-                <img
+                <Image
                   onClick={() => setShowpassword(!showpassword)}
                   className="cursor-pointer h-4 w-4"
                   src="/images/pass_eye.png"
                   alt=""
+                  height={4}
+                  width={4}
                 />
               </div>
-              {errors.pwd && (
-                <p className="text-red-500 text-xs">{errors.pwd.message}</p>
+              {errors.password && (
+                <p className="text-red-500 text-xs">{errors.password.message}</p>
               )}
             </div>
             <button
@@ -176,7 +192,7 @@ const Register = () => {
                 }}
                 className="text-blue-500 underline cursor-pointer"
               >
-                <img
+                <Image
                   className="-rotate-90"
                   src="/images/down-arrow.png"
                   alt=""
@@ -187,7 +203,6 @@ const Register = () => {
             </p>
           </div>
         </div>
-    
       </div>
       {/* ADMIN PANEL DIV */}
       <div className="absolute top-0 h-full">{renderAdminPanelDiv()}</div>

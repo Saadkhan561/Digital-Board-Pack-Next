@@ -1,4 +1,5 @@
 import { useSearchDoc } from "@/hooks/mutation.hook";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -15,7 +16,7 @@ const Search = ({ value, setValue }) => {
         />
       </div>
 
-      <img src="/images/search.png" alt="" height={20} width={20} />
+      <Image src="/images/search.png" alt="" height={20} width={20} />
     </div>
   );
 };

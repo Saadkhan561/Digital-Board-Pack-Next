@@ -20,7 +20,6 @@ const Search = () => {
   };
 
   const { data: searchResults, isLoading } = useSearchDoc({ searchParam });
-  // console.log(searchResults)
 
   return (
     <Layout>

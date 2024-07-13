@@ -2,7 +2,6 @@ import { axios } from "../utils/axios";
 
 // UPLOAD DOCUMENT ON THE CLOUD
 export const uploadDocument = async (data) => {
- 
   if (data) {
     try {
       const res = await axios.post(`/uploads/${data.docName}`, data.formData);
@@ -36,7 +35,11 @@ export const insertUpdatedDocument = async (data) => {
 // TO DELETE DOCUMENT
 export const deleteDocument = async (data) => {
   try {
-    const res = await axios.delete(`/delete/${data.folder}/${data.docName}`);
+    const docId = data.docId ? data.docId : null;
+    const rootId = data.rootId ? data.rootId : null;
+    const res = await axios.delete(`/deleteDocument`, {
+      params: { fullPath: `${data.folder}/${data.docName}`, docId, rootId },
+    });
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -97,11 +100,11 @@ export const fetchDocumentById = async (params) => {
   if (id) {
     try {
       const response = await axios.get(`/GetFile/${id}`);
-      if (response.status !== 200) {
-        throw new Error("Network response was not ok");
+      if (response.status == 404) {
+        throw new Error("Document not found");
       }
 
-      return response.data;
+      return response.data.value;
     } catch (error) {
       throw new Error(error);
     }
@@ -115,7 +118,7 @@ export const meetingMinutesId = async (params) => {
     const res = await axios.post(
       `/meetingMin?meeting_min=${docId}&meeting_id=${id}`
     );
-    console.log(res.data);
+
     return res.data;
   } catch (error) {
     throw new Error(error);

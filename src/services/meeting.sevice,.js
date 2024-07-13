@@ -12,7 +12,6 @@ export const insertMeeting = async (data) => {
 };
 
 export const updateAgendaDocument = async (data) => {
-  console.log(data);
   try {
     const res = await axios.put("/UpdateAgenda", data);
     return res.data;
@@ -22,7 +21,6 @@ export const updateAgendaDocument = async (data) => {
 };
 
 export const updateMeetingMinDocument = async (data) => {
-  console.log(data);
   try {
     const res = await axios.put("/UpdateMeetingMin", data);
     return res.data;
@@ -67,7 +65,6 @@ export const getMeetingById = async (params) => {
 
 export const scheduleMeeting = async (data) => {
   try {
-    console.log(data);
     const documentName = data.file[0].name.split(".")[0];
     await uploadDocument({
       docName: documentName,
@@ -75,7 +72,7 @@ export const scheduleMeeting = async (data) => {
     });
     const { value: documentId } = await insertDocument({
       title: data.meeting_title,
-      docName: documentName,
+      doc_name: documentName,
     });
 
     await insertMeeting({

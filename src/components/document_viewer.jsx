@@ -4,17 +4,6 @@ import { Document, Page } from "@react-pdf/renderer";
 // import pdf from "../../public/files/test.pdf"
 
 function ViewPDF() {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    // console.log(numPages);
-    setNumPages(numPages);
-  }
-
-  // const pdf = "/files/test.pdf";
-  // console.log(pdf)
-
   return (
     <PDFViewer>
       <Document
@@ -23,16 +12,6 @@ function ViewPDF() {
         }
       />
     </PDFViewer>
-
-    // <div>
-    //   <Document
-    //     file={pdf}
-    //     onLoadSuccess={onDocumentLoadSuccess}
-    //   >
-    //     <Page pageNumber={pageNumber} />
-    //   </Document>
-    //   <p>Page {pageNumber} of {numPages}</p>
-    // </div>
   );
 }
 

@@ -1,43 +1,75 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import Share from "@/components/share_doc_popup";
 import Comment from "@/components/card_details/comments";
 import NewComment from "@/components/card_details/new_comment";
-import Layout from "@/layout/UserLayout";
-import { useRouter } from "next/router";
-import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
-import moment from "moment";
-import Link from "next/link";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import {
   useDeleteDocument,
   useDocUploadMutation,
   useInsertUpdatedDocument,
 } from "@/hooks/mutation.hook";
-import { ToastContainer, toast, Bounce } from "react-toastify";
+import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
+import Layout from "@/layout/UserLayout";
 import useUserStore from "@/stores/useUserStore";
-import { useParams, useSearchParams } from "next/navigation";
+import moment from "moment";
+import Link from "next/link";
+import { Bounce, toast } from "react-toastify";
+import Image from "next/image";
+import { Download, Pencil, Trash2, X } from "lucide-react";
+import { useRouter } from "next/router";
+import VersionModal from "@/components/version_modal";
 
 const CardDetails = ({ id }) => {
-  const [downloadPdf, setDownloadPdf] = useState(false);
+  // const [downloadPdf, setDownloadPdf] = useState(false);
   const [doc_version, setDocVersion] = useState(1);
   const [updateDoc, setUpdateDoc] = useState(false);
   const [docVersionDiv, setDocVersionDiv] = useState(false);
-  const [doc, setDoc] = useState("");
+  const [modalState, setModalState] = useState(false);
+  const [modalState2, setModalState2] = useState(false);
+  const [docVersionId, setDocVersionId] = useState();
+  const [docVersionStatus, setDocVersionStatus] = useState();
+  const [docVersionData, setDocVersionData] = useState();
 
-  const { data: document } = useFetchDocumentById({ id });
+  // const [currentDocId, setCurrentDocId] = useState(id)
+
+  const {
+    data: document,
+    refetch: refetchDoc,
+    isError: fetchDocumentError,
+  } = useFetchDocumentById({ id });
+  console.log(document);
+  // console.log(fetchDocumentError);
+
+  useEffect(() => {
+    let version = document && document.docVersions.length;
+    setDocVersion(version + 1);
+    if (document?.docVersions.length !== 0) {
+      setDocVersionId(document?.docVersions[0].doc_id);
+      setDocVersionStatus("version");
+    } else {
+      setDocVersionId(document?.doc_id);
+      setDocVersionStatus("parent");
+    }
+  }, [document]);
+
+  const router = useRouter();
+  // refetchDoc();
 
   const { currentUser } = useUserStore();
 
-  const { data: comments } = useFetchComments({
-    docId: id,
+  const { data: comments, refetch: refetchComments } = useFetchComments({
+    docId: docVersionId,
     role: currentUser.roles,
+    docVersionStatus,
   });
+
+  // console.log(comments)
 
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
-      toast.success(data + " " + "successfully!", {
+      console.log(data);
+      toast.success("Document deleted successfully!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -48,6 +80,10 @@ const CardDetails = ({ id }) => {
         theme: "dark",
         transition: Bounce,
       });
+      refetchDoc();
+      if (data === "root") {
+        router.push("/");
+      }
     },
     onError() {
       toast.error("Error occured", {
@@ -64,37 +100,38 @@ const CardDetails = ({ id }) => {
     },
   });
 
-  const { mutate: insertUpdatedDoc } = useInsertUpdatedDocument({
-    onSuccess() {
-      toast.success("Document added successfully!", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-      reset();
-      setUpdateDoc(false);
-    },
-    onError(data) {
-      console.log(data);
-      toast.error("Failed to Upload Document", {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
-    },
-  });
+  const { mutate: insertUpdatedDoc, isPending: isDocUpdatePending } =
+    useInsertUpdatedDocument({
+      onSuccess() {
+        toast.success("Document added successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+        reset();
+        setUpdateDoc(false);
+        refetchDoc();
+      },
+      onError(data) {
+        toast.error("Failed to Upload Document", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      },
+    });
 
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
@@ -102,7 +139,6 @@ const CardDetails = ({ id }) => {
       insertUpdatedDoc({ doc_name: data, title, doc_version, root_docId: id });
     },
     onError(error) {
-      console.log(error);
       toast.error("Failed to Upload Document", {
         position: "top-center",
         autoClose: 1000,
@@ -125,25 +161,46 @@ const CardDetails = ({ id }) => {
     watch,
   } = useForm();
 
-  let docName = document?.doc_name;
+  const docName =
+    currentUser.roles === "secretary"
+      ? document?.doc_name
+      : document?.docVersions[0].doc_name;
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    data && uploadFile({ formData, docName: docName });
+    // console.log({ formData, docName: docName })
+    uploadFile({ formData, docName: docName });
+  };
+
+  const doc = document?.doc_name?.split(".")[0];
+
+  const docWarning = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
+  };
+
+  const versionModalHandler = (data) => {
+    setModalState((prev) => !prev);
+    setDocVersionData(data);
   };
 
   return (
     <Layout>
-      <ToastContainer />
       <div className="w-full relative">
         <div className="p-4 mr-4 ml-4">
           <div className="flex justify-between items-center border-b-2 border-b-gray-300 pb-4">
             <div className="flex items-center gap-5">
               <div>
-                <img
+                <Image
                   className="rounded-full mob_screen:h-[50px] mob_screen:w-[50px] h-[50px] w-[50px] menu_bar_mob:h-[30px] menu_bar_mob:w-[30px]"
                   src="/images/account.png"
                   alt=""
+                  height={50}
+                  width={50}
                 />
               </div>
               <div>
@@ -152,75 +209,118 @@ const CardDetails = ({ id }) => {
                 </p>
                 <div className="flex gap-2 text-gray-500 font-semibold">
                   <p className="text-md menu_bar_mob:text-xs mob_screen:text-sm">
-                    {document?.username}
+                    {document?.user_name}
                   </p>
                   <p>|</p>
-                  <p>{moment(document?.created_at).format("DD MMM YYYY")}</p>
+                  <p>
+                    {currentUser.roles === "secretary"
+                      ? moment(document?.created_at).format("DD MMM YYYY")
+                      : moment(document?.docVersions[0].created_at).format(
+                          "DD MMM YYYY"
+                        )}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="relative flex items-center">
-              <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
-                <button
-                  className="text-gray-500 font-semibold"
-                  onClick={() => setUpdateDoc(!updateDoc)}
-                >
-                  Update document
-                </button>
-                <div
-                  className={
-                    updateDoc
-                      ? "absolute z-10 top-10 bg-white border border-slate-100 shadow-2xl p-4 right-1"
-                      : "hidden"
-                  }
-                >
-                  <p className="font-semibold mb-4">
-                    Upload the updated document
-                  </p>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <input type="file" {...register("file")} />
-                    <button
-                      className="border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3"
-                      type="submit"
-                    >
-                      Submit
-                    </button>
-                  </form>
+              {currentUser.roles === "secretary" && (
+                <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
+                  <button
+                    className="text-gray-500 font-semibold"
+                    onClick={() => setUpdateDoc(!updateDoc)}
+                  >
+                    <Pencil className="h-4 w-4 cursor-pointer" />
+                  </button>
+                  <div
+                    className={
+                      updateDoc
+                        ? "absolute z-10 top-10 bg-white border border-slate-100 shadow-2xl p-4 right-1"
+                        : "hidden"
+                    }
+                  >
+                    <div className="flex justify-between items-center mb-4">
+                      <p className="font-semibold">
+                        Upload the updated document
+                      </p>
+                      <X
+                        onClick={() => setUpdateDoc(!updateDoc)}
+                        className="h-4 w-4"
+                      />
+                    </div>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <input type="file" {...register("file")} />
+                      <div className="flex gap-2 items-center">
+                        <button
+                          className={
+                            isDocUpdatePending
+                              ? "border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3 opacity-50"
+                              : "border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3"
+                          }
+                          type="submit"
+                          disabled={isDocUpdatePending}
+                        >
+                          Submit
+                        </button>
+                        {isDocUpdatePending && (
+                          <Image
+                            src="/images/loading.gif"
+                            alt=""
+                            height={15}
+                            width={15}
+                          />
+                        )}
+                      </div>
+                    </form>
+                  </div>
                 </div>
-              </div>
-              <div onClick={() => setDownloadPdf(!downloadPdf)}>
-                <img
-                  className="cursor-pointer hover:bg-slate-100 rounded-full p-1 duration-200 mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
-                  src="/images/dots.png"
-                  alt=""
-                  height={25}
-                  width={25}
-                />
-              </div>
-              <div
-                className={
-                  downloadPdf
-                    ? "absolute z-10 top-10 right-2 w-[120px] border bg-white border-slate-100 shadow-2xl"
-                    : "hidden"
-                }
-              >
-                <ul className="flex flex-col items-center text-sm p-1">
-                  <li className="hover:bg-slate-100 text-gray-500 duration-200 p-2 cursor-pointer w-full font-semibold">
-                    <Link href={`/api/download-pdf/${document?.doc_name}`}>
-                      Download
-                    </Link>
-                  </li>
-                  {/* <li className="hover:bg-slate-100 duration-200 p-2 cursor-pointer w-full font-semibold text-red-500">
-                    Delete
-                  </li> */}
-                </ul>
+              )}
+              <div className="flex gap-2">
+                <button className="text-gray-500 border border-gray-500 rounded-lg p-1">
+                  <Download className="h-4 w-4 cursor-pointer" />
+                </button>
+                {currentUser.roles === "secretary" && (
+                  <button className="relative text-gray-500 border border-gray-500 rounded-lg p-1">
+                    <Trash2
+                      className="h-4 w-4 cursor-pointer"
+                      onClick={() => {
+                        docWarning("warning");
+                      }}
+                    />
+                    {router.query.warning && (
+                      <div className="absolute top-10 right-1 w-[200px] border shadow-2xl bg-white p-2 z-10">
+                        <div className="flex justify-end">
+                          <X
+                            onClick={() => docWarning("warning")}
+                            className="h-4 w-4"
+                          />
+                        </div>
+                        <p className="text-sm font-semibold p-1">
+                          If you delete this document all of its versions will
+                          also be deleted
+                        </p>
+                        <div
+                          className="text-sm bg-red-500 p-1 text-white cursor-pointer"
+                          onClick={() => {
+                            deleteDoc({
+                              folder: doc,
+                              docName: document?.doc_name,
+                              rootId: document?.doc_id,
+                            });
+                          }}
+                        >
+                          Delete anyway
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
           {/* DOCUMENT DIV */}
           <div className="items-center flex justify-between p-4 pb-4 border-b-2 border-b-gray-300">
             <div>
-              <img
+              <Image
                 className="mob_screen:h-[70px] mob_screen:w-[70px] menu_bar_mob:h-[50px] menu_bar_mob:w-[50px]"
                 src="/images/word.png"
                 alt=""
@@ -245,90 +345,104 @@ const CardDetails = ({ id }) => {
                   </a>
                 </button>
               </div>
-              <div
-                onClick={() => setDocVersionDiv(!docVersionDiv)}
-                className={
-                  document?.docVersions.length === 0
-                    ? "hidden"
-                    : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200 text-gray-500 font-semibold"
-                }
-              >
-                <button className="flex gap-2 items-center">
-                  <p>View all versions</p>
-                  <img
-                    src="/images/down-arrow.png"
-                    alt=""
-                    height={15}
-                    width={15}
-                  />
-                </button>
+              {currentUser.roles === "secretary" && (
                 <div
+                  onClick={() => setDocVersionDiv(!docVersionDiv)}
                   className={
-                    docVersionDiv
-                      ? "absolute top-10 p-1 border border-slate-100 bg-white shadow-2xl w-[140px]"
-                      : "hidden"
+                    document?.docVersions.length === 0
+                      ? "hidden"
+                      : "relative p-1 cursor-pointer text-sm rounded-lg border border-gray-400 mr-4 hover:bg-slate-100 duration-200 text-gray-500 font-semibold"
                   }
                 >
-                  {document?.docVersions
-                    .map((data, index) => (
-                      <div
-                        className="p-1 flex justify-between cursor-pointer"
-                        key={index}
+                  <button className="flex gap-2 items-center">
+                    <p>View all versions</p>
+                    <Image
+                      src="/images/down-arrow.png"
+                      alt=""
+                      height={15}
+                      width={15}
+                    />
+                  </button>
+                  <div
+                    className={
+                      docVersionDiv
+                        ? "absolute top-10 p-1 border border-slate-100 bg-white shadow-2xl w-[140px]"
+                        : "hidden"
+                    }
+                  >
+                    <div className="p-1 cursor-pointer">
+                      {/* <a
+                        href={`/pdf/${doc}/${document?.doc_name}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:bg-slate-100 duration-200"
                       >
-                        <a
-                          href={`/pdf/${doc}/${document?.doc_name}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:bg-slate-100 duration-200"
-                        >
-                          Version - {document.doc_version}
-                        </a>
-                        <img
-                          onClick={() =>
-                            deleteDoc({
-                              folder: doc,
-                              docName: document.doc_name,
-                            })
-                          }
-                          className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
-                          src="/images/trash.png"
-                          alt=""
-                        />
+                        Original Document
+                      </a> */}
+                      <div onClick={() => versionModalHandler(document && document)}>
+                        Original Document
                       </div>
-                    ))
-                    .reverse()}
+                    </div>{" "}
+                    <VersionModal
+                      versionData={docVersionData}
+                      modalState={modalState}
+                      setModalState={setModalState}
+                      setDocVersionStatus={"version"}
+                    />
+                    {document?.docVersions
+                      .map((data, index) => (
+                        <div
+                          className="p-1 flex justify-between cursor-pointer"
+                          key={index}
+                        >
+                          <div onClick={() => versionModalHandler(data)}>
+                            Version - {data.doc_version}
+                          </div>
+
+                          <Image
+                            onClick={() =>
+                              deleteDoc({
+                                folder: doc,
+                                docName: data.doc_name,
+                                docId: data.doc_id,
+                              })
+                            }
+                            className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
+                            src="/images/trash.png"
+                            alt=""
+                            height={6}
+                            width={6}
+                          />
+                        </div>
+                      ))
+                      .reverse()}
+                  </div>
                 </div>
-              </div>
-              {/* <div>
-                <img
-                  onClick={() => setShare(!isShare)}
-                  className="cursor-pointer mob_screen:h-[20px] mob_screen:w-[20px] menu_bar_mob:h-[15px] menu_bar_mob:w-[15px]"
-                  src="/images/share.png"
-                  alt=""
-                  height={25}
-                  width={25}
-                />
-                {renderShareDiv()}
-              </div> */}
+              )}
             </div>
           </div>
-          {/* COMMENT DIV */}
+
           <div className="mt-5">
             {comments
               ?.map((comment, index) => {
                 return (
                   <Comment
-                    username={comment.username}
+                    user_name={comment.user_name}
                     data={comment}
                     key={index}
                     comment={comment.comment_id}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
+                    refetchComments={refetchComments}
                   />
                 );
               })
               .reverse()}
-            <NewComment />
+            <NewComment
+              docId={docVersionId}
+              docVersionStatus={docVersionStatus}
+              refetchComments={refetchComments}
+            />
           </div>
         </div>
       </div>
@@ -337,7 +451,10 @@ const CardDetails = ({ id }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  return { props: { id: context.query.id } };
+  if (context?.query?.id) {
+    return { props: { id: context.query.id } };
+  }
+  return { props: {} };
 };
 
 export default withProtectedWrapper(CardDetails);

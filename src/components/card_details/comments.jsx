@@ -13,13 +13,15 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
+import Image from "next/image";
 
-const Comment = ({ data: commentData, username, roles, commentator_id }) => {
+const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments }) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
+  
   const initialValues = {
     comment: "",
   };
@@ -55,7 +57,6 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
     { id },
     {
       onSuccess(data) {
-        console.log(data);
         toast.success("Comment " + data, {
           position: "top-center",
           autoClose: 2000,
@@ -67,9 +68,9 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
           theme: "dark",
           transition: Bounce,
         });
+        refetchComments()
       },
       onError(error) {
-        console.log(error);
         toast.error(error, {
           position: "top-center",
           autoClose: 1000,
@@ -87,12 +88,10 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
 
   const { mutate: updateComment } = useUpdateComment({
     onSuccess(data) {
-      console.log(data);
       setUpdateCommentDiv(false);
+      refetchComments()
     },
-    onError(data) {
-      console.log(data);
-    },
+    onError(data) {},
   });
 
   const {
@@ -121,11 +120,10 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
 
   return (
     <div>
-      <ToastContainer />
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 w-4/5">
           <div className="border h-fit mt-2 rounded-full p-2">
-            <img
+            <Image
               className="menu_bar_div:h-[10px] menu_bar_mob:w-[10px]"
               src="/images/account.png"
               alt=""
@@ -138,10 +136,13 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               <div>
                 <div className="flex gap-5 items-center">
                   <p className="text-md menu_bar_mob:text-sm font-semibold">
-                    {username}
+                    {user_name}
                   </p>
                   <p className="text-gray-500 text-sm menu_bar_mob:text-xs">
-                    {moment(commentData?.createdAt).format("DD MMM")}
+                    {moment(commentData?.created_at).format("DD MMM")}
+                  </p>
+                  <p className="text-gray-500 text-sm menu_bar_mob:text-xs">
+                    {moment(commentData?.created_at).format("HH:mm")}
                   </p>
                 </div>
                 {updateCommentDiv && commentDiv ? (
@@ -157,7 +158,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                       placeholder="Your comment here..."
                     />
                     <button type="submit" className="w=1/10">
-                      <img
+                      <Image
                         src="/images/send.png"
                         alt=""
                         height={25}
@@ -173,7 +174,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               </div>
               {commentator_id === currentUser.user_id ? (
                 <div className="relative">
-                  <img
+                  <Image
                     onClick={() => setCommentDiv(!commentDiv)}
                     src="/images/dots.png"
                     alt=""
@@ -195,7 +196,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                           className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                         >
                           <p className="text-red-500">Delete</p>
-                          <img
+                          <Image
                             src="/images/trash.png"
                             alt=""
                             height={15}
@@ -214,7 +215,7 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
                   <a onClick={() => setViewReply(!isViewReply)} href="#">
                     View Replies
                   </a>
-                  {(roles === "User" || currentUser.roles === "Secretary") && (
+                  {(roles === "user" || currentUser.roles === "secretary") && (
                     <div className="flex gap-2">
                       <p>|</p>
                       <a onClick={() => setReplyFunc()} href="#">
@@ -229,8 +230,9 @@ const Comment = ({ data: commentData, username, roles, commentator_id }) => {
               <div>
                 {commentData.replies.map((reply) => (
                   <Replies
-                    key={reply.reply_id}
+                    key={reply.comment_id}
                     replyData={reply}
+                    refetchComments={refetchComments}
                     commentator_id={reply.commentator_id}
                   />
                 ))}

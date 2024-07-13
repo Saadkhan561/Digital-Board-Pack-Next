@@ -1,56 +1,68 @@
-import { React, useState } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-// FOR TOAST
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import { useLoginMutation } from "@/hooks/mutation.hook";
 import useUserStore from "@/stores/useUserStore";
+import { useRouter } from "next/router";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const AdminPanelDiv = () => {
   const [showpassword, setShowpassword] = useState(false);
   const router = useRouter();
-  const { currentUser, setCurrentUser } = useUserStore();
+  const { setCurrentUser } = useUserStore();
 
   const initialValues = {
     email: "",
-    pwd: "",
+    password: "",
   };
 
   const loginSchema = Yup.object({
     email: Yup.string().required("Email is required"),
-    pwd: Yup.string().required("Password is required"),
+    password: Yup.string().required("Password is required"),
   });
 
   const { mutate } = useLoginMutation({
     onSuccess(data) {
       if (data) {
-        const { token, userData } = data;
-        const { pwd, ...rest } = userData;
-        setCurrentUser({ ...rest, token: token });
+        // const { token, userData } = data;
+        // const { pwd, ...rest } = userData;
+        // setCurrentUser({ ...rest, token: token });
         reset();
-        // console.log({ data });
-        toast.success("Logged In", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
-        setTimeout(() => {
+        if (data.userData.roles === "admin") {
+          const { token, userData } = data;
+          const { pwd, ...rest } = userData;
+          setCurrentUser({ ...rest, token: token });
+          toast.success("Logged In", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
           router.push("/admin_panel");
-        }, 2000);
+        } else {
+          toast.error("Access denied", {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        }
       }
     },
     onError(err) {
-      console.log(err);
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -93,7 +105,7 @@ const AdminPanelDiv = () => {
           onClick={() => admin("admin")}
           className="flex justify-end cursor-pointer"
         >
-          <img src="/images/cross.png" alt="" height={15} width={15} />
+          <Image src="/images/cross.png" alt="" height={15} width={15} />
         </div>
         <p className="font-semibold text-lg">Login to admin panel</p>
         <form
@@ -110,7 +122,7 @@ const AdminPanelDiv = () => {
                 type="text"
                 {...register("email")}
               />
-              <img className="h-4 w-4" src="/images/account_sm.png" alt="" />
+              <Image className="h-4 w-4" src="/images/account_sm.png" alt="" height={4} width={4} />
             </div>
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -124,17 +136,19 @@ const AdminPanelDiv = () => {
               <input
                 className="input_field"
                 type={showpassword ? "text" : "password"}
-                {...register("pwd")}
+                {...register("password")}
               />
-              <img
+              <Image
                 onClick={() => setShowpassword(!showpassword)}
                 className="cursor-pointer h-4 w-4"
                 src="/images/pass_eye.png"
                 alt=""
+                height={4}
+                width={4}
               />
             </div>
-            {errors.pwd && (
-              <p className="text-red-500 text-xs">{errors.pwd.message}</p>
+            {errors.password && (
+              <p className="text-red-500 text-xs">{errors.password.message}</p>
             )}
           </div>
           <button
