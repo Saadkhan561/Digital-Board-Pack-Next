@@ -4,7 +4,7 @@ import {
   fetchDocByUser,
   fetchDocumentById,
 } from "@/services/document.service";
-import { fetchAllUsers } from "@/services/user.service";
+import { fetchAccessedUsers, fetchAllUsers } from "@/services/user.service";
 import { fetchAllDepartments } from "@/services/department.service";
 import {
   getAllMeetings,
@@ -46,6 +46,15 @@ export const useFetchAllUsers = (options) => {
     ...options,
     queryFn: fetchAllUsers,
     queryKey: [fetchAllUsers.name],
+  });
+};
+
+// QUERY TO FETCH ACCESSED USERS
+export const useFetchAccessedUsers = (params, options) => {
+  return useQuery({
+    ...options,
+    queryFn: async () => await fetchAccessedUsers(params),
+    queryKey: [fetchAccessedUsers.name, JSON.stringify(params)],
   });
 };
 

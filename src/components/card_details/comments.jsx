@@ -15,12 +15,11 @@ import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments }) => {
+const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus }) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
-
   
   const initialValues = {
     comment: "",
@@ -108,6 +107,7 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
     updateComment({
       comment: data.comment,
       comment_id: commentData.comment_id,
+      docVersionStatus: docVersionStatus
     });
   };
 
@@ -192,7 +192,7 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
                           Edit comment
                         </div>
                         <div
-                          onClick={() => deleteComment(commentData.comment_id)}
+                          onClick={() => deleteComment({id: commentData.comment_id, docVersionStatus: docVersionStatus})}
                           className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                         >
                           <p className="text-red-500">Delete</p>
@@ -234,13 +234,14 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
                     replyData={reply}
                     refetchComments={refetchComments}
                     commentator_id={reply.commentator_id}
+                    docVersionStatus={docVersionStatus}
                   />
                 ))}
               </div>
             )}
             {isReply && (
               <div>
-                <AddReply comment_id={commentData.comment_id} />
+                <AddReply docVersionStatus={docVersionStatus} comment_id={commentData.comment_id} />
               </div>
             )}
           </div>

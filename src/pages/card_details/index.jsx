@@ -21,17 +21,13 @@ import { useRouter } from "next/router";
 import VersionModal from "@/components/version_modal";
 
 const CardDetails = ({ id }) => {
-  // const [downloadPdf, setDownloadPdf] = useState(false);
   const [doc_version, setDocVersion] = useState(1);
   const [updateDoc, setUpdateDoc] = useState(false);
   const [docVersionDiv, setDocVersionDiv] = useState(false);
   const [modalState, setModalState] = useState(false);
-  const [modalState2, setModalState2] = useState(false);
   const [docVersionId, setDocVersionId] = useState();
   const [docVersionStatus, setDocVersionStatus] = useState();
   const [docVersionData, setDocVersionData] = useState();
-
-  // const [currentDocId, setCurrentDocId] = useState(id)
 
   const {
     data: document,
@@ -64,7 +60,7 @@ const CardDetails = ({ id }) => {
     docVersionStatus,
   });
 
-  // console.log(comments)
+  console.log(comments)
 
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
@@ -162,13 +158,12 @@ const CardDetails = ({ id }) => {
   } = useForm();
 
   const docName =
-    currentUser.roles === "secretary"
+    currentUser.roles === "secretary" || document?.docVersions.length === 0
       ? document?.doc_name
       : document?.docVersions[0].doc_name;
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("file", data.file[0]);
-    // console.log({ formData, docName: docName })
     uploadFile({ formData, docName: docName });
   };
 
@@ -186,6 +181,15 @@ const CardDetails = ({ id }) => {
   const versionModalHandler = (data) => {
     setModalState((prev) => !prev);
     setDocVersionData(data);
+  };
+
+  const accessList = (name) => {
+    if (router.query[name]) {
+      delete router.query[name];
+    } else {
+      router.query[name] = true;
+    }
+    router.push(router, undefined, { shallow: true });
   };
 
   return (
@@ -213,7 +217,7 @@ const CardDetails = ({ id }) => {
                   </p>
                   <p>|</p>
                   <p>
-                    {currentUser.roles === "secretary"
+                    {currentUser.roles === "secretary" || document?.docVersions.length === 0
                       ? moment(document?.created_at).format("DD MMM YYYY")
                       : moment(document?.docVersions[0].created_at).format(
                           "DD MMM YYYY"
@@ -222,9 +226,12 @@ const CardDetails = ({ id }) => {
                 </div>
               </div>
             </div>
-            <div className="relative flex items-center">
+            <div className="relative flex items-center gap-2">
+              <div onClick={() => accessList("access")} className="p-1 rounded-lg text-center text-sm font-semibold border border-gray-400 text-gray-500 cursor-pointer hover:bg-slate-100 duration-200">
+                Access List
+              </div>
               {currentUser.roles === "secretary" && (
-                <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer mr-2 hover:bg-slate-100 duration-200">
+                <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer hover:bg-slate-100 duration-200">
                   <button
                     className="text-gray-500 font-semibold"
                     onClick={() => setUpdateDoc(!updateDoc)}
@@ -275,15 +282,21 @@ const CardDetails = ({ id }) => {
                 </div>
               )}
               <div className="flex gap-2">
-                <button className="text-gray-500 border border-gray-500 rounded-lg p-1">
+                <button className="text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
                   <Download className="h-4 w-4 cursor-pointer" />
                 </button>
                 {currentUser.roles === "secretary" && (
-                  <button className="relative text-gray-500 border border-gray-500 rounded-lg p-1">
+                  <button className="relative text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
                     <Trash2
                       className="h-4 w-4 cursor-pointer"
                       onClick={() => {
-                        docWarning("warning");
+                        document?.docVersions.length === 0
+                          ? docWarning("warning")
+                          : deleteDoc({
+                              folder: doc,
+                              docName: document?.doc_name,
+                              docId: document?.docVersions[0].doc_id,
+                            });
                       }}
                     />
                     {router.query.warning && (
@@ -301,11 +314,17 @@ const CardDetails = ({ id }) => {
                         <div
                           className="text-sm bg-red-500 p-1 text-white cursor-pointer"
                           onClick={() => {
-                            deleteDoc({
-                              folder: doc,
-                              docName: document?.doc_name,
-                              rootId: document?.doc_id,
-                            });
+                            document?.docVersions.length === 0
+                              ? deleteDoc({
+                                  folder: doc,
+                                  docName: document?.doc_name,
+                                  rootId: document?.doc_id,
+                                })
+                              : deleteDoc({
+                                  folder: doc,
+                                  docName: document?.docVersions[0].doc_name,
+                                  docId: document?.docVersions[0].doc_id,
+                                });
                           }}
                         >
                           Delete anyway
@@ -379,10 +398,17 @@ const CardDetails = ({ id }) => {
                       >
                         Original Document
                       </a> */}
-                      <div onClick={() => versionModalHandler(document && document)}>
-                        Original Document
+                      <div className="flex justify-between items-center">
+                        <div
+                          onClick={() =>
+                            versionModalHandler(document && document)
+                          }
+                        >
+                          Original Document
+                        </div>
+                        <Trash2 className="h-4 w-4" />
                       </div>
-                    </div>{" "}
+                    </div>
                     <VersionModal
                       versionData={docVersionData}
                       modalState={modalState}
@@ -422,7 +448,7 @@ const CardDetails = ({ id }) => {
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-5 h-[220px] overflow-y-auto">
             {comments
               ?.map((comment, index) => {
                 return (
@@ -434,16 +460,17 @@ const CardDetails = ({ id }) => {
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
                     refetchComments={refetchComments}
+                    docVersionStatus={docVersionStatus}
                   />
                 );
               })
               .reverse()}
-            <NewComment
+          </div>
+          <NewComment
               docId={docVersionId}
               docVersionStatus={docVersionStatus}
               refetchComments={refetchComments}
             />
-          </div>
         </div>
       </div>
     </Layout>

@@ -54,3 +54,11 @@ export const resetPassword = async (data) => {
     throw new Error(error.response.data.message);
   }
 };
+export const fetchAccessedUsers = async (params) => {
+  try {
+    const res=  await axios.get(`/GetDocUsers/${params.docId}`)
+    return res.data
+  } catch(err) {
+    throw new Error(err.response.data.message)
+  }
+}

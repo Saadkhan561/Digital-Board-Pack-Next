@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Replies = ({ replyData, commentator_id, refetchComments }) => {
+const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus }) => {
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -45,14 +45,14 @@ const Replies = ({ replyData, commentator_id, refetchComments }) => {
       reset();
       setCommentDiv(false);
       setUpdateCommentDiv(false);
-      refetchComments()
+      refetchComments();
     },
     onError(data) {},
   });
 
   const { mutate: deleteReply } = useDeleteReply({
     onSuccess(data) {
-      refetchComment();
+      refetchComments();
     },
     onError(data) {},
   });
@@ -71,6 +71,7 @@ const Replies = ({ replyData, commentator_id, refetchComments }) => {
     updateReply({
       comment: data.comment,
       comment_id: replyData.comment_id,
+      docVersionStatus: docVersionStatus
     });
   };
 
@@ -133,7 +134,7 @@ const Replies = ({ replyData, commentator_id, refetchComments }) => {
                   Edit comment
                 </div>
                 <div
-                  onClick={() => deleteReply(replyData.reply_id)}
+                  onClick={() => deleteReply({id: replyData?.comment_id, docVersionStatus: docVersionStatus})}
                   className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                 >
                   <p className="text-red-500">Delete</p>

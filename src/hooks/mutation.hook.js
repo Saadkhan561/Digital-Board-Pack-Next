@@ -13,6 +13,7 @@ import {
   insertDocument,
   insertUpdatedDocument,
   meetingMinutesId,
+  removeAccess,
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
@@ -93,6 +94,13 @@ export const useAccessListMutation = (option) => {
   });
 };
 
+export const useRemoveAccessMutation = (option) => {
+  return useMutation({
+    ...option,
+    mutationFn: removeAccess,
+  });
+};
+
 // TO SAVE THE MEETING
 export const useInsertMeeting = (option) => {
   return useMutation({
@@ -167,7 +175,7 @@ export const useUpdateMeetingMinDocument = (options) => {
   });
 };
 
-export const useDeleteReply = (options) => {
+export const useDeleteReply = (params, options) => {
   return useMutation({
     mutationFn: deleteReply,
     ...options,
