@@ -27,9 +27,9 @@ const Home = () => {
       <>
         <div
           className={
-            Boolean(router.query.open)
+            Boolean(router.query.open) || Boolean(router.query.access)
               ? "opacity-50 duration-200"
-              : "opacity-100 duration-200"
+              : ""
           }
         >
           <div className="flex flex-row-reverse justify-between items-center p-4">
@@ -102,17 +102,16 @@ const Home = () => {
             {/* CARD */}
             {isLoading ? (
               <div className="flex h-full w-full items-center justify-center">
-                <Image src="/images/loading.gif" alt="" height={20} width={20}/>
+                <Image
+                  src="/images/loading.gif"
+                  alt=""
+                  height={20}
+                  width={20}
+                />
               </div>
             ) : (
               data?.map((document) => (
-                <Card
-                  key={document.doc_id}
-                  docId={document.doc_id}
-                  docName={document.doc_name}
-                  title={document.title}
-                  versions={document.docVersions.length}
-                />
+                <Card key={document.doc_id} docData={document} />
               ))
             )}
           </div>

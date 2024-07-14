@@ -27,3 +27,12 @@ export const fetchAllUsers = async () => {
     throw new Error(err.response.data.message);
   }
 };
+
+export const fetchAccessedUsers = async (params) => {
+  try {
+    const res=  await axios.get(`/GetDocUsers/${params.docId}`)
+    return res.data
+  } catch(err) {
+    throw new Error(err.response.data.message)
+  }
+}

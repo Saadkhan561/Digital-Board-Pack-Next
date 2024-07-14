@@ -20,17 +20,28 @@ export const insertComment = async (data) => {
 
 export const updateComment = async (data) => {
   try {
-    const res = await axios.put("/UpdateComment", data);
-    return res.data;
+    if (data.docVersionStatus === "version") {
+      const res = await axios.put("/UpdateVersionComment", data);
+      return res.data;
+    } else {
+      const res = await axios.put("/UpdateComment", data);
+      return res.data;
+    }
   } catch (err) {
     throw new Error(err);
   }
 };
 
 export const insertReply = async (data) => {
+  console.log(data);
   try {
-    const res = await axios.post("/InsertCommentReply", data);
-    return res.data;
+    if (data.docVersionStatus === "version") {
+      const res = await axios.post("/InsertVersionCommentReply", data);
+      return res.data;
+    } else {
+      const res = await axios.post("/InsertCommentReply", data);
+      return res.data;
+    }
   } catch (err) {
     throw new Error();
   }
@@ -38,8 +49,13 @@ export const insertReply = async (data) => {
 
 export const updateReply = async (data) => {
   try {
-    const res = await axios.put("/UpdateCommentReply", data);
-    return res.data;
+    if (data.docVersionStatus === "version") {
+      const res = await axios.put("/UpdateVersionCommentReply", data);
+      return res.data;
+    } else {
+      const res = await axios.put("/UpdateCommentReply", data);
+      return res.data;
+    }
   } catch (err) {
     throw new Error();
   }
@@ -61,10 +77,10 @@ export const fetchComments = async (params) => {
       }
     } else if (role === "user") {
       if (docVersionStatus === "version") {
-        const res = await axios.get(`/GetCommentByUser?docId=${docId}`);
+        const res = await axios.get(`/GetVersionCommentByUser?docId=${docId}`);
         return res.data;
       } else {
-        const res = await axios.get(`/GetVersionCommentByUser?docId=${docId}`);
+        const res = await axios.get(`/GetCommentByUser?docId=${docId}`);
         return res.data;
       }
     }
@@ -74,9 +90,15 @@ export const fetchComments = async (params) => {
 };
 
 export const deleteComment = async (params) => {
+  console.log(params)
   try {
-    const res = await axios.delete(`DeleteComment/${params}`);
-    return res.data;
+    if (params.docVersionStatus === "version") {
+      const res = await axios.delete(`DeleteVersionComment/${params.id}`);
+      return res.data;
+    } else {
+      const res = await axios.delete(`DeleteComment/${params.id}`);
+      return res.data;
+    }
   } catch (error) {
     throw new Error(error);
   }
@@ -84,8 +106,13 @@ export const deleteComment = async (params) => {
 
 export const deleteReply = async (params) => {
   try {
-    const res = await axios.delete(`DeleteCommentReply/${params}`);
-    return res.data;
+    if (params.docVersionStatus === "version") {
+      const res = await axios.delete(`DeleteVersionCommentReply/${params.id}`);
+      return res.data;
+    } else {
+      const res = await axios.delete(`DeleteCommentReply/${params.id}`);
+      return res.data;
+    }
   } catch (error) {
     throw new Error(error);
   }

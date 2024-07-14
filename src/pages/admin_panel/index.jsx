@@ -1,3 +1,4 @@
+import BubbleChart from "@/components/chart";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import SignUp from "@/components/register/signup";
 import useUserStore from "@/stores/useUserStore";
@@ -51,21 +52,135 @@ const AdminPanel = () => {
           </div>
         </div>
         {/* DASHBOARD BODY DIV */}
-        <div className="border ">
-        <table className="w-full border border-slate-300"> 
-          <tr className="border border-slate-300">
-            <th className="border border-slate-300 text-center p-1 text-xs">No.</th>
-            <th className="border border-slate-300 text-center p-1 text-xs">Title</th>
-            <th className="border border-slate-300 text-center p-1 text-xs">Status</th>
-            <th className="border border-slate-300 text-center p-1 text-xs">Uploaded on</th>
-          </tr>
-          <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-            <td className="border border-slate-300 text-center p-1 text-xs">1</td>
-            <td className="border border-slate-300 text-center p-1 text-xs">Discuss on OEL</td>
-            <td className="border border-slate-300 text-center p-1 text-xs">Viewed</td>
-            <td className="border border-slate-300 text-center p-1 text-xs">20/05/24</td>
-          </tr>
-        </table>
+        <div>
+          <div className="text-md font-semibold">Analytics</div>
+          <div><BubbleChart /></div>
+        </div>
+        <div>
+          <div className="text-md font-semibold mb-2">
+            Document history
+          </div>
+          <table className="w-full border border-slate-300">
+            <tr className="border border-slate-300">
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                No.
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Title
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Status
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Uploaded on
+              </th>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                1
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                2
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                3
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <div className="text-md font-semibold mb-2">
+            Meeting history
+          </div>
+          <table className="w-full border border-slate-300">
+            <tr className="border border-slate-300">
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                No.
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Title
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Status
+              </th>
+              <th className="border border-slate-300 text-center p-1 text-xs">
+                Scheduled on
+              </th>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                1
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                2
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+            <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                3
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Discuss on OEL
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                Viewed
+              </td>
+              <td className="border border-slate-300 text-center p-1 text-xs">
+                20/05/24
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
       <div className="absolute top-0 h-screen flex justify-center items-center">

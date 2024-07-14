@@ -7,8 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddReply = ({ comment_id }) => {
-  //   const docId = router.query.id;
+const AddReply = ({ comment_id, docVersionStatus }) => {
 
   const initialValues = {
     comment: "",
@@ -65,7 +64,7 @@ const AddReply = ({ comment_id }) => {
   });
 
   const onSubmit = (data) => {
-    reply({ root_cmntId: comment_id, ...data });
+    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus });
   };
 
   return (

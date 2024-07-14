@@ -1,3 +1,4 @@
+import AccessList from "@/components/access_list";
 import Notification from "@/components/layout/notification";
 import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
@@ -5,6 +6,7 @@ import { withProtectedWrapper } from "@/components/Protected Routes/protected_lo
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -43,12 +45,18 @@ function Layout({ children }) {
     }
   };
 
+  const renderAccessListModal = () => {
+    if (router.query.access) {
+      return <AccessList />;
+    }
+  };
+
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
-  const handleLogoutHandler =() =>{
-    router.push('/register?login=true')
-    logout()
-  }
+  const handleLogoutHandler = () => {
+    router.push("/register?login=true");
+    logout();
+  };
   const setValue = (value, name) => {
     router.query[name] = value;
     router.push(router, undefined, { shallow: true });
@@ -63,7 +71,8 @@ function Layout({ children }) {
         className={
           Boolean(router.query.open) ||
           Boolean(router.query.schedule) ||
-          Boolean(router.query.modal)
+          Boolean(router.query.modal) ||
+          Boolean(router.query.access)
             ? "p-4  border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden opacity-50"
             : "p-4  border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
         }
@@ -99,23 +108,6 @@ function Layout({ children }) {
                 </div>
                 <div>Dashboard</div>
               </Link>
-              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
-                <div className="mr-2">
-                  <Image
-                    src="/images/calendar.png"
-                    alt=""
-                    height={20}
-                    width={20}
-                  />
-                </div>
-                <div>Calendar</div>
-              </li> */}
-              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
-                <div className="mr-2">
-                  <Image src="/images/tools.png" alt="" height={20} width={20} />
-                </div>
-                <div>Tools</div>
-              </li> */}
               <Link
                 href={"scheduling"}
                 className="flex items-center mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-700 hover:duration-200"
@@ -146,7 +138,8 @@ function Layout({ children }) {
           menu ||
           Boolean(router.query.open) ||
           Boolean(router.query.schedule) ||
-          Boolean(router.query.modal)
+          Boolean(router.query.modal) || 
+          Boolean(router.query.access)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
         }
@@ -170,10 +163,8 @@ function Layout({ children }) {
                 <Notification />
               </div>
             </div>
-            <div className="flex items-center relative">
-              <Link
-                href={""}
-                onClick={() => setLogout(!logOut)}
+            <div className="flex gap-4 items-center relative">
+              <div
                 className="cursor-pointer rounded-full w-8 h-8 ml-2"
               >
                 <Image
@@ -182,15 +173,11 @@ function Layout({ children }) {
                   height={28}
                   width={28}
                 />
-              </Link>
-              {logOut ? (
-                <div
-                  onClick={handleLogoutHandler}
-                  className="absolute z-10 top-8 -left-5 rounded-md border border-slate-300 p-1 pl-2 pr-2 shadow-2xl mt-1 text-sm font-semibold text-red-500 hover:bg-slate-100 duration-200 cursor-pointer"
-                >
-                  Logout
-                </div>
-              ) : null}
+              </div>
+              <div onClick={() => logout()} className="flex gap-2 items-center border border-slate-400 rounded-lg cursor-pointer hover:bg-slate-100 duration-200 p-1 text-slate-600 text-xs">
+               <LogOut className="h-4 w-4" />
+                <button>Logout</button>
+              </div>
             </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
@@ -265,6 +252,8 @@ function Layout({ children }) {
       {/* MEETING INFO MODAL DIV */}
       <div className="absolute top-0">{renderMeetingInfoModal()}</div>
 
+      {/* ACCESS LIST MODAL DIV */}
+      <div className="absolute top-0">{renderAccessListModal()}</div>
     </div>
   );
 }

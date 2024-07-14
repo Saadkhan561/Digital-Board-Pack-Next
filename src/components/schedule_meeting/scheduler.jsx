@@ -12,6 +12,7 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import useUserStore from "@/stores/useUserStore";
+import { X } from "lucide-react";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
@@ -109,10 +110,10 @@ const Scheduler = () => {
       <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[500px] new_document:w-[350px] z-10 mob_screen:h-[600px]">
         <div className="flex justify-between items-center text-white bg-slate-900 p-4">
-          <div className="text-2xl font-semibold mob_screen:text-lg">
+          <div className="text-xl font-semibold mob_screen:text-lg">
             Schedule your meeting
           </div>
-          <div>
+          {/* <div>
             <Image
               onClick={() => schedule("schedule")}
               className="cursor-pointer"
@@ -121,7 +122,11 @@ const Scheduler = () => {
               height={20}
               width={20}
             />
-          </div>
+          </div> */}
+          <X
+            onClick={() => schedule("schedule")}
+            className="h-6 w-6 cursor-pointer rounded-full p-1 hover:bg-slate-700 duration-200"
+          />
         </div>
         <div className="p-6 mt-3 mob_screen:mt-0">
           <form
@@ -178,10 +183,8 @@ const Scheduler = () => {
             <div>
               <div className="p-2">
                 {" "}
-                <div className="font-semibold text-xl">
-                Add Permissions
-              </div>
-                <div className="h-[200px] overflow-y-auto p-4">
+                <div className="font-semibold text-xl">Add Permissions</div>
+                <div className="h-[200px] overflow-y-auto p-4 mt-4">
                   {isLoading ? (
                     <div>Loading...</div>
                   ) : (
