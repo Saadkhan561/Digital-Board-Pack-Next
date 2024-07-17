@@ -10,7 +10,8 @@ import {
 import { useFetchComments } from "@/hooks/query.hook";
 import useUserStore from "@/stores/useUserStore";
 import { Download } from "lucide-react";
-import Comment from "./card_details/comments";
+import Comment from "../card_details/comments";
+import VersionModalComments from "./versionModalComments";
 
 const VersionModal = ({
   versionData,
@@ -21,7 +22,6 @@ const VersionModal = ({
   const { currentUser } = useUserStore();
 
   const doc_name = versionData?.doc_name.split(".")[0];
-  // console.log(versionData);
 
   const { data: comments, refetch: refetchComments } = useFetchComments({
     docId: versionData?.doc_id,
@@ -29,13 +29,14 @@ const VersionModal = ({
     docVersionStatus,
   });
 
-  // console.log(comments);
+  console.log(comments);
 
   return (
     <Dialog
       open={modalState}
       modal
       onOpenChange={() => setModalState((prev) => !prev)}
+
     >
       <DialogContent>
         <div className="flex justify-between items-center mt-4">
@@ -57,14 +58,17 @@ const VersionModal = ({
           </div>
         </div>
         {/* COMMENT DIV */}
-        <div className="border border-black">
+        <div className="font-semibold">
+          Comments
+        </div>
+        <div className="h-[200px] overflow-y-auto">
           {comments?.length === 0 ? (
             <div className="flex justify-center text-slate-500 items-center">No comments...</div>
           ) : (
             comments
               ?.map((comment, index) => {
                 return (
-                  <Comment
+                  <VersionModalComments
                     user_name={comment.user_name}
                     data={comment}
                     key={index}
@@ -72,6 +76,7 @@ const VersionModal = ({
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
                     refetchComments={refetchComments}
+                    docVersionStatus={docVersionStatus}
                   />
                 );
               })

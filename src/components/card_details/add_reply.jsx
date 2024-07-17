@@ -1,4 +1,5 @@
 import { useInsertReply } from "@/hooks/mutation.hook";
+import { useFetchComments } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -7,7 +8,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddReply = ({ comment_id, docVersionStatus }) => {
+const AddReply = ({ comment_id, docVersionStatus, doc_name,parentDocId, updateReplyFunc, docId }) => {
+  const {refetch: refetchComments}= useFetchComments()
 
   const initialValues = {
     comment: "",
@@ -38,9 +40,11 @@ const AddReply = ({ comment_id, docVersionStatus }) => {
     };
   }, []);
 
-  const { mutate: reply } = useInsertReply({
+  const { mutate: reply, isPending: isReplyPending } = useInsertReply({
     onSuccess(data) {
       reset();
+      updateReplyFunc()
+      refetchComments()
     },
     onError(error) {
       error.error.message,
@@ -64,7 +68,7 @@ const AddReply = ({ comment_id, docVersionStatus }) => {
   });
 
   const onSubmit = (data) => {
-    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus });
+    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus, doc_name:doc_name && doc_name, docId: docId });
   };
 
   return (
@@ -76,13 +80,14 @@ const AddReply = ({ comment_id, docVersionStatus }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
             id="autoResizableTextArea"
-            className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+            disabled={isReplyPending}
+            className={isReplyPending ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
           />
           <button type="submit" className="w=1/10">
-            <Image src="/images/send.png" alt="" height={25} width={25} />
+          {isReplyPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}
           </button>
         </form>
       </div>

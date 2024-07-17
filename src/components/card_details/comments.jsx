@@ -15,11 +15,16 @@ import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus }) => {
+const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus, doc_name, docId, parentDocId }) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
+
+  const updateReplyFunc = () => {
+    setReply(!isReply)
+    setViewReply(true)
+  }
   
   const initialValues = {
     comment: "",
@@ -241,7 +246,7 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
             )}
             {isReply && (
               <div>
-                <AddReply docVersionStatus={docVersionStatus} comment_id={commentData.comment_id} />
+                <AddReply doc_name={doc_name && doc_name} parentDocId={parentDocId} docVersionStatus={docVersionStatus} comment_id={commentData.comment_id} updateReplyFunc={updateReplyFunc} docId={docId} />
               </div>
             )}
           </div>

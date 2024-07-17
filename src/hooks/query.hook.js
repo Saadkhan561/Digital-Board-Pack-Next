@@ -13,6 +13,7 @@ import {
 } from "@/services/meeting.sevice,";
 import { fetchComments } from "@/services/comments.service";
 import { search } from "@/services/search.service";
+import { getNotification } from "@/services/notification.service";
 
 export const useFetchDocumentById = (params, options) => {
   return useQuery({
@@ -99,5 +100,14 @@ export const useSearchDoc = (params, options) => {
     ...options,
     queryFn: async () => await search(params),
     queryKey: [search.name, JSON.stringify(params)],
+  });
+};
+
+// QUERY TO GET NOTIFICATIONS
+export const useFetchNotifications = (params, options) => {
+  return useQuery({
+    ...options,
+    queryFn: getNotification,
+    queryKey: [getNotification.name]
   });
 };
