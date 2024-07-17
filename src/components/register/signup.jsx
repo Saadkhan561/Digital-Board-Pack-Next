@@ -70,7 +70,7 @@ const SignUp = () => {
     reset,
   } = form;
   const onSubmit = (data) => {
-    console.log(data);
+
     mutate(data);
   };
 

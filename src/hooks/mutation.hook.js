@@ -23,6 +23,7 @@ import {
   updateAgendaDocument,
   updateMeetingMinDocument,
 } from "@/services/meeting.sevice,";
+import { changeNotificationStatus } from "@/services/notifcation.service";
 import {
   forgetPassword,
   login,
@@ -206,6 +207,13 @@ export const useSetPassword = (options) => {
 export const useAdminCreateUser = (options) => {
   return useMutation({
     mutationFn: adminCreateUser,
+    ...options,
+  });
+};
+
+export const useChangeNotificationStatus = (options) => {
+  return useMutation({
+    mutationFn: changeNotificationStatus,
     ...options,
   });
 };

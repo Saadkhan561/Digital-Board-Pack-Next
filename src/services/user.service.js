@@ -12,17 +12,21 @@ export const register = async (data) => {
 export const login = async (data) => {
   try {
     const res = await axios.post("/login", data);
-    console.log(res);
+
     return res.data;
   } catch (err) {
     throw new Error(err.response.data.message);
   }
 };
 
-export const fetchAllUsers = async () => {
+export const fetchAllUsers = async (params) => {
   try {
+    if (params) {
+      const res = await axios.get("/Users", { params });
+      return res.data;
+    }
     const res = await axios.get("/Users");
-    return res.data;
+    return res.data.results;
   } catch (err) {
     throw new Error(err.response.data.message);
   }
@@ -56,9 +60,9 @@ export const resetPassword = async (data) => {
 };
 export const fetchAccessedUsers = async (params) => {
   try {
-    const res=  await axios.get(`/GetDocUsers/${params.docId}`)
-    return res.data
-  } catch(err) {
-    throw new Error(err.response.data.message)
+    const res = await axios.get(`/GetDocUsers/${params.docId}`);
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
   }
-}
+};

@@ -2,15 +2,15 @@ import useUserStore from "@/stores/useUserStore";
 import { axios } from "../utils/axios";
 
 export const insertComment = async (data) => {
-  console.log(data);
+  
   try {
     if (data.docVersionStatus === "parent") {
       const res = await axios.post("/InsertComment", data);
-      console.log(res.data);
+      
       return res.data;
     } else {
       const res = await axios.post("/InsertVersionComment", data);
-      console.log(res.data);
+  
       return res.data;
     }
   } catch (err) {
@@ -33,7 +33,7 @@ export const updateComment = async (data) => {
 };
 
 export const insertReply = async (data) => {
-  console.log(data);
+  
   try {
     if (data.docVersionStatus === "version") {
       const res = await axios.post("/InsertVersionCommentReply", data);
@@ -64,8 +64,7 @@ export const updateReply = async (data) => {
 export const fetchComments = async (params) => {
   try {
     const { docId, role, docVersionStatus } = params;
-    // console.log(docId);
-    // console.log(docVersionStatus);
+
 
     if (docId && role === "secretary") {
       if (docVersionStatus === "parent") {
@@ -90,7 +89,7 @@ export const fetchComments = async (params) => {
 };
 
 export const deleteComment = async (params) => {
-  console.log(params)
+
   try {
     if (params.docVersionStatus === "version") {
       const res = await axios.delete(`DeleteVersionComment/${params.id}`);

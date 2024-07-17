@@ -90,7 +90,7 @@ const Scheduler = () => {
   });
   const onSubmit = (data) => {
     data.attenders.push(currentUser.user_id);
-    console.log(data);
+
     const { meeting_date, meeting_time, ...rest } = data;
     const formData = new FormData();
     formData.append("file", data.file[0]);

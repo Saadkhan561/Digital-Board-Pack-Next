@@ -15,10 +15,12 @@ import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);
-  const { setCurrentUser } = useUserStore();
+  const { currentUser, setCurrentUser } = useUserStore();
+  const router = useRouter();
 
   const initialValues = {
     email: "",
@@ -29,8 +31,6 @@ const Register = () => {
     email: Yup.string().required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
-
-  const router = useRouter();
 
   const { mutate } = useLoginMutation({
     async onSuccess(data) {
@@ -71,7 +71,7 @@ const Register = () => {
       }
     },
     onError(err) {
-      console.log(err);
+     
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -104,6 +104,11 @@ const Register = () => {
       return <AdminPanelDiv />;
     }
   };
+
+  if (currentUser?.token) {
+    router.push("/");
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="h-screen flex justify-center items-center relative">

@@ -31,14 +31,9 @@ export const updateMeetingMinDocument = async (data) => {
 
 export const getAllMeetings = async (params) => {
   try {
-    // if (params.role === "User") {
-    //     const res = await axios.get('/showUserMeetings')
-    //     return res
-    // } else {
-    //     const res = await axios.get('/showMeetings')
-    // }
-    const res = await axios.get("/showUserMeetings");
-    return res.data;
+    const response = await axios.get(`/getMeetings`, { params });
+
+    return response.data;
   } catch (error) {
     throw new Error(error);
   }

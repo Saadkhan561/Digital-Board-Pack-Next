@@ -75,8 +75,7 @@ const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus 
     });
   };
 
-  // const time = `${replyData.created_at.getHours()}:${replyData.getMinutes()}`
-  // console.log(time)
+
 
   const { currentUser } = useUserStore();
 

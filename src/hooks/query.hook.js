@@ -1,18 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  fetchAllDocument,
-  fetchDocByUser,
-  fetchDocumentById,
-} from "@/services/document.service";
-import { fetchAccessedUsers, fetchAllUsers } from "@/services/user.service";
+import { fetchComments } from "@/services/comments.service";
 import { fetchAllDepartments } from "@/services/department.service";
 import {
+  fetchDocByUser,
+  fetchDocumentById,
+  getAllDocuments,
+} from "@/services/document.service";
+import {
   getAllMeetings,
+  getAllUserMeetings,
   getMeetingById,
   getUserMeetings,
 } from "@/services/meeting.sevice,";
-import { fetchComments } from "@/services/comments.service";
+import { getNotifications } from "@/services/notifcation.service";
 import { search } from "@/services/search.service";
+import { fetchAccessedUsers, fetchAllUsers } from "@/services/user.service";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export const useFetchDocumentById = (params, options) => {
   return useQuery({
@@ -23,7 +25,6 @@ export const useFetchDocumentById = (params, options) => {
 };
 
 export const useFetchComments = (params, options) => {
-
   return useQuery({
     ...options,
     queryFn: async () => await fetchComments(params),
@@ -41,11 +42,11 @@ export const useFetchDocByUser = (options) => {
 };
 
 // QUERY TO FETCH ALL USERS
-export const useFetchAllUsers = (options) => {
+export const useFetchAllUsers = (params, options) => {
   return useQuery({
     ...options,
-    queryFn: fetchAllUsers,
-    queryKey: [fetchAllUsers.name],
+    queryFn: async () => await fetchAllUsers(params),
+    queryKey: [fetchAllUsers.name, params && JSON.stringify(params)],
   });
 };
 
@@ -68,11 +69,11 @@ export const useAllDepartments = (options) => {
 };
 
 // TO FETCH ALL MEETINGS
-export const useFetchAllMeetings = (params, options) => {
+export const useFetchAllUserMeetings = (params, options) => {
   return useQuery({
     ...options,
-    queryFn: async () => await getAllMeetings(params),
-    queryKey: [getAllMeetings.name, JSON.stringify(params)],
+    queryFn: async () => await getAllUserMeetings(params),
+    queryKey: [getAllUserMeetings.name, JSON.stringify(params)],
   });
 };
 
@@ -82,6 +83,14 @@ export const useGetUserMeetings = (options) => {
     ...options,
     queryFn: getUserMeetings,
     queryKey: [getUserMeetings.name],
+  });
+};
+
+export const useGetAllMeetings = (params, options) => {
+  return useQuery({
+    ...options,
+    queryFn: async () => await getAllMeetings(params),
+    queryKey: [getAllMeetings.name, JSON.stringify(params)],
   });
 };
 
@@ -101,3 +110,48 @@ export const useSearchDoc = (params, options) => {
     queryKey: [search.name, JSON.stringify(params)],
   });
 };
+
+export const useGetAllDocuments = (params, options) => {
+  return useQuery({
+    ...options,
+    queryFn: async () => await getAllDocuments(params),
+    queryKey: [getAllDocuments.name, JSON.stringify(params)],
+  });
+};
+
+// export const useGetNotifications = (options) => {
+//   return useQuery({
+//     ...options,
+//     queryFn: getNotifications,
+//     queryKey: [getNotifications.name],
+//   });
+// };
+
+// export const useGetNotifications= (params,options) =>  useInfiniteQuery({
+//   queryKey:[],/''
+//   queryFn: async
+//   ({ pageParam }) => await getNotifications(pageParam),
+//   ]linitialPageParam: 1,
+//   ...options,
+//   getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
+//     lastPage.nextCursor,
+//   getPreviousPageParam: (firstPage, allPages, firstPageParam, allPageParams) =>
+//     firstPage.prevCursor,
+// })
+
+export const useGetNotifications = (options) =>
+  useInfiniteQuery({
+    ...options,
+    queryKey: [getNotifications.name],
+    queryFn: async ({ pageParam }) =>
+      await getNotifications({ PageParam: pageParam, LimitParam: 10 }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+    
+      const nextPage = lastPage.length ? allPages.length + 1 : undefined;
+      return nextPage;
+    },
+  });
+
+
+  

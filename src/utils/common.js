@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import validator from "validator";
+import moment from "moment";
 
 export const passwordValidation = (fieldName) =>
   yup
@@ -20,3 +21,21 @@ export const passwordValidation = (fieldName) =>
           minNumbers: 1,
         })
     );
+
+export function formatDate(inputDate) {
+  const date = moment(inputDate);
+  const now = moment();
+
+  const diffInHours = now.diff(date, "hours");
+  const diffInDays = now.diff(date, "days");
+
+  if (diffInHours < 1) {
+    return date.fromNow(); // a few seconds ago, a minute ago
+  } else if (diffInHours < 24) {
+    return diffInHours === 1 ? "an hour ago" : `${diffInHours} hours ago`;
+  } else if (diffInDays < 7) {
+    return diffInDays === 1 ? "a day ago" : `${diffInDays} days ago`;
+  } else {
+    return date.format("Do MMMM"); // 5th June
+  }
+}

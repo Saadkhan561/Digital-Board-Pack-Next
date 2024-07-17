@@ -1,19 +1,19 @@
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
-import { useFetchAllMeetings } from "@/hooks/query.hook";
+import { useFetchAllUserMeetings } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
-  const { data: meetings, isLoading, refetch } = useFetchAllMeetings();
-  console.log(meetings)
+  const { data: meetings, isLoading, refetch } = useFetchAllUserMeetings();
+
 
   // FOR SCHEDULE MODAL
   const router = useRouter();

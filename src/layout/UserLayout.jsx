@@ -4,13 +4,14 @@ import Search from "@/components/layout/searchBar";
 import NewDocument from "@/components/new_document";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import Scheduler from "@/components/schedule_meeting/scheduler";
+import { useChangeNotificationStatus } from "@/hooks/mutation.hook";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
@@ -63,6 +64,37 @@ function Layout({ children }) {
   };
 
   const { currentUser } = useUserStore();
+  const notificationRef = useRef();
+  const menuRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
+        setNotify(false);
+      }
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setMenu, setNotify]);
+
+  const { mutate: changeStatus } = useChangeNotificationStatus();
+  const handleNotification = () => {
+    setNotify((prev) => !prev);
+
+    if (!notify) {
+      changeStatus();
+    }
+  };
 
   return (
     <div className="flex relative overflow-x-hidden h-screen">
@@ -73,14 +105,14 @@ function Layout({ children }) {
           Boolean(router.query.schedule) ||
           Boolean(router.query.modal) ||
           Boolean(router.query.access)
-            ? "p-4  border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden opacity-50"
-            : "p-4  border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
+            ? "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden opacity-50"
+            : "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
         }
       >
         {/* SIDE BAR DIV */}
         <div>
           <div className="text-xl font-semibold">Digital Board Pack</div>
-          {currentUser.roles === "secretary" && (
+          {currentUser?.roles === "secretary" && (
             <div
               onClick={() => newDocument("open")}
               className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-24 mt-4 ml-2 cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
@@ -122,12 +154,6 @@ function Layout({ children }) {
                 </div>
                 <div>Scheduling</div>
               </Link>
-              {/* <li className="flex items-center mb-1 cursor-pointer p-2 hover:rounded-2xl hover:bg-slate-200 hover:duration-200">
-                <div className="mr-2">
-                  <Image src="/images/email.png" alt="" height={20} width={20} />
-                </div>
-                <div>Share Document</div>
-              </li> */}
             </ul>
           </div>
         </div>
@@ -138,7 +164,7 @@ function Layout({ children }) {
           menu ||
           Boolean(router.query.open) ||
           Boolean(router.query.schedule) ||
-          Boolean(router.query.modal) || 
+          Boolean(router.query.modal) ||
           Boolean(router.query.access)
             ? "w-full opacity-50 duration-200 relative"
             : "w-full opacity-100 duration-200 relative"
@@ -151,22 +177,23 @@ function Layout({ children }) {
           {/* FULL SCREEM NOTIFICATION DIV */}
           <div className="flex items-center mob_screen:hidden">
             <div className="relative cursor-pointer">
-              <div onClick={() => setNotify(!notify)}>
+              <div onClick={handleNotification}>
                 <Image src="/images/notify.png" alt="" height={25} width={25} />
               </div>
 
               <div
                 className={
-                  notify ? "notification-div" : "notification-div hidden"
+                  notify
+                    ? "notification-div min-h-[50px]"
+                    : "notification-div hidden"
                 }
+                ref={notificationRef}
               >
                 <Notification />
               </div>
             </div>
             <div className="flex gap-4 items-center relative">
-              <div
-                className="cursor-pointer rounded-full w-8 h-8 ml-2"
-              >
+              <div className="cursor-pointer rounded-full w-8 h-8 ml-2">
                 <Image
                   src="/images/account.png"
                   alt=""
@@ -174,21 +201,26 @@ function Layout({ children }) {
                   width={28}
                 />
               </div>
-              <div onClick={() => logout()} className="flex gap-2 items-center border border-slate-400 rounded-lg cursor-pointer hover:bg-slate-100 duration-200 p-1 text-slate-600 text-xs">
-               <LogOut className="h-4 w-4" />
+              <div
+                onClick={() => logout()}
+                className="flex gap-2 items-center border border-slate-400 rounded-lg cursor-pointer hover:bg-slate-100 duration-200 p-1 text-slate-600 text-xs"
+              >
+                <LogOut className="h-4 w-4" />
                 <button>Logout</button>
               </div>
             </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
           <div className="relative flex gap-2 items-center mob_screen_closed:hidden">
-            <div className="cursor-pointer" onClick={() => setNotify(!notify)}>
+            <div className="cursor-pointer" onClick={handleNotification}>
               <Image src="/images/notify.png" alt="" height={25} width={25} />
             </div>
 
             <div
               className={
-                notify ? "notification-div" : "notification-div hidden"
+                notify
+                  ? "notification-div max-h-[200px]"
+                  : "notification-div hidden "
               }
             >
               <Notification />
@@ -211,6 +243,7 @@ function Layout({ children }) {
             ? "absolute top-0 right-0 mob_screen_closed:hidden shadow-2xl"
             : "absolute top-0 left-full mob_screen_closed:hidden"
         }
+        ref={menuRef}
       >
         <ul className="text-md font-semibold p-2 bg-white h-screen w-[250px] menu_bar_mob:w-screen border">
           <div
@@ -239,9 +272,6 @@ function Layout({ children }) {
             Log Out
           </li>
         </ul>
-        <div className="border border-slate-500 p-[3px] rounded-2xl hover:bg-slate-400 duration-300">
-          <Image src="/images/right-arrow.png" alt="" height={20} width={20} />
-        </div>
       </div>
       {/* NEW DOCUMENT DIV  */}
       <div className="fixed top-0">{renderNewDocument()}</div>
