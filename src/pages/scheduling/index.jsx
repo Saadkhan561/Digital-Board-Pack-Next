@@ -1,5 +1,5 @@
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
-import { useFetchAllUserMeetings } from "@/hooks/query.hook";
+import { useGetUserMeetings } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
@@ -12,10 +12,8 @@ import { useState } from "react";
 
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
-  const { data: meetings, isLoading, refetch } = useFetchAllUserMeetings();
+  const { data: meetings } = useGetUserMeetings();
 
-
-  // FOR SCHEDULE MODAL
   const router = useRouter();
   const schedule = (name) => {
     if (router.query[name]) {
@@ -36,18 +34,16 @@ const Calendar = () => {
   };
 
   // FOR CALENDAR
-  const fullCalendarEvents =
-    meetings &&
-    meetings.map((meeting) => ({
-      title: meeting.meeting_title,
-      start: `${meeting.meeting_datetime}`,
-      end: `${meeting.meeting_datetime}`,
-      extendedProps: {
-        agenda: meeting.agenda,
-        meeting_id: meeting.meeting_id,
-        meeting_mins: meeting.meeting_mins,
-      },
-    }));
+  const fullCalendarEvents = meetings?.map((meeting) => ({
+    title: meeting.meeting_title,
+    start: `${meeting.meeting_datetime}`,
+    end: `${meeting.meeting_datetime}`,
+    extendedProps: {
+      agenda: meeting.agenda,
+      meeting_id: meeting.meeting_id,
+      meeting_mins: meeting.meeting_mins,
+    },
+  }));
 
   const renderEventContent = (eventInfo) => {
     const { meeting_id } = eventInfo.event.extendedProps;

@@ -34,7 +34,6 @@ export const insertUpdatedDocument = async (data) => {
 
 // TO DELETE DOCUMENT
 export const deleteDocument = async (data) => {
-
   try {
     const docId = data.docId ? data.docId : null;
     const rootId = data.rootId ? data.rootId : null;
@@ -49,7 +48,6 @@ export const deleteDocument = async (data) => {
 
 // GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT
 export const userAccessList = async (data) => {
-
   const { docId, userId } = data;
   try {
     const res = await axios.post(`/AddPermission/${docId}`, userId);
@@ -61,12 +59,20 @@ export const userAccessList = async (data) => {
 
 // FUNCTION TO REMOVE ACCESS OF USERS
 export const removeAccess = async (data) => {
-
   try {
     const res = await axios.delete("/RemovePermission", data);
     return res.data;
   } catch (error) {
     throw new Error(error);
+  }
+};
+
+export const updateDocumentStatus = async (data) => {
+  try {
+    const res = await axios.put(`/updateStatus?docId=${data.docId}`);
+    return res.data;
+  } catch (err) {
+    throw new Error(err);
   }
 };
 

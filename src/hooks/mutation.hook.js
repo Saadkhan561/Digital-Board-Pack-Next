@@ -14,6 +14,7 @@ import {
   insertUpdatedDocument,
   meetingMinutesId,
   removeAccess,
+  updateDocumentStatus,
   uploadDocument,
   userAccessList,
 } from "@/services/document.service";
@@ -123,7 +124,7 @@ export const useInsertComment = (options) => {
     ...options,
     mutationFn: insertComment,
     async onSuccess(data, variables, context) {
-      await queryClient.invalidateQueries({ queryKey: [fetchComments.name] });
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -135,7 +136,19 @@ export const useInsertReply = (options) => {
     ...options,
     mutationFn: insertReply,
     async onSuccess(data, variables, context) {
-      await queryClient.invalidateQueries({ queryKey: [fetchComments.name] });
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const useUpdateDocumentStatus = (options) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: updateDocumentStatus,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchDocByUser"] });
       options?.onSuccess?.(data, variables, context);
     },
   });
