@@ -31,10 +31,9 @@ const Card = ({ docData }) => {
   const onDocumentClick = () => {
     console.log(docData.doc_id);
     if (!docData.doc_status) {
-      console.log(docData.doc_id);
-      // changeStatus({ docId: docData.doc_id });
+      changeStatus({ docId: docData.doc_id });
     }
-    // push(`/card_details?id=${docData.doc_id}`);
+    push(`/card_details?id=${docData.doc_id}`);
   };
   return (
     <div
