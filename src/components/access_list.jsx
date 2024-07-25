@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const AccessList = () => {
-  const [userAccessBtn, setUserAccessBtn] = useState(false);
+    const [clickedButtons, setClickedButtons] = useState([]);
   const router = useRouter();
 
   const { currentUser } = useUserStore();
@@ -30,7 +30,7 @@ const AccessList = () => {
   const { data: userAccessed, refetch: refetchAccessedUsers } =
     useFetchAccessedUsers({ docId });
 
-  const { data, isLoading } = useFetchAllUsers();
+  const { data, isLoading, refetch: refetchUsers } = useFetchAllUsers();
 
   const { mutate: documentAccess, isPending: isAccessPending } =
     useAccessListMutation({
@@ -51,6 +51,7 @@ const AccessList = () => {
         resetAddForm();
         refetchDoc();
         refetchAccessedUsers();
+        refetchUsers()
       },
       onError(error) {
         toast.error("Failed to Upload Document", {
@@ -105,11 +106,18 @@ const AccessList = () => {
 
   const onRemoveAccessSubmit = (data) => {
     const newValue = data.userId.filter(Boolean);
+    console.log(newValue)
     removeAccess({ docId, users: newValue });
   };
 
   const handleUserClick = (index, userId) => {
-    setUserAccessBtn(!userAccessBtn);
+    setClickedButtons((prev) => {
+        if (prev.includes(index)) {
+          return prev.filter((i) => i !== index); // Remove the index if it's already clicked
+        } else {
+          return [...prev, index]; // Add the index if it's not clicked
+        }
+      });
     const fieldName = `userId[${index}]`;
     const currentValue = watch(fieldName);
     const newValue = currentValue ? undefined : userId;
@@ -131,18 +139,16 @@ const AccessList = () => {
         <div className="p-6">
           <form onSubmit={handleRemoveFormSubmit(onRemoveAccessSubmit)}>
             <div className="flex gap-2 items-center">
-              <div className="font-semibold text-sm">Accessed Users:</div>
+              <div className="font-semibold text-sm border border-black ">Accessed Users:</div>
               <div className="p-2 flex gap-2 items-center flex-wrap">
                 {userAccessed?.map((user, index) => (
                   <button
-                    key={user.user_id}
+                    key={index}
                     type="button"
                     onClick={() => handleUserClick(index, user.user_id)}
-                    className="text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500 duration-200"
+                    className={clickedButtons.includes(index) ? "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-700 duration-100":"text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500"}
                   >
-                    <div>
                       <p>{user.user_name}</p>
-                    </div>
                   </button>
                 ))}
               </div>
@@ -175,7 +181,7 @@ const AccessList = () => {
                             key={index}
                           >
                             <div className="flex gap-2 items-center">
-                              <Image
+                              <img
                                 src="/images/account.png"
                                 alt=""
                                 height={20}

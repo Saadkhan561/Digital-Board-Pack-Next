@@ -85,5 +85,18 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-thin': {
+          '::-webkit-scrollbar': {
+            width: '1px',
+          },
+          '::-webkit-scrollbar': {
+            display: "none",
+          },
+        },
+      })
+    }
+  ],
 };

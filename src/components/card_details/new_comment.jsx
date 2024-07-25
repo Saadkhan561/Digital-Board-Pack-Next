@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
+const NewComment = ({ docId, docVersionStatus, commentStatus, parentDocId, doc_name }) => {
   const router = useRouter();
   const { refetch: refetchComments } = useFetchComments(
     { docId: docId },
@@ -43,12 +43,15 @@ const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
     };
   }, []);
 
-  const { mutate: comment } = useInsertComment({
-    onSuccess() {
+  const { mutate: comment, isPending: isCommentPending } = useInsertComment({
+    onSuccess(data) {
+      console.log(data)
       reset();
       refetchComments()
     },
-    onError(data) {},
+    onError(error) {
+      console.log(error)
+    },
   });
 
   const {
@@ -65,7 +68,9 @@ const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
     comment({
       comment: data.comment,
       doc_id: docId,
+      parentDocId: parentDocId,
       docVersionStatus: docVersionStatus,
+      doc_name: doc_name
     });
   };
 
@@ -78,13 +83,14 @@ const NewComment = ({ docId, docVersionStatus, commentStatus }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
             id="autoResizableTextArea"
-            className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+            disabled={isCommentPending}
+            className={isCommentPending ? "h-[40px] mt-1 opacity-50 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
           />
           <button type="submit" className="w=1/10">
-            <Image src="/images/send.png" alt="" height={25} width={25} />
+            {isCommentPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}
           </button>
         </form>
       </div>

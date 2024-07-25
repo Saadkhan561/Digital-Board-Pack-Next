@@ -18,7 +18,7 @@ import { Bounce, toast } from "react-toastify";
 import Image from "next/image";
 import { Download, Pencil, Trash2, X } from "lucide-react";
 import { useRouter } from "next/router";
-import VersionModal from "@/components/version_modal";
+import VersionModal from "@/components/versionModal/version_modal";
 
 const CardDetails = ({ id }) => {
   const [doc_version, setDocVersion] = useState(1);
@@ -28,6 +28,7 @@ const CardDetails = ({ id }) => {
   const [docVersionId, setDocVersionId] = useState();
   const [docVersionStatus, setDocVersionStatus] = useState();
   const [docVersionData, setDocVersionData] = useState();
+  // console.log(docVersionData)
 
   const {
     data: document,
@@ -215,7 +216,8 @@ const CardDetails = ({ id }) => {
                   </p>
                   <p>|</p>
                   <p>
-                    {currentUser?.roles === "secretary" || document?.docVersions.length === 0
+                    {currentUser.roles === "secretary" ||
+                    document?.docVersions.length === 0
                       ? moment(document?.created_at).format("DD MMM YYYY")
                       : moment(document?.docVersions[0].created_at).format(
                           "DD MMM YYYY"
@@ -225,7 +227,10 @@ const CardDetails = ({ id }) => {
               </div>
             </div>
             <div className="relative flex items-center gap-2">
-              <div onClick={() => accessList("access")} className="p-1 rounded-lg text-center text-sm font-semibold border border-gray-400 text-gray-500 cursor-pointer hover:bg-slate-100 duration-200">
+              <div
+                onClick={() => accessList("access")}
+                className="p-1 rounded-lg text-center text-sm font-semibold border border-gray-400 text-gray-500 cursor-pointer hover:bg-slate-100 duration-200"
+              >
                 Access List
               </div>
               {currentUser?.roles === "secretary" && (
@@ -388,14 +393,6 @@ const CardDetails = ({ id }) => {
                     }
                   >
                     <div className="p-1 cursor-pointer">
-                      {/* <a
-                        href={`/pdf/${doc}/${document?.doc_name}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:bg-slate-100 duration-200"
-                      >
-                        Original Document
-                      </a> */}
                       <div className="flex justify-between items-center">
                         <div
                           onClick={() =>
@@ -411,7 +408,11 @@ const CardDetails = ({ id }) => {
                       versionData={docVersionData}
                       modalState={modalState}
                       setModalState={setModalState}
-                      setDocVersionStatus={"version"}
+                      docVersionStatus={
+                        docVersionData?.docVersions.length
+                          ? "parent"
+                          : "version"
+                      }
                     />
                     {document?.docVersions
                       .map((data, index) => (
@@ -446,7 +447,7 @@ const CardDetails = ({ id }) => {
             </div>
           </div>
 
-          <div className="mt-5 h-[220px] overflow-y-auto">
+          <div className="mt-5">
             {comments
               ?.map((comment, index) => {
                 return (
@@ -454,21 +455,25 @@ const CardDetails = ({ id }) => {
                     user_name={comment.user_name}
                     data={comment}
                     key={index}
+                    docId={document?.doc_id}
                     comment={comment.comment_id}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
                     refetchComments={refetchComments}
                     docVersionStatus={docVersionStatus}
+                    doc_name={document?.title}
                   />
                 );
               })
               .reverse()}
           </div>
           <NewComment
-              docId={docVersionId}
-              docVersionStatus={docVersionStatus}
-              refetchComments={refetchComments}
-            />
+            parentDocId={document?.doc_id}
+            docId={docVersionId}
+            docVersionStatus={docVersionStatus}
+            refetchComments={refetchComments}
+            doc_name={document?.title}
+          />
         </div>
       </div>
     </Layout>
