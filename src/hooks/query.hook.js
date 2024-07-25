@@ -70,7 +70,6 @@ export const useAllDepartments = (options) => {
 
 // TO FETCH ALL MEETINGS
 
-
 // TO FETCH ONLY USER'S MEETINGS
 export const useGetUserMeetings = (options) => {
   return useQuery({
@@ -113,39 +112,15 @@ export const useGetAllDocuments = (params, options) => {
   });
 };
 
-// export const useGetNotifications = (options) => {
-//   return useQuery({
-//     ...options,
-//     queryFn: getNotifications,
-//     queryKey: [getNotifications],
-//   });
-// };
-
-// export const useGetNotifications= (params,options) =>  useInfiniteQuery({
-//   queryKey:[],/''
-//   queryFn: async
-//   ({ pageParam }) => await getNotifications(pageParam),
-//   ]linitialPageParam: 1,
-//   ...options,
-//   getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
-//     lastPage.nextCursor,
-//   getPreviousPageParam: (firstPage, allPages, firstPageParam, allPageParams) =>
-//     firstPage.prevCursor,
-// })
-
 export const useGetNotifications = (options) =>
   useInfiniteQuery({
     ...options,
-    queryKey: [getNotifications],
+    queryKey: ["getNotifications"],
     queryFn: async ({ pageParam }) =>
       await getNotifications({ PageParam: pageParam, LimitParam: 10 }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-    
       const nextPage = lastPage.length ? allPages.length + 1 : undefined;
       return nextPage;
     },
   });
-
-
-  
