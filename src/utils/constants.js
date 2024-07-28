@@ -1,4 +1,16 @@
-export const navItems = [
+export const adminNavItems = [
+  {
+    title: "Home",
+    href: "/",
+    icon: "dashboard",
+    label: "Admin",
+  },
+  {
+    title: "Scheduling",
+    href: "/scheduling",
+    icon: "laptop",
+    label: "Meeting",
+  },
   {
     title: "Dashboard",
     href: "/admin",
@@ -23,5 +35,20 @@ export const navItems = [
     href: "/admin/users",
     icon: "user",
     label: "user",
+  },
+];
+
+export const navItems = [
+  {
+    title: "Home",
+    href: "/",
+    icon: "dashboard",
+    label: "Admin",
+  },
+  {
+    title: "Scheduling",
+    href: "/scheduling",
+    icon: "laptop",
+    label: "Meeting",
   },
 ];

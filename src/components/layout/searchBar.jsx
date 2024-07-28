@@ -1,22 +1,59 @@
-import { useSearchDoc } from "@/hooks/mutation.hook";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useFetchDocByUser } from "@/hooks/query.hook";
+import { File } from "lucide-react";
+import { useState } from "react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import { Separator } from "../ui/separator";
+import Link from "next/link";
 
-const Search = ({ value, setValue }) => {
+const Search = () => {
+  const { data: documents } = useFetchDocByUser();
+  const [value, setValue] = useState();
+  const onValueChange = (value) => {
+    if (value.trim() === "") {
+      setValue();
+      return;
+    }
+    setValue(value);
+  };
   return (
-    <div className="flex items-center w-[500px] mob_screen:w-4/5 md:w-[300px] ml-4 p-2 border border-gray-300 rounded-3xl">
-      <div className="w-full">
-        <input
-          className="focus:outline-none w-full"
-          type="text"
-          placeholder="Search here..."
-          value={value}
-          onChange={(e) => setValue?.(e.target.value, "search")}
-        />
-      </div>
+    <div className="relative w-[50%]">
+      <Command
+        className="rounded-lg border "
+        onChange={(e) => onValueChange(e.target.value)}
+      >
+        <CommandInput placeholder="Type a command or search..." />
 
-      <Image src="/images/search.png" alt="" height={20} width={20} />
+        <CommandList
+          className={`absolute top-12 bg-white w-full border rounded-lg border-zinc-300 z-[9999]  ${
+            value ? "" : "hidden"
+          }`}
+        >
+          <CommandGroup heading="Documents">
+            {documents?.map((document) => {
+              return (
+                <>
+                  <CommandItem className={"relative z-[99999] cursor-pointer"}>
+                    
+                    <File className="mr-2 h-4 w-4" />
+                    <span>{document.title}</span>
+                
+                  </CommandItem>
+                  <Separator />
+                </>
+              );
+            })}
+          </CommandGroup>
+
+          <CommandEmpty>No Documents to Show</CommandEmpty>
+        </CommandList>
+      </Command>
     </div>
   );
 };

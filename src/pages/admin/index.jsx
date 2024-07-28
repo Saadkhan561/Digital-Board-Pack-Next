@@ -1,17 +1,16 @@
 import BubbleChart from "@/components/chart";
-import AdminLayout from "@/layout/admin-layout";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import SignUp from "@/components/register/signup";
+import Layout from "@/layout/UserLayout";
 import useUserStore from "@/stores/useUserStore";
 import { useRouter } from "next/router";
-import React from "react";
 
 const AdminPanel = () => {
   const { currentUser, logout } = useUserStore();
   const router = useRouter();
 
   return (
-    <AdminLayout>
+    <Layout>
       <div className="flex justify-center items-center relative">
         <div
           className={
@@ -181,8 +180,8 @@ const AdminPanel = () => {
           {router.query.signUp && <SignUp />}
         </div>
       </div>
-    </AdminLayout>
+    </Layout>
   );
 };
 
-export default withProtectedWrapper(AdminPanel, "admin");
+export default withProtectedWrapper(AdminPanel, "secretary");

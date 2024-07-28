@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 const Card = ({ docData }) => {
   const fileExtIndex = docData.doc_name?.lastIndexOf(".");
   const fileExt = docData.doc_name?.slice(fileExtIndex + 1);
+  const docStatus = docData.doc_status === "True" ? true : false;
   const { push } = useRouter();
   const { mutate: changeStatus } = useUpdateDocumentStatus({
     onError(error) {
@@ -29,17 +30,17 @@ const Card = ({ docData }) => {
   });
 
   const onDocumentClick = () => {
-    console.log(docData.doc_id);
-    if (!docData.doc_status) {
+    if (!docStatus) {
       changeStatus({ docId: docData.doc_id });
     }
     push(`/card_details?id=${docData.doc_id}`);
   };
+
   return (
     <div
       onClick={onDocumentClick}
       className={`w-[150px] mob_screen:w-[130px] card_div_sm:w-screen border ${
-        !docData.doc_status && "shadow-lg shadow-black/50"
+        !docStatus && "shadow-lg shadow-black/50"
       } "border-slate-400"  rounded-b-lg cursor-pointer hover:scale-105 duration-100`}
     >
       <div className="">

@@ -1,17 +1,16 @@
 import Heading from "@/components/heading";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import SearchBar from "@/components/Searchbar";
 import { columns } from "@/components/tables/documents/columns";
 import { DataTable } from "@/components/tables/table";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 
-import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
 import { useGetAllDocuments } from "@/hooks/query.hook";
-import AdminLayout from "@/layout/admin-layout";
+import Layout from "@/layout/UserLayout";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 const breadcrumbItems = [{ title: "Documents", link: "/admin/documents" }];
 
@@ -30,7 +29,7 @@ const DocumentsPage = () => {
   
 
   return (
-    <AdminLayout>
+    <Layout>
       <>
         <div className="flex-1 space-y-4  p-4 md:p-8 pt-6">
           <Breadcrumb items={breadcrumbItems} />
@@ -55,8 +54,8 @@ const DocumentsPage = () => {
           )}
         </div>
       </>
-    </AdminLayout>
+    </Layout>
   );
 };
 
-export default DocumentsPage;
+export default withProtectedWrapper(DocumentsPage,"secretary");

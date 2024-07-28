@@ -1,4 +1,5 @@
 import Heading from "@/components/heading";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import SearchBar from "@/components/Searchbar";
 import { columns } from "@/components/tables/meetings/columns";
 
@@ -7,7 +8,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 import { Separator } from "@/components/ui/separator";
 import { useGetAllMeetings } from "@/hooks/query.hook";
-import AdminLayout from "@/layout/admin-layout";
+import Layout from "@/layout/UserLayout";
 
 import { useSearchParams } from "next/navigation";
 
@@ -26,7 +27,7 @@ const MeetingPage = () => {
   });
 
   return (
-    <AdminLayout>
+    <Layout>
       <>
         <div className="flex-1 space-y-4  p-4 md:p-8 pt-6">
           <Breadcrumb items={breadcrumbItems} />
@@ -53,8 +54,8 @@ const MeetingPage = () => {
           )}
         </div>
       </>
-    </AdminLayout>
+    </Layout>
   );
 };
 
-export default MeetingPage;
+export default withProtectedWrapper(MeetingPage,"secretary");
