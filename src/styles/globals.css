@@ -76,7 +76,7 @@
 }
 
 .menu-bar-li {
-  @apply p-3 hover:bg-slate-200 duration-300 cursor-pointer rounded-3xl;
+  @apply p-3 hover:bg-slate-700 duration-200 cursor-pointer rounded-xl;
 }
 
 .notification-div {

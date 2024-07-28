@@ -46,7 +46,7 @@ const AdminPanelDiv = () => {
             theme: "dark",
             transition: Bounce,
           });
-          router.push("/admin_panel");
+          router.push("/admin");
         } else {
           toast.error("Access denied", {
             position: "top-center",

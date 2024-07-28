@@ -2,15 +2,15 @@ import useUserStore from "@/stores/useUserStore";
 import { axios } from "../utils/axios";
 
 export const insertComment = async (data) => {
-  console.log(data);
+  
   try {
     if (data.docVersionStatus === "parent") {
-      const res = await axios.post(`/InsertComment?doc_name=${data.doc_name}`, data);
-      console.log(res.data);
+      const res = await axios.post("/InsertComment", data);
+      
       return res.data;
     } else {
-      const res = await axios.post(`/InsertVersionComment`, data,{params: {docId: data.parentDocId, doc_name:data.doc_name}});
-      console.log(res.data);
+      const res = await axios.post("/InsertVersionComment", data);
+  
       return res.data;
     }
   } catch (err) {
@@ -33,7 +33,7 @@ export const updateComment = async (data) => {
 };
 
 export const insertReply = async (data) => {
-  console.log(data);
+  
   try {
     if (data.docVersionStatus === "version") {
       const res = await axios.post(`/InsertVersionCommentReply`, data,{params: {doc_name:data.doc_name, docId: data.docId }});
@@ -65,8 +65,7 @@ export const fetchComments = async (params) => {
   // console.log(params)
   try {
     const { docId, role, docVersionStatus } = params;
-    // console.log(docId);
-    // console.log(docVersionStatus);
+
 
     if (docId && role === "secretary") {
       if (docVersionStatus === "parent") {
@@ -91,7 +90,7 @@ export const fetchComments = async (params) => {
 };
 
 export const deleteComment = async (params) => {
-  console.log(params)
+
   try {
     if (params.docVersionStatus === "version") {
       const res = await axios.delete(`DeleteVersionComment/${params.id}`);

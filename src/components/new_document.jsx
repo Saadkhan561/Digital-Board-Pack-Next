@@ -1,7 +1,7 @@
 import { useFetchAllUsers, useFetchDocByUser } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
-import {  useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import {
@@ -31,12 +31,12 @@ const NewDocument = () => {
   };
 
   const { data, isLoading } = useFetchAllUsers();
-  console.log(data)
 
-  const { data: doc, refetch:refetchDoc } = useFetchDocByUser();
 
-  const {currentUser} = useUserStore()
-  const user_id = currentUser.user_id
+  const { data: doc, refetch: refetchDoc } = useFetchDocByUser();
+
+  const { currentUser } = useUserStore();
+  const user_id = currentUser.user_id;
   const initialValues = {
     title: "",
     doc_name: null,
@@ -66,7 +66,7 @@ const NewDocument = () => {
           transition: Bounce,
         });
         reset();
-        refetchDoc()
+        refetchDoc();
       },
       onError(error) {
         toast.error("Failed to Upload Document", {
@@ -83,7 +83,7 @@ const NewDocument = () => {
       },
     });
 
-  const role = currentUser.roles;
+  const role = currentUser?.roles;
   const { mutate: insertFile, isLoading: isInsertLoading } =
     useInsertDocumentMutation({
       onSuccess(data) {
@@ -145,10 +145,10 @@ const NewDocument = () => {
   });
 
   const onSubmit = (data) => {
-    data.userId.push(currentUser.user_id)
+    data.userId.push(currentUser.user_id);
     const formData = new FormData();
     formData.append("file", data.doc_name[0]);
-    const file = data.doc_name[0].name.split('.')[0]
+    const file = data.doc_name[0].name.split(".")[0];
     uploadFile({ formData, docName: file });
   };
 
@@ -186,9 +186,7 @@ const NewDocument = () => {
 
           <div>
             <div className="p-2 mt-4">
-              <div className="font-semibold text-xl">
-                Add Permissions
-              </div>
+              <div className="font-semibold text-xl">Add Permissions</div>
               <div className="h-[200px] overflow-y-auto mt-2">
                 {isLoading ? (
                   <div>Loading...</div>

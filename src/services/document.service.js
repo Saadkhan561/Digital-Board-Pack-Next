@@ -34,8 +34,7 @@ export const insertUpdatedDocument = async (data) => {
 
 // TO DELETE DOCUMENT
 export const deleteDocument = async (data) => {
-  console.log(data.docId)
-  console.log(data.rootId)
+
   try {
     const docId = data.docId ? data.docId : null;
     const rootId = data.rootId ? data.rootId : null;
@@ -50,10 +49,10 @@ export const deleteDocument = async (data) => {
 
 // GIVE ACCESS TO USERS TO A PARTICULAR DOCUMENT
 export const userAccessList = async (data) => {
-  console.log(data)
+
   const { docId, userId } = data;
   try {
-    const res = await axios.post(`/AddPermission/${docId}`, userId); 
+    const res = await axios.post(`/AddPermission/${docId}`, userId);
     return res.data;
   } catch (error) {
     throw new Error(error);
@@ -62,14 +61,14 @@ export const userAccessList = async (data) => {
 
 // FUNCTION TO REMOVE ACCESS OF USERS
 export const removeAccess = async (data) => {
-  console.log(data)
+
   try {
-    const res = await axios.delete('/RemovePermission', data); 
+    const res = await axios.delete("/RemovePermission", data);
     return res.data;
   } catch (error) {
     throw new Error(error);
   }
-}
+};
 
 // try {
 //   const response = await axios.get("/GetDoc", {
@@ -122,6 +121,16 @@ export const fetchDocumentById = async (params) => {
     } catch (error) {
       throw new Error(error);
     }
+  }
+};
+
+export const getAllDocuments = async (params) => {
+  try {
+    const response = await axios.get(`/GetDocuments`, { params });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
   }
 };
 

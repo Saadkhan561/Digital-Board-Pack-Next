@@ -25,11 +25,11 @@ const VersionModal = ({
 
   const { data: comments, refetch: refetchComments } = useFetchComments({
     docId: versionData?.doc_id,
-    role: currentUser.roles,
+    role: currentUser?.roles,
     docVersionStatus,
   });
 
-  console.log(comments);
+  
 
   return (
     <Dialog

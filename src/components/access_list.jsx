@@ -1,15 +1,15 @@
-import { useFetchAccessedUsers, useFetchAllUsers } from "@/hooks/query.hook";
-import useUserStore from "@/stores/useUserStore";
-import { Image, X } from "lucide-react";
-import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
 import {
   useAccessListMutation,
   useRemoveAccessMutation,
 } from "@/hooks/mutation.hook";
+import { useFetchAccessedUsers, useFetchAllUsers } from "@/hooks/query.hook";
+import useUserStore from "@/stores/useUserStore";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Image, X } from "lucide-react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
 const AccessList = () => {
     const [clickedButtons, setClickedButtons] = useState([]);
@@ -29,7 +29,6 @@ const AccessList = () => {
 
   const { data: userAccessed, refetch: refetchAccessedUsers } =
     useFetchAccessedUsers({ docId });
-  //   console.log(userAccessed);
 
   const { data, isLoading, refetch: refetchUsers } = useFetchAllUsers();
 
@@ -69,14 +68,7 @@ const AccessList = () => {
       },
     });
 
-  const { mutate: removeAccess } = useRemoveAccessMutation({
-    onSuccess(data) {
-      console.log(data);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate: removeAccess } = useRemoveAccessMutation();
 
   const initialValues = {
     userId: [],

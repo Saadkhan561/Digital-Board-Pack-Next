@@ -220,7 +220,7 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
                   <a onClick={() => setViewReply(!isViewReply)} href="#">
                     View Replies
                   </a>
-                  {(roles === "user" || currentUser.roles === "secretary") && (
+                  {(roles === "user" || currentUser?.roles === "secretary") && (
                     <div className="flex gap-2">
                       <p>|</p>
                       <a onClick={() => setReplyFunc()} href="#">

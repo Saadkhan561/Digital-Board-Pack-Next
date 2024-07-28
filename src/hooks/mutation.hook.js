@@ -1,3 +1,4 @@
+import { adminCreateUser } from "@/services/admin.service";
 import {
   deleteComment,
   deleteReply,
@@ -22,7 +23,14 @@ import {
   updateAgendaDocument,
   updateMeetingMinDocument,
 } from "@/services/meeting.sevice,";
-import { login, register } from "@/services/user.service";
+import { changeNotificationStatus } from "@/services/notifcation.service";
+import {
+  forgetPassword,
+  login,
+  register,
+  resetPassword,
+  setPassword,
+} from "@/services/user.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // TO REGISTER USER
@@ -170,7 +178,42 @@ export const useUpdateMeetingMinDocument = (options) => {
 
 export const useDeleteReply = (params, options) => {
   return useMutation({
-    mutationFn: (params) => deleteReply(params),
+    mutationFn: deleteReply,
+    ...options,
+  });
+};
+
+export const useForgetPassword = (options) => {
+  return useMutation({
+    mutationFn: forgetPassword,
+    ...options,
+  });
+};
+
+export const useResetPassword = (options) => {
+  return useMutation({
+    mutationFn: resetPassword,
+    ...options,
+  });
+};
+
+export const useSetPassword = (options) => {
+  return useMutation({
+    mutationFn: setPassword,
+    ...options,
+  });
+};
+
+export const useAdminCreateUser = (options) => {
+  return useMutation({
+    mutationFn: adminCreateUser,
+    ...options,
+  });
+};
+
+export const useChangeNotificationStatus = (options) => {
+  return useMutation({
+    mutationFn: changeNotificationStatus,
     ...options,
   });
 };

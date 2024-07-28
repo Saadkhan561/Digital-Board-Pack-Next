@@ -35,8 +35,7 @@ const CardDetails = ({ id }) => {
     refetch: refetchDoc,
     isError: fetchDocumentError,
   } = useFetchDocumentById({ id });
-  console.log(document);
-  // console.log(fetchDocumentError);
+ 
 
   useEffect(() => {
     let version = document && document.docVersions.length;
@@ -57,15 +56,14 @@ const CardDetails = ({ id }) => {
 
   const { data: comments, refetch: refetchComments } = useFetchComments({
     docId: docVersionId,
-    role: currentUser.roles,
+    role: currentUser?.roles,
     docVersionStatus,
   });
 
-  console.log(comments);
 
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
-      console.log(data);
+      
       toast.success("Document deleted successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -159,7 +157,7 @@ const CardDetails = ({ id }) => {
   } = useForm();
 
   const docName =
-    currentUser.roles === "secretary" || document?.docVersions.length === 0
+    currentUser?.roles === "secretary" || document?.docVersions.length === 0
       ? document?.doc_name
       : document?.docVersions[0].doc_name;
   const onSubmit = (data) => {
@@ -218,8 +216,7 @@ const CardDetails = ({ id }) => {
                   </p>
                   <p>|</p>
                   <p>
-                    {currentUser.roles === "secretary" ||
-                    document?.docVersions.length === 0
+                    {currentUser?.roles === "secretary" || document?.docVersions.length === 0
                       ? moment(document?.created_at).format("DD MMM YYYY")
                       : moment(document?.docVersions[0].created_at).format(
                           "DD MMM YYYY"
@@ -235,7 +232,7 @@ const CardDetails = ({ id }) => {
               >
                 Access List
               </div>
-              {currentUser.roles === "secretary" && (
+              {currentUser?.roles === "secretary" && (
                 <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer hover:bg-slate-100 duration-200">
                   <button
                     className="text-gray-500 font-semibold"
@@ -290,7 +287,7 @@ const CardDetails = ({ id }) => {
                 <button className="text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
                   <Download className="h-4 w-4 cursor-pointer" />
                 </button>
-                {currentUser.roles === "secretary" && (
+                {currentUser?.roles === "secretary" && (
                   <button className="relative text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
                     <Trash2
                       className="h-4 w-4 cursor-pointer"
@@ -369,7 +366,7 @@ const CardDetails = ({ id }) => {
                   </a>
                 </button>
               </div>
-              {currentUser.roles === "secretary" && (
+              {currentUser?.roles === "secretary" && (
                 <div
                   onClick={() => setDocVersionDiv(!docVersionDiv)}
                   className={

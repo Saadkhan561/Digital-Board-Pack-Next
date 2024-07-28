@@ -13,10 +13,14 @@ import AdminPanelDiv from "@/components/admin_panel";
 import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);
-  const { setCurrentUser } = useUserStore();
+  const { currentUser, setCurrentUser } = useUserStore();
+  const router = useRouter();
 
   const initialValues = {
     email: "",
@@ -28,13 +32,14 @@ const Register = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  const router = useRouter();
-
   const { mutate } = useLoginMutation({
     async onSuccess(data) {
       if (data) {
         reset();
-        if (data.userData.roles === "user" || data.userData.roles === "secretary") {
+        if (
+          data.userData.roles === "user" ||
+          data.userData.roles === "secretary"
+        ) {
           const { token, userData } = data;
           const { password, ...rest } = userData;
           setCurrentUser({ ...rest, token: token });
@@ -66,7 +71,7 @@ const Register = () => {
       }
     },
     onError(err) {
-      console.log(err)
+     
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -99,6 +104,11 @@ const Register = () => {
       return <AdminPanelDiv />;
     }
   };
+
+  if (currentUser?.token) {
+    router.push("/");
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="h-screen flex justify-center items-center relative">
@@ -142,7 +152,7 @@ const Register = () => {
                   {...register("email")}
                 />
                 <Image
-                className="h-4 w-4"
+                  className="h-4 w-4"
                   src="/images/account_sm.png"
                   alt=""
                   height="4"
@@ -173,7 +183,9 @@ const Register = () => {
                 />
               </div>
               {errors.password && (
-                <p className="text-red-500 text-xs">{errors.password.message}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             <button
@@ -183,6 +195,13 @@ const Register = () => {
               Submit
             </button>
           </form>
+          <div
+            className="hover:text-blue-300 mb-2 mt-2
+          "
+          >
+            <Link href={"/forget-password"}>Forgot Password ?</Link>
+          </div>
+          <Separator />
           <div className="flex gap-1 text-xs mt-2">
             <p className="flex gap-2 items-center text-lg">
               Go to admin panel
