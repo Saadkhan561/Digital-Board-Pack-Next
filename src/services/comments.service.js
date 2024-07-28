@@ -5,12 +5,12 @@ export const insertComment = async (data) => {
   
   try {
     if (data.docVersionStatus === "parent") {
-      const res = await axios.post("/InsertComment", data);
-      
+      const res = await axios.post(`/InsertComment?doc_name=${data.doc_name}`, data);
+      console.log(res.data);
       return res.data;
     } else {
-      const res = await axios.post("/InsertVersionComment", data);
-  
+      const res = await axios.post(`/InsertVersionComment`, data,{params: {docId: data.parentDocId, doc_name:data.doc_name}});
+      console.log(res.data);
       return res.data;
     }
   } catch (err) {
