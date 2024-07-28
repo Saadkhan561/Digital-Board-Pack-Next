@@ -2,7 +2,6 @@ import { withProtectedWrapper } from "@/components/Protected Routes/protected_lo
 import Card from "@/components/card";
 import { useFetchDocByUser } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
-import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -20,7 +19,7 @@ const Home = () => {
     }
     router.push(router, undefined, { shallow: true });
   };
-  const {currentUser} =useUserStore()
+
   const { data, isLoading } = useFetchDocByUser();
 
   return (
@@ -111,8 +110,8 @@ const Home = () => {
                 />
               </div>
             ) : (
-              data?.map((document) => (
-                <Card key={document.doc_id} docData={document} />
+              data?.map((document, index) => (
+                <Card key={index} docData={document} />
               ))
             )}
           </div>

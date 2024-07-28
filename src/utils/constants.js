@@ -24,4 +24,10 @@ export const navItems = [
     icon: "user",
     label: "user",
   },
+  {
+    title: "Go to home page",
+    href: "/",
+    icon: "house",
+    label: "home",
+  },
 ];

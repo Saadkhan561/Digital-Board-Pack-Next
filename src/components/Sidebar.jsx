@@ -8,7 +8,7 @@ export default function Sidebar({ navItems }) {
   return (
     <nav
       className={cn(
-        `relative hidden h-screen border-r pt-16 lg:block w-72 bg-zinc-400`
+        `relative hidden h-screen border-r pt-16 lg:block w-72 bg-slate-900`
       )}
     >
       <div className="space-y-4 py-4">

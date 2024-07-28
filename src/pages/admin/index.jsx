@@ -16,8 +16,8 @@ const AdminPanel = () => {
         <div
           className={
             router.query.signUp
-              ? "p-10 h-screen w-4/5 flex flex-col gap-10 opacity-25 duration-200"
-              : "p-10 h-screen w-4/5 flex flex-col gap-10"
+              ? "p-4 h-screen w-4/5 flex flex-col gap-10 opacity-25 duration-200"
+              : "p-4 h-screen w-4/5 flex flex-col gap-10"
           }
         >
           <div className="flex justify-between items-center border-b border-b-slate-300 pb-5">
@@ -54,128 +54,6 @@ const AdminPanel = () => {
               <BubbleChart />
             </div>
           </div>
-          {/* <div>
-            <div className="text-md font-semibold mb-2">Document history</div>
-            <table className="w-full border border-slate-300">
-              <tr className="border border-slate-300">
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  No.
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Title
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Status
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Uploaded on
-                </th>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  1
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  2
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  3
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div>
-            <div className="text-md font-semibold mb-2">Meeting history</div>
-            <table className="w-full border border-slate-300">
-              <tr className="border border-slate-300">
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  No.
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Title
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Status
-                </th>
-                <th className="border border-slate-300 text-center p-1 text-xs">
-                  Scheduled on
-                </th>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  1
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  2
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-              <tr className="border border-slate-300 hover:bg-slate-400 cursor-pointer">
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  3
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Discuss on OEL
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  Viewed
-                </td>
-                <td className="border border-slate-300 text-center p-1 text-xs">
-                  20/05/24
-                </td>
-              </tr>
-            </table>
-          </div> */}
         </div>
         <div className="absolute top-0 h-screen flex justify-center items-center">
           {router.query.signUp && <SignUp />}
@@ -185,4 +63,4 @@ const AdminPanel = () => {
   );
 };
 
-export default withProtectedWrapper(AdminPanel, "admin");
+export default withProtectedWrapper(AdminPanel, "secretary");

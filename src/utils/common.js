@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import validator from "validator";
 import moment from "moment";
+import { jwtDecode } from "jwt-decode";
 
 export const passwordValidation = (fieldName) =>
   yup
@@ -30,12 +31,24 @@ export function formatDate(inputDate) {
   const diffInDays = now.diff(date, "days");
 
   if (diffInHours < 1) {
-    return date.fromNow(); // a few seconds ago, a minute ago
+    return date.fromNow();
   } else if (diffInHours < 24) {
     return diffInHours === 1 ? "an hour ago" : `${diffInHours} hours ago`;
   } else if (diffInDays < 7) {
     return diffInDays === 1 ? "a day ago" : `${diffInDays} days ago`;
   } else {
-    return date.format("Do MMMM"); // 5th June
+    return date.format("Do MMMM");
   }
 }
+
+export const isTokenExpired = (token) => {
+  if (!token) return true;
+  try {
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp < currentTime;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return true;
+  }
+};
