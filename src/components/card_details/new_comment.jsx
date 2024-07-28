@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const NewComment = ({ docId, docVersionStatus, commentStatus, parentDocId, doc_name }) => {
+const NewComment = ({ docId, docVersionStatus, commentStatus,docStatus, parentDocId, doc_name }) => {
   const router = useRouter();
   const { refetch: refetchComments } = useFetchComments(
     { docId: docId },
@@ -65,13 +65,22 @@ const NewComment = ({ docId, docVersionStatus, commentStatus, parentDocId, doc_n
   });
 
   const onSubmit = (data) => {
+
     comment({
       comment: data.comment,
       doc_id: docId,
       parentDocId: parentDocId,
       docVersionStatus: docVersionStatus,
-      doc_name: doc_name
+      doc_name: doc_name,
+      docStatus: docStatus
     });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
   };
 
   return (
@@ -88,6 +97,7 @@ const NewComment = ({ docId, docVersionStatus, commentStatus, parentDocId, doc_n
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
+            onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
             {isCommentPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}

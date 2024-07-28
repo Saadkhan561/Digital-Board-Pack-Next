@@ -33,7 +33,7 @@ const SignUp = () => {
     onSuccess(data) {
       reset();
       signUp("signUp");
-      toast.success(data.message, {
+      toast.success("Account created successfully!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,

@@ -46,14 +46,13 @@ const NewDocument = () => {
   const documentSchema = Yup.object({
     title: Yup.string().required("Title is required"),
     doc_name: Yup.mixed().required("A file is required"),
-    userId: Yup.array().min(1, "At least one user is required"),
+    userId: Yup.array().min(2, "At least one user is required"),
   });
 
   const { mutate: documentAccess, isLoading: isAccessLoading } =
     useAccessListMutation({
       onSuccess(data) {
         refetch();
-
         toast.success("Document added successfully!", {
           position: "top-center",
           autoClose: 2000,
@@ -223,10 +222,10 @@ const NewDocument = () => {
               <p className="text-red-500 text-xs">{errors.userId.message}</p>
             )}
           </div>
-          <div className="flex justify-end p-4 mr-4 mt-4">
+          <div className="flex justify-end gap-2 items-center p-4 mr-4 mt-4">
             <div>
               {isUploadLoading || isInsertLoading || isAccessLoading ? (
-                <div>
+                <div className="pt-2">
                   <Image
                     src="/images/loading.gif"
                     alt=""
@@ -239,8 +238,9 @@ const NewDocument = () => {
               )}
             </div>
             <button
-              className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
+              className={isUploadLoading || isInsertLoading || isAccessLoading ? "mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-100 p-1 rounded-md hover:bg-slate-300 duration-200":"mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"}
               type="submit"
+              disabled={isUploadLoading || isInsertLoading || isAccessLoading}
             >
               Submit
             </button>

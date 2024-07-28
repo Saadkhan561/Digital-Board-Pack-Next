@@ -28,7 +28,7 @@ const Register = () => {
   };
 
   const loginSchema = Yup.object({
-    email: Yup.string().required("Email is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -201,30 +201,8 @@ const Register = () => {
           >
             <Link href={"/forget-password"}>Forgot Password ?</Link>
           </div>
-          <Separator />
-          <div className="flex gap-1 text-xs mt-2">
-            <p className="flex gap-2 items-center text-lg">
-              Go to admin panel
-              <a
-                onClick={() => {
-                  router.push("?admin=true");
-                }}
-                className="text-blue-500 underline cursor-pointer"
-              >
-                <Image
-                  className="-rotate-90"
-                  src="/images/down-arrow.png"
-                  alt=""
-                  height={20}
-                  width={20}
-                />
-              </a>
-            </p>
-          </div>
         </div>
       </div>
-      {/* ADMIN PANEL DIV */}
-      <div className="absolute top-0 h-full">{renderAdminPanelDiv()}</div>
     </div>
   );
 };

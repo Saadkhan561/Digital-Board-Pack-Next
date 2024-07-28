@@ -65,6 +65,7 @@ function Layout({ children }) {
 
   const { currentUser } = useUserStore();
   const notificationRef = useRef();
+
   const menuRef = useRef();
 
   useEffect(() => {
@@ -81,10 +82,10 @@ function Layout({ children }) {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    
   }, [setMenu, setNotify]);
 
   const { mutate: changeStatus } = useChangeNotificationStatus();
