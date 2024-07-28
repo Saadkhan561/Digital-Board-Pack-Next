@@ -14,18 +14,32 @@ import "react-toastify/dist/ReactToastify.css";
 import AddReply from "./add_reply";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
+import { useFetchComments } from "@/hooks/query.hook";
 
-const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus, doc_name, docId, parentDocId }) => {
+const Comment = ({
+  data: commentData,
+  user_name,
+  roles,
+  commentator_id,
+  // refetchComments,
+  docVersionStatus,
+  doc_name,
+  docId,
+  // parentDocId,
+  docStatus,
+}) => {
   const [isReply, setReply] = useState(false);
   const [isViewReply, setViewReply] = useState(false);
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
   const updateReplyFunc = () => {
-    setReply(!isReply)
-    setViewReply(true)
-  }
-  
+    setReply(!isReply);
+    setViewReply(true);
+  };
+
+  const { refetch: refetchComments } = useFetchComments();
+
   const initialValues = {
     comment: "",
   };
@@ -57,43 +71,44 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
 
   const router = useRouter();
   const id = router.query.id;
-  const { mutate: deleteComment } = useDeleteComment(
-    { id },
-    {
-      onSuccess(data) {
-        toast.success("Comment " + data, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
-        refetchComments()
-      },
-      onError(error) {
-        toast.error(error, {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
-      },
-    }
-  );
+  const { mutate: deleteComment, isPending: isDeleteCommentPending } =
+    useDeleteComment(
+      { id },
+      {
+        onSuccess(data) {
+          toast.success("Comment " + data, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+          refetchComments();
+        },
+        onError(error) {
+          toast.error(error, {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        },
+      }
+    );
 
   const { mutate: updateComment } = useUpdateComment({
     onSuccess(data) {
       setUpdateCommentDiv(false);
-      refetchComments()
+      refetchComments();
     },
     onError(data) {},
   });
@@ -112,8 +127,15 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
     updateComment({
       comment: data.comment,
       comment_id: commentData.comment_id,
-      docVersionStatus: docVersionStatus
+      docVersionStatus: docVersionStatus,
     });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
   };
 
   const setReplyFunc = () => {
@@ -161,6 +183,7 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
                       {...register("comment")}
                       style={{ overflowY: "hidden" }}
                       placeholder="Your comment here..."
+                      onKeyDown={handleKeyDown}
                     />
                     <button type="submit" className="w=1/10">
                       <Image
@@ -197,16 +220,31 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
                           Edit comment
                         </div>
                         <div
-                          onClick={() => deleteComment({id: commentData.comment_id, docVersionStatus: docVersionStatus})}
+                          onClick={() =>
+                            deleteComment({
+                              id: commentData.comment_id,
+                              docVersionStatus: docVersionStatus,
+                            })
+
+                          }
                           className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                         >
                           <p className="text-red-500">Delete</p>
-                          <Image
-                            src="/images/trash.png"
-                            alt=""
-                            height={15}
-                            width={15}
-                          />
+                          {isDeleteCommentPending ? (
+                            <Image
+                              src="/images/trash.png"
+                              alt=""
+                              height={15}
+                              width={15}
+                            />
+                          ) : (
+                            <Image
+                              src="/images/loading.gif"
+                              alt=""
+                              height={15}
+                              width={15}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -246,7 +284,14 @@ const Comment = ({ data: commentData, user_name, roles, commentator_id, refetchC
             )}
             {isReply && (
               <div>
-                <AddReply doc_name={doc_name && doc_name} parentDocId={parentDocId} docVersionStatus={docVersionStatus} comment_id={commentData.comment_id} updateReplyFunc={updateReplyFunc} docId={docId} />
+                <AddReply
+                  doc_name={doc_name && doc_name}
+                  docVersionStatus={docVersionStatus}
+                  comment_id={commentData.comment_id}
+                  updateReplyFunc={updateReplyFunc}
+                  docId={docId}
+                  docStatus={docStatus}
+                />
               </div>
             )}
           </div>

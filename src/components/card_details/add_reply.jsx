@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddReply = ({ comment_id, docVersionStatus, doc_name,parentDocId, updateReplyFunc, docId }) => {
+const AddReply = ({ comment_id, docVersionStatus, doc_name, parentDocId, updateReplyFunc, docId, docStatus }) => {
   const {refetch: refetchComments}= useFetchComments()
 
   const initialValues = {
@@ -68,8 +68,15 @@ const AddReply = ({ comment_id, docVersionStatus, doc_name,parentDocId, updateRe
   });
 
   const onSubmit = (data) => {
-    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus, doc_name:doc_name && doc_name, docId: docId });
+    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus, doc_name:doc_name && doc_name, docId: docId, docStatus: docStatus,  });
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter"){
+      e.preventDefault()
+      handleSubmit(onSubmit)()
+    }
+  }
 
   return (
     <div>
@@ -85,6 +92,7 @@ const AddReply = ({ comment_id, docVersionStatus, doc_name,parentDocId, updateRe
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
+            onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
           {isReplyPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}

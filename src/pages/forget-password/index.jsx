@@ -61,10 +61,10 @@ const page = () => {
     mutate(data);
   };
   return (
-    <main className="antialiased bg-slate-200 text-gray-900 font-sans">
+    <main className="antialiased text-gray-900 font-sans">
       <div className="flex items-center h-screen w-full">
-        <div className="w-[25%] bg-card rounded shadow-lg p-8 m-4 mx-auto">
-          <span className="block w-full text-xl uppercase font-bold mb-4">
+        <div className="w-1/2 bg-card rounded shadow-lg p-8 m-4 mx-auto">
+          <span className="block w-full text-xl uppercase mb-4">
             Forgot Password?
           </span>
           <Form {...form}>

@@ -64,7 +64,7 @@ const Notification = () => {
           return bindRef ? (
             <li
               className={`flex gap-4 items-center mb-2 p-2 w-full ${
-                seen ? "bg-white" : "bg-blue-400"
+                seen ? "bg-white" : "bg-slate-300"
               } hover:bg-slate-200 rounded-xl duration-200`}
               key={index}
               ref={ref}

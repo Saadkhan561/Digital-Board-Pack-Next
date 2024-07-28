@@ -11,6 +11,7 @@ import {
   FileIcon,
   FileText,
   HelpCircle,
+  HouseIcon,
   Image,
   Laptop,
   LayoutDashboardIcon,
@@ -77,6 +78,7 @@ const IconsComponent = {
   ),
   twitter: Twitter,
   check: Check,
+  house: HouseIcon
 };
 
 export default IconsComponent;

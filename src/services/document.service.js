@@ -59,8 +59,9 @@ export const userAccessList = async (data) => {
 
 // FUNCTION TO REMOVE ACCESS OF USERS
 export const removeAccess = async (data) => {
+  console.log(data)
   try {
-    const res = await axios.delete("/RemovePermission", data);
+    const res = await axios.post("/RemovePermission", data);
     return res.data;
   } catch (error) {
     throw new Error(error);

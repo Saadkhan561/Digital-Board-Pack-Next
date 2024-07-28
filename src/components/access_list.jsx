@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const AccessList = () => {
-    const [clickedButtons, setClickedButtons] = useState([]);
+  const [clickedButtons, setClickedButtons] = useState([]);
   const router = useRouter();
 
   const { currentUser } = useUserStore();
@@ -27,48 +27,59 @@ const AccessList = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  const { data: userAccessed, refetch: refetchAccessedUsers } =
-    useFetchAccessedUsers({ docId });
+  const {
+    data: userAccessed,
+    refetch: refetchAccessedUsers,
+    isLoading: isAccessedUsersLoading,
+  } = useFetchAccessedUsers({ docId });
 
-  const { data, isLoading, refetch: refetchUsers } = useFetchAllUsers();
+  const {
+    data,
+    isLoading: isAllUsersLoading,
+    refetch: refetchUsers,
+  } = useFetchAllUsers();
 
   const { mutate: documentAccess, isPending: isAccessPending } =
     useAccessListMutation({
       onSuccess(data) {
-        refetch();
-        reset();
-        toast.success("Document added successfully!", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
+        // toast.success("Document added successfully!", {
+        //   position: "top-center",
+        //   autoClose: 2000,
+        //   hideProgressBar: true,
+        //   closeOnClick: true,
+        //   pauseOnHover: false,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "dark",
+        //   transition: Bounce,
+        // });
         resetAddForm();
-        refetchDoc();
         refetchAccessedUsers();
-        refetchUsers()
+        refetchDoc();
+        refetchUsers();
       },
       onError(error) {
-        toast.error("Failed to Upload Document", {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Bounce,
-        });
+        // toast.error("Failed to Upload Document", {
+        //   position: "top-center",
+        //   autoClose: 1000,
+        //   hideProgressBar: true,
+        //   closeOnClick: true,
+        //   pauseOnHover: false,
+        //   draggable: true,
+        //   progress: undefined,
+        //   theme: "dark",
+        //   transition: Bounce,
+        // });
       },
     });
 
-  const { mutate: removeAccess } = useRemoveAccessMutation();
+  const { mutate: removeAccess, isPending: isRemoveAccessPending } = useRemoveAccessMutation({
+    onSuccess() {
+      refetchAccessedUsers();
+      refetchDoc();
+      refetchUsers();
+    }
+  });
 
   const initialValues = {
     userId: [],
@@ -83,6 +94,7 @@ const AccessList = () => {
     handleSubmit: handleAddFormSubmit,
     formState: { errors: addFormErrors },
     reset: resetAddForm,
+    // refetch: refetchAccessedUsers
   } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(documentSchema),
@@ -106,18 +118,18 @@ const AccessList = () => {
 
   const onRemoveAccessSubmit = (data) => {
     const newValue = data.userId.filter(Boolean);
-    console.log(newValue)
+    console.log(newValue);
     removeAccess({ docId, users: newValue });
   };
 
   const handleUserClick = (index, userId) => {
     setClickedButtons((prev) => {
-        if (prev.includes(index)) {
-          return prev.filter((i) => i !== index); // Remove the index if it's already clicked
-        } else {
-          return [...prev, index]; // Add the index if it's not clicked
-        }
-      });
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index); // Remove the index if it's already clicked
+      } else {
+        return [...prev, index]; // Add the index if it's not clicked
+      }
+    });
     const fieldName = `userId[${index}]`;
     const currentValue = watch(fieldName);
     const newValue = currentValue ? undefined : userId;
@@ -137,37 +149,52 @@ const AccessList = () => {
           />
         </div>
         <div className="p-6">
-          <form onSubmit={handleRemoveFormSubmit(onRemoveAccessSubmit)}>
+          <form
+            className="pb-4"
+            onSubmit={handleRemoveFormSubmit(onRemoveAccessSubmit)}
+          >
             <div className="flex gap-2 items-center">
-              <div className="font-semibold text-sm border border-black ">Accessed Users:</div>
+              <div className="font-semibold">Accessed Users:</div>
               <div className="p-2 flex gap-2 items-center flex-wrap">
-                {userAccessed?.map((user, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => handleUserClick(index, user.user_id)}
-                    className={clickedButtons.includes(index) ? "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-700 duration-100":"text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500"}
-                  >
+                {isAccessedUsersLoading ? (
+                  <div>
+                    Loading...
+                  </div>
+                ) : (
+                  userAccessed?.map((user, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleUserClick(index, user.user_id)}
+                      className={
+                        clickedButtons.includes(index)
+                          ? "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-700 duration-100"
+                          : "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500"
+                      }
+                    >
                       <p>{user.user_name}</p>
-                  </button>
-                ))}
+                    </button>
+                  ))
+                )}
               </div>
             </div>
             <div className="flex justify-end w-full cursor-pointer ">
               <button
                 type="submit"
-                className="bg-red-500 text-white text-xs font-semibold p-1 rounded-md"
+                className={isRemoveAccessPending ? "bg-red-500 opacity-50 text-white text-xs font-semibold p-1 rounded-md":"bg-red-500 text-white text-xs font-semibold p-1 rounded-md"}
+                disabled={isRemoveAccessPending}
               >
                 Remove Users
               </button>
             </div>
           </form>
+          <hr />
           <form onSubmit={handleAddFormSubmit(onSubmit)}>
             <div>
               <div className="p-2 mt-4">
                 <div className="font-semibold text-xl">Add Permissions</div>
                 <div className="h-[200px] overflow-y-auto mt-2">
-                  {isLoading ? (
+                  {isAllUsersLoading ? (
                     <div>Loading...</div>
                   ) : (
                     data?.map(
@@ -207,11 +234,11 @@ const AccessList = () => {
                 </p>
               )}
             </div>
-            <div className="flex justify-end p-4 mr-4 mt-4">
+            <div className="flex justify-end items-center gap-2 p-4 mr-4 mt-4">
               <div>
                 {isAccessPending ? (
-                  <div>
-                    <Image
+                  <div className="pt-2">
+                    <img
                       src="/images/loading.gif"
                       alt=""
                       height={15}
@@ -230,6 +257,7 @@ const AccessList = () => {
                 }
                 type="submit"
                 disabled={isAccessPending}
+                // onKeyDown={handleKeyDown}
               >
                 Submit
               </button>

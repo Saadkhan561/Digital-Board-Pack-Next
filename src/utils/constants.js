@@ -36,6 +36,12 @@ export const adminNavItems = [
     icon: "user",
     label: "user",
   },
+  {
+    title: "Go to home page",
+    href: "/",
+    icon: "house",
+    label: "home",
+  },
 ];
 
 export const navItems = [

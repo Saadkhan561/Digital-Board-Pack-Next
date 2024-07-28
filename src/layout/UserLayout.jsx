@@ -51,7 +51,7 @@ function Layout({ children }) {
       {/* SIDE BAR DIV */}
 
       <Sidebar
-        navItems={currentUser?.roles === "secretary" ? adminNavItems : navItems }
+        navItems={currentUser?.roles === "secretary" ? adminNavItems : navItems}
       />
 
       {/* MIDDLE DIV */}

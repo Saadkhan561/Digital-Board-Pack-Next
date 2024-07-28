@@ -35,7 +35,7 @@ const CardDetails = ({ id }) => {
     refetch: refetchDoc,
     isError: fetchDocumentError,
   } = useFetchDocumentById({ id });
- 
+  console.log(document);
 
   useEffect(() => {
     let version = document && document.docVersions.length;
@@ -60,10 +60,8 @@ const CardDetails = ({ id }) => {
     docVersionStatus,
   });
 
-
   const { mutate: deleteDoc } = useDeleteDocument({
     onSuccess(data) {
-      
       toast.success("Document deleted successfully!", {
         position: "top-center",
         autoClose: 2000,
@@ -216,7 +214,8 @@ const CardDetails = ({ id }) => {
                   </p>
                   <p>|</p>
                   <p>
-                    {currentUser?.roles === "secretary" || document?.docVersions.length === 0
+                    {currentUser?.roles === "secretary" ||
+                    document?.docVersions.length === 0
                       ? moment(document?.created_at).format("DD MMM YYYY")
                       : moment(document?.docVersions[0].created_at).format(
                           "DD MMM YYYY"
@@ -226,12 +225,14 @@ const CardDetails = ({ id }) => {
               </div>
             </div>
             <div className="relative flex items-center gap-2">
-              <div
-                onClick={() => accessList("access")}
-                className="p-1 rounded-lg text-center text-sm font-semibold border border-gray-400 text-gray-500 cursor-pointer hover:bg-slate-100 duration-200"
-              >
-                Access List
-              </div>
+              {currentUser.roles === "secretary" && (
+                <div
+                  onClick={() => accessList("access")}
+                  className="p-1 rounded-lg text-center text-sm font-semibold border border-gray-400 text-gray-500 cursor-pointer hover:bg-slate-100 duration-200"
+                >
+                  Access List
+                </div>
+              )}
               {currentUser?.roles === "secretary" && (
                 <div className="relative p-1 text-sm rounded-lg border border-gray-400 cursor-pointer hover:bg-slate-100 duration-200">
                   <button
@@ -446,7 +447,16 @@ const CardDetails = ({ id }) => {
             </div>
           </div>
 
-          <div className="mt-5">
+          {comments?.length === 0 && (
+            <div className="text-center font-semibold p-4 text-sm">
+              No comments to show
+            </div>
+          )}
+          <div
+            className={
+              comments?.length ? "mt-5 h-[300px] overflow-y-auto" : ""
+            }
+          >
             {comments
               ?.map((comment, index) => {
                 return (
@@ -458,9 +468,9 @@ const CardDetails = ({ id }) => {
                     comment={comment.comment_id}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
-                    refetchComments={refetchComments}
                     docVersionStatus={docVersionStatus}
                     doc_name={document?.title}
+                    docStatus={document?.doc_status}
                   />
                 );
               })
@@ -472,6 +482,7 @@ const CardDetails = ({ id }) => {
             docVersionStatus={docVersionStatus}
             refetchComments={refetchComments}
             doc_name={document?.title}
+            docStatus={document?.doc_status}
           />
         </div>
       </div>
