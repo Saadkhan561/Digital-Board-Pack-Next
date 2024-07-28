@@ -216,8 +216,7 @@ const CardDetails = ({ id }) => {
                   </p>
                   <p>|</p>
                   <p>
-                    {currentUser.roles === "secretary" ||
-                    document?.docVersions.length === 0
+                    {currentUser?.roles === "secretary" || document?.docVersions.length === 0
                       ? moment(document?.created_at).format("DD MMM YYYY")
                       : moment(document?.docVersions[0].created_at).format(
                           "DD MMM YYYY"

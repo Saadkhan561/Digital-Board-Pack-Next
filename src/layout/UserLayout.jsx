@@ -7,7 +7,7 @@ import Scheduler from "@/components/schedule_meeting/scheduler";
 import { useChangeNotificationStatus } from "@/hooks/mutation.hook";
 import MeetingInfo from "@/pages/scheduling/[id]";
 import useUserStore from "@/stores/useUserStore";
-import { LogOut } from "lucide-react";
+import { ArrowRight, LogOut, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -54,10 +54,10 @@ function Layout({ children }) {
 
   // FUNCTION TO LOGOUT A USER
   const { logout } = useUserStore();
-  const handleLogoutHandler = () => {
-    router.push("/register?login=true");
-    logout();
-  };
+  // const handleLogoutHandler = () => {
+  //   router.push("/register?login=true");
+  //   logout();
+  // };
   const setValue = (value, name) => {
     router.query[name] = value;
     router.push(router, undefined, { shallow: true });
@@ -105,8 +105,8 @@ function Layout({ children }) {
           Boolean(router.query.schedule) ||
           Boolean(router.query.modal) ||
           Boolean(router.query.access)
-            ? "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden opacity-50"
-            : "p-4 border border-black rounded-r-2xl shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
+            ? "p-4 border border-black shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden opacity-50"
+            : "p-4 border border-black shadow-2xl text-white bg-slate-900 h-screen w-[300px] mob_screen:hidden"
         }
       >
         {/* SIDE BAR DIV */}
@@ -124,7 +124,7 @@ function Layout({ children }) {
             </div>
           )}
           {/* SIDE BAR FULL SCREEN */}
-          <div className="mt-4">
+          <div className="mt-20">
             <ul className="text-md">
               <Link
                 href={"/"}
@@ -154,6 +154,22 @@ function Layout({ children }) {
                 </div>
                 <div>Scheduling</div>
               </Link>
+              {currentUser.roles === "secretary" && (
+                <Link
+                  href={"admin"}
+                  className="flex items-center gap-2 mb-1 cursor-pointer p-2 rounded-2xl hover:bg-slate-700 hover:duration-200"
+                >
+                  <Shield className="h-5 w-5" />
+                  <div>Admin Panel</div>
+                </Link>
+              )}
+              <li
+                onClick={() => logout()}
+                className="flex items-center gap-2 mb-1 cursor-pointer p-2 rounded-2xl hover:bg-red-800 hover:duration-200 ml-1 "
+              >
+                <LogOut className="h-5 w-5" />
+                <div>Logout</div>
+              </li>
             </ul>
           </div>
         </div>
@@ -201,13 +217,13 @@ function Layout({ children }) {
                   width={28}
                 />
               </div>
-              <div
+              {/* <div
                 onClick={() => logout()}
                 className="flex gap-2 items-center border border-slate-400 rounded-lg cursor-pointer hover:bg-slate-100 duration-200 p-1 text-slate-600 text-xs"
               >
                 <LogOut className="h-4 w-4" />
                 <button>Logout</button>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* SMALL SCREEM NOTIFICATION DIV */}
@@ -240,15 +256,15 @@ function Layout({ children }) {
       <div
         className={
           menu
-            ? "absolute top-0 right-0 mob_screen_closed:hidden shadow-2xl"
-            : "absolute top-0 left-full mob_screen_closed:hidden"
+            ? "absolute top-0 right-0 mob_screen_closed:hidden shadow-2xl bg-slate-900 text-white"
+            : "absolute top-0 left-full mob_screen_closed:hidden bg-slate-900 text-white"
         }
         ref={menuRef}
       >
-        <ul className="text-md font-semibold p-2 bg-white h-screen w-[250px] menu_bar_mob:w-screen border">
-          <div
+        <ul className="text-md font-semibold p-2 h-screen w-[250px] menu_bar_mob:w-screen border">
+          {/* <li
             onClick={() => setMenu(!menu)}
-            className="float-right mt-3 mb-2 border w-[28px] p-[3px] rounded-2xl hover:bg-slate-300 duration-300 cursor-pointer"
+            className="float-right mt-3 mb-2 border w-[28px] p-[3px] rounded-2xl hover:bg-slate-700 duration-300 cursor-pointer"
           >
             <Image
               src="/images/right-arrow.png"
@@ -256,19 +272,28 @@ function Layout({ children }) {
               height={20}
               width={20}
             />
+          </li> */}
+          <div className="flex justify-end p-1 cursor-pointer">
+            <ArrowRight
+              onClick={() => setMenu(!menu)}
+              className="h-6 w-6 hover:bg-slate-700 duration-200 rounded-full p-1"
+            />
           </div>
-          <Link href={"register"} className="menu-bar-li flex justify-between">
+          {/* <Link href={"register"} className="menu-bar-li flex justify-between">
             Account
           </Link>
           <li className="menu-bar-li">Profile</li>
-          <hr />
+          <hr /> */}
           <li className="menu-bar-li">
             <Link href={"/"}>Dashboard</Link>
           </li>
           <li className="menu-bar-li">
             <Link href={"/scheduling"}>Scheduling</Link>
           </li>
-          <li onClick={logout} className="menu-bar-li text-red-500">
+          <li
+            onClick={logout}
+            className="menu-bar-li text-white hover:bg-red-800"
+          >
             Log Out
           </li>
         </ul>
