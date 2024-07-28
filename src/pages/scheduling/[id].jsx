@@ -17,10 +17,13 @@ import { useFetchDocumentById } from "@/hooks/query.hook";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import useUserStore from "@/stores/useUserStore";
 
 const MeetingInfo = () => {
   const [meetingUpdateOption, setMeetingUpdateOption] = useState("");
   const router = useRouter();
+
+  const { currentUser } = useUserStore();
 
   const meeting = (name) => {
     if (router.query[name]) {
@@ -296,13 +299,32 @@ const MeetingInfo = () => {
                     )}
                   </div>
                 </div>
+                {currentUser.roles === "secretary" && (
+                  <form onSubmit={handleSubmit(onAgendaSubmit)}>
+                    <div className="flex flex-col text-sm font-semibold pb-1">
+                      <label htmlFor="file">Update agenda document</label>
+                      <input type="file" {...register("file")} />
+                    </div>
+                    <div className="pt-1">
+                      <button
+                        className="w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
+                        type="submit"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
 
-                <form onSubmit={handleSubmit(onAgendaSubmit)}>
-                  <div className="flex flex-col text-sm font-semibold pb-1">
-                    <label htmlFor="file">Update agenda document</label>
-                    <input type="file" {...register("file")} />
+              {/* UPLOAD MEETING MIN DIV */}
+              {!meetingDoc[0]?.meeting_mins && (
+                <form onSubmit={handleSubmit(onUploadMeetingMinSubmit)}>
+                  <div className="flex flex-col font-semibold text-sm">
+                    <label htmlFor="uploadMin">Upload meeting minutes</label>
+                    <input type="file" {...register("uploadMin")} />
                   </div>
-                  <div className="pt-1">
+                  <div className="pt-4">
                     <button
                       className="w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
                       type="submit"
@@ -311,30 +333,37 @@ const MeetingInfo = () => {
                     </button>
                   </div>
                 </form>
-              </div>
+              )}
+
+              {/* UPDATE MEETING MINUTES DIV */}
               <div className="flex flex-col gap-2">
-                {meetingDoc[0]?.meeting_mins === null ? null : (
-                  <div className="flex gap-2 items-center">
-                    <p className="text-sm font-semibold">Meeting Minutes :</p>
-                    <div className="p-1 border border-slate-400 rounded-lg text-xs cursor-pointer hover:bg-slate-100 duration-200">
-                      {meetingMinLoading ? (
-                        <div>Loading...</div>
-                      ) : (
-                        <a
-                          href={
-                            meetingMinDoc &&
-                            `/pdf/${meetingDoc[0]?.meeting_title}/${meetingMin?.doc_name}`
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 font-semibold"
-                        >
-                          {meetingMin?.doc_name}
-                        </a>
-                      )}
-                    </div>
+                {/* meetingDoc[0]?.meeting_mins */}
+                <div
+                  className={
+                    meetingDoc[0]?.meeting_mins
+                      ? "flex gap-2 items-center"
+                      : "hidden"
+                  }
+                >
+                  <p className="text-sm font-semibold">Meeting Minutes :</p>
+                  <div className="p-1 border border-slate-400 rounded-lg text-xs cursor-pointer hover:bg-slate-100 duration-200">
+                    {meetingMinLoading ? (
+                      <div>Loading...</div>
+                    ) : (
+                      <a
+                        href={
+                          meetingMinDoc &&
+                          `/pdf/${meetingDoc[0]?.meeting_title}/${meetingMin?.doc_name}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 font-semibold"
+                      >
+                        {meetingMin?.doc_name}
+                      </a>
+                    )}
                   </div>
-                )}
+                </div>
 
                 <form onSubmit={handleSubmit(onMeetingMinSubmit)}>
                   <div className="flex flex-col text-sm font-semibold pb-1">
@@ -353,23 +382,6 @@ const MeetingInfo = () => {
                   </div>
                 </form>
               </div>
-
-              {!meetingDoc[0]?.meeting_mins && (
-                <form onSubmit={handleSubmit(onUploadMeetingMinSubmit)}>
-                  <div className="flex flex-col">
-                    <label htmlFor="uploadMin">Upload meeting minutes</label>
-                    <input type="file" {...register("uploadMin")} />
-                  </div>
-                  <div className="pt-4">
-                    <button
-                      className="w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
-                      type="submit"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </form>
-              )}
             </div>
           </div>
         ))

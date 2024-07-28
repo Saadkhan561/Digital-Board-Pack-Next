@@ -32,7 +32,7 @@ const Register = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  const { mutate } = useLoginMutation({
+  const { mutate, isPending } = useLoginMutation({
     async onSuccess(data) {
       if (data) {
         reset();
@@ -189,8 +189,9 @@ const Register = () => {
               )}
             </div>
             <button
-              className="border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
+              className={isPending ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2 opacity-50":"border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"}
               type="submit"
+              disabled={isPending}
             >
               Submit
             </button>
