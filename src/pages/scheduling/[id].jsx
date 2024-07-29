@@ -17,6 +17,7 @@ import { useFetchDocumentById } from "@/hooks/query.hook";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 
 const MeetingInfo = () => {
   const [meetingUpdateOption, setMeetingUpdateOption] = useState("");
@@ -378,4 +379,4 @@ const MeetingInfo = () => {
   );
 };
 
-export default MeetingInfo;
+export default withProtectedWrapper(MeetingInfo);

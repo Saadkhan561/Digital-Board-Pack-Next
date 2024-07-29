@@ -23,9 +23,9 @@ export default function Sidebar({ navItems }) {
       )}
     >
       <div className="flex gap-5 flex-col justify-center items-center">
-        <div className="text-xl font-semibold text-white text-center">
+        <Link  href="/" className="text-xl font-semibold text-white text-center">
           Digital Board Pack
-        </div>
+        </Link>
         {currentUser?.roles === "secretary" && (
           <div
             onClick={() => queryStringChanger("open")}
