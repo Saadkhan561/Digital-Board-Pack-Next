@@ -6,27 +6,46 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 const ProtectedWrapper = (Component, role) => (props) => {
-  const { currentUser, isLoading, logout } = useUserStore();
+  const currentUser = useUserStore((state) => state.currentUser);
+  const logout = useUserStore((state) => state.logout);
+
+  console.log(currentUser);
   const [showChildren, setShowChildren] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
-    if (role) {
-      if (currentUser?.roles !== role) {
-        router.push("/");
-      }
-    }
-    if (!currentUser) {
-      router.push("/register?login=true");
-    } else {
-      if (currentUser?.token && isTokenExpired(currentUser?.token)) {
-        logout();
+    const checkAuth = () => {
+      if (currentUser === null) {
         router.push("/register?login=true");
+        return;
+      } else if (currentUser) {
+        if (role) {
+          if (currentUser?.roles !== role) {
+            setShowChildren(false);
+            router.push("/");
+            return;
+          }
+        }
+        if (currentUser?.token && isTokenExpired(currentUser?.token)) {
+          logout();
+          router.push("/register?login=true");
+          return;
+        } else {
+          setShowChildren(true);
+        }
       } else {
-        setShowChildren(true);
+        setShowChildren(false);
+        router.push("/register?login=true");
       }
-    }
-  }, [currentUser, router, setShowChildren, isLoading]);
+    };
+
+    const timeoutId = setTimeout(() => {
+      checkAuth(); // Execute the check after 2 seconds
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [currentUser, router, setShowChildren]);
 
   return showChildren ? <Component {...props} /> : <div>Redirecting...</div>;
 };

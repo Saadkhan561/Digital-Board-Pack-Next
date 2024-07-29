@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Comment from "@/components/card_details/comments";
 import NewComment from "@/components/card_details/new_comment";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
+import VersionModal from "@/components/versionModal/version_modal";
 import {
   useDeleteDocument,
   useDocUploadMutation,
@@ -12,13 +13,11 @@ import {
 import { useFetchComments, useFetchDocumentById } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
 import useUserStore from "@/stores/useUserStore";
-import moment from "moment";
-import Link from "next/link";
-import { Bounce, toast } from "react-toastify";
-import Image from "next/image";
 import { Download, Pencil, Trash2, X } from "lucide-react";
+import moment from "moment";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import VersionModal from "@/components/versionModal/version_modal";
+import { Bounce, toast } from "react-toastify";
 
 const CardDetails = ({ id }) => {
   const [doc_version, setDocVersion] = useState(1);
@@ -29,14 +28,8 @@ const CardDetails = ({ id }) => {
   const [docVersionStatus, setDocVersionStatus] = useState();
   const [docVersionData, setDocVersionData] = useState();
 
-  // console.log(docVersionData)
-  
-  const {
-    data: document,
-    refetch: refetchDoc,
-    isError: fetchDocumentError,
-  } = useFetchDocumentById({ id });
-  console.log(document);
+  const { data: document, refetch: refetchDoc } = useFetchDocumentById({ id });
+
   const fileExtIndex = document?.doc_name?.lastIndexOf(".");
   const fileExt = document?.doc_name?.slice(fileExtIndex + 1);
 
@@ -457,9 +450,7 @@ const CardDetails = ({ id }) => {
             </div>
           )}
           <div
-            className={
-              comments?.length ? "mt-5 h-[300px] overflow-y-auto" : ""
-            }
+            className={comments?.length ? "mt-5 h-[300px] overflow-y-auto" : ""}
           >
             {comments
               ?.map((comment, index) => {

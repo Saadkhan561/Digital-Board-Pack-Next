@@ -1,10 +1,36 @@
-import { axios } from "../utils/axios";
+import { axios } from "@/utils/axios";
 
-export const getNotification = async () => {
+export const getNotifications = async (params) => {
   try {
-    const res = await axios.get("/getNotification");
-    return res.data;
+    const response = await axios.get(`/getNotification`, { params });
+
+    return response.data;
   } catch (error) {
     throw new Error(error);
   }
 };
+
+export const changeNotificationStatus = async () => {
+  try {
+    const response = await axios.post(`/changeStatus`);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
+export const getUserNotificationCount = async () => {
+  try {
+    const response = await axios.get(`/getUserNotificationCount`);
+
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
+
+

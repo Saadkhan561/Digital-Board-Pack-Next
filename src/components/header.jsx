@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Notification from "./layout/notification";
 import Search from "./layout/searchBar";
 
+import { useGetUserNotificationCount } from "@/hooks/query.hook";
 import useUserStore from "@/stores/useUserStore";
 import { adminNavItems, navItems } from "@/utils/constants";
 import { BellIcon } from "lucide-react";
@@ -11,16 +12,12 @@ import { MobileSidebar } from "./layout/mobile-nav";
 
 const Header = ({ menu, setMenu, menuRef, children }) => {
   const router = useRouter();
-  const {logout} = useUserStore()
-  const setValue = (value, name) => {
-    router.query[name] = value;
-    router.push(router, undefined, { shallow: true });
-  };
   const notificationRef = useRef();
-
   const { currentUser } = useUserStore();
   const [notify, setNotify] = useState(false);
   const { mutate: changeStatus } = useChangeNotificationStatus();
+  const { data: count } = useGetUserNotificationCount();
+  console.log(count)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -63,10 +60,13 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
       {/* SEARCH BAR DIV */}
       <div className="flex justify-between items-center p-4 gap-2">
         {/* SEARCH BAR */}
-        <Search  />
+        <Search />
         {/* FULL SCREEM NOTIFICATION DIV */}
         <div className="flex items-center mob_screen:hidden">
           <div className="relative cursor-pointer">
+            {Boolean(count?.count) && (
+              <div className="rounded-full bg-blue-600 absolute w-2 h-2 left-4 bottom-5" />
+            )}
             <BellIcon onClick={handleNotification} />
 
             <div
@@ -79,10 +79,6 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
             >
               <Notification />
             </div>
-
-          </div>
-          <div onClick={logout} className="border border-black p-2">
-            Logout
           </div>
         </div>
         {/* SMALL SCREEM NOTIFICATION DIV */}

@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import Replies from "../card_details/new_reply";
-import { Image } from "lucide-react";
 import moment from "moment";
-import useUserStore from "@/stores/useUserStore";
+import { useState } from "react";
 import VersionModalReplies from "./versionModalReplies";
 
 const VersionModalComments = ({data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus}) => {
-    console.log(commentData)
+    
     const [isViewReply, setViewReply] = useState(false);
-    const {currentUser} = useUserStore()
+   
   return (
     <div>
       <div className="flex flex-col gap-2">

@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 import IconsComponent from "./icons";
 import Link from "next/link";
+import { LogOutIcon } from "lucide-react";
 
 export default function Sidebar({ navItems }) {
-  const { isLoading, currentUser } = useUserStore();
+  const { isLoading, currentUser, logout } = useUserStore();
   const { queryStringChanger } = useQueryString();
   const path = usePathname();
 
@@ -23,7 +24,7 @@ export default function Sidebar({ navItems }) {
       )}
     >
       <div className="flex gap-5 flex-col justify-center items-center">
-        <Link  href="/" className="text-xl font-semibold text-white text-center">
+        <Link href="/" className="text-xl font-semibold text-white text-center">
           Digital Board Pack
         </Link>
         {currentUser?.roles === "secretary" && (
@@ -76,6 +77,16 @@ export default function Sidebar({ navItems }) {
                     )
                   );
                 })}
+                <p onClick={logout}>
+                  <span
+                    className={cn(
+                      "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent text-white"
+                    )}
+                  >
+                    {<LogOutIcon className="mr-2 h-4 w-4" />}
+                    <span>Logout</span>
+                  </span>
+                </p>
               </nav>
             )}
           </div>

@@ -118,7 +118,7 @@ const AccessList = () => {
 
   const onRemoveAccessSubmit = (data) => {
     const newValue = data.userId.filter(Boolean);
-    console.log(newValue);
+ 
     removeAccess({ docId, users: newValue });
   };
 

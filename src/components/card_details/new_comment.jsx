@@ -5,9 +5,17 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Bounce, toast } from "react-toastify";
 import * as Yup from "yup";
 
-const NewComment = ({ docId, docVersionStatus, commentStatus,docStatus, parentDocId, doc_name }) => {
+const NewComment = ({
+  docId,
+  docVersionStatus,
+  commentStatus,
+  docStatus,
+  parentDocId,
+  doc_name,
+}) => {
   const router = useRouter();
   const { refetch: refetchComments } = useFetchComments(
     { docId: docId },
@@ -43,14 +51,19 @@ const NewComment = ({ docId, docVersionStatus, commentStatus,docStatus, parentDo
     };
   }, []);
 
-  const { mutate: comment, isPending: isCommentPending } = useInsertComment({
-    onSuccess(data) {
-      console.log(data)
-      reset();
-      refetchComments()
-    },
-    onError(error) {
-      console.log(error)
+  const { mutate: comment, isPending } = useInsertComment({
+    onError() {
+      toast.error("Access denied", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     },
   });
 
@@ -65,15 +78,15 @@ const NewComment = ({ docId, docVersionStatus, commentStatus,docStatus, parentDo
   });
 
   const onSubmit = (data) => {
-
     comment({
       comment: data.comment,
       doc_id: docId,
       parentDocId: parentDocId,
       docVersionStatus: docVersionStatus,
       doc_name: doc_name,
-      docStatus: docStatus
+      docStatus: docStatus,
     });
+    reset();
   };
 
   const handleKeyDown = (e) => {
@@ -92,15 +105,17 @@ const NewComment = ({ docId, docVersionStatus, commentStatus,docStatus, parentDo
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
             id="autoResizableTextArea"
-            disabled={isCommentPending}
-            className={isCommentPending ? "h-[40px] mt-1 opacity-50 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
+            // disabled={isCommentPending}
+            className={
+              "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+            }
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
             onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
-            {isCommentPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}
+            <Image src="/images/send.png" alt="" height={25} width={25} />
           </button>
         </form>
       </div>

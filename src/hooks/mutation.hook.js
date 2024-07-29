@@ -24,7 +24,7 @@ import {
   updateAgendaDocument,
   updateMeetingMinDocument,
 } from "@/services/meeting.sevice,";
-import { changeNotificationStatus } from "@/services/notifcation.service";
+import { changeNotificationStatus } from "@/services/notification.service";
 import {
   forgetPassword,
   login,
@@ -127,6 +127,10 @@ export const useInsertComment = (options) => {
       await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
       options?.onSuccess?.(data, variables, context);
     },
+    async onError(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onError?.(data, variables, context);
+    },
   });
 };
 
@@ -138,6 +142,10 @@ export const useInsertReply = (options) => {
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
       options?.onSuccess?.(data, variables, context);
+    },
+    async onError(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onError?.(data, variables, context);
     },
   });
 };

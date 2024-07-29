@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-
 const useUserStore = create(
   persist(
     (set, get) => ({
-      currentUser: {},
+      currentUser: undefined,
       isLoading: true,
       setCurrentUser: (user) =>
         set((state) => {

@@ -8,8 +8,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-const AddReply = ({ comment_id, docVersionStatus, doc_name, parentDocId, updateReplyFunc, docId, docStatus }) => {
-  const {refetch: refetchComments}= useFetchComments()
+const AddReply = ({
+  comment_id,
+  docVersionStatus,
+  doc_name,
+  parentDocId,
+  updateReplyFunc,
+  docId,
+  docStatus,
+}) => {
+  const { refetch: refetchComments } = useFetchComments();
 
   const initialValues = {
     comment: "",
@@ -40,12 +48,7 @@ const AddReply = ({ comment_id, docVersionStatus, doc_name, parentDocId, updateR
     };
   }, []);
 
-  const { mutate: reply, isPending: isReplyPending } = useInsertReply({
-    onSuccess(data) {
-      reset();
-      updateReplyFunc()
-      refetchComments()
-    },
+  const { mutate: reply } = useInsertReply({
     onError(error) {
       error.error.message,
         {
@@ -68,15 +71,24 @@ const AddReply = ({ comment_id, docVersionStatus, doc_name, parentDocId, updateR
   });
 
   const onSubmit = (data) => {
-    reply({ root_cmntId: comment_id, ...data, docVersionStatus: docVersionStatus, doc_name:doc_name && doc_name, docId: docId, docStatus: docStatus,  });
+    reply({
+      root_cmntId: comment_id,
+      ...data,
+      docVersionStatus: docVersionStatus,
+      doc_name: doc_name && doc_name,
+      docId: docId,
+      docStatus: docStatus,
+    });
+    reset();
+    updateReplyFunc();
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter"){
-      e.preventDefault()
-      handleSubmit(onSubmit)()
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
     }
-  }
+  };
 
   return (
     <div>
@@ -87,15 +99,16 @@ const AddReply = ({ comment_id, docVersionStatus, doc_name, parentDocId, updateR
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
             id="autoResizableTextArea"
-            disabled={isReplyPending}
-            className={isReplyPending ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
+            className={
+              "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+            }
             {...register("comment")}
             style={{ overflowY: "hidden" }}
             placeholder="Your comment here..."
             onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
-          {isReplyPending ? (<Image src="/images/loading.gif" alt="" height={20} width={20} />):(<Image src="/images/send.png" alt="" height={25} width={25} />)}
+            <Image src="/images/send.png" alt="" height={25} width={25} />
           </button>
         </form>
       </div>
