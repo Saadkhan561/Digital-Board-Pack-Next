@@ -29,7 +29,7 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
   });
 
   const router = useRouter();
-  const { mutate, isPending } = useLoginMutation({
+  const { mutate, isPending: isLoginPending } = useLoginMutation({
     async onSuccess(data) {
       if (data) {
         const { token, userData } = data;
@@ -132,9 +132,9 @@ const Login = ({ onUpdateLogin, prevLogin }) => {
               )}
             </div>
             <button
-              className="border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
+              className={isLoginPending ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold opacity-50 hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2":"border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"}
               type="submit"
-              disabled={isPending}
+              disabled={isLoginPending}
             >
               Submit
             </button>

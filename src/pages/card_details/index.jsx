@@ -28,14 +28,17 @@ const CardDetails = ({ id }) => {
   const [docVersionId, setDocVersionId] = useState();
   const [docVersionStatus, setDocVersionStatus] = useState();
   const [docVersionData, setDocVersionData] = useState();
-  // console.log(docVersionData)
 
+  // console.log(docVersionData)
+  
   const {
     data: document,
     refetch: refetchDoc,
     isError: fetchDocumentError,
   } = useFetchDocumentById({ id });
   console.log(document);
+  const fileExtIndex = document?.doc_name?.lastIndexOf(".");
+  const fileExt = document?.doc_name?.slice(fileExtIndex + 1);
 
   useEffect(() => {
     let version = document && document.docVersions.length;
@@ -344,7 +347,8 @@ const CardDetails = ({ id }) => {
             <div>
               <Image
                 className="mob_screen:h-[70px] mob_screen:w-[70px] menu_bar_mob:h-[50px] menu_bar_mob:w-[50px]"
-                src="/images/word.png"
+                src={fileExt === "pdf" ? "/images/pdf.png" : "/images/word.png"}
+                // src="/images/word.png"
                 alt=""
                 height={100}
                 width={100}

@@ -4,11 +4,11 @@ import { axios } from "../utils/axios";
 export const insertComment = async (data) => {
   try {
     if (data.docVersionStatus === "parent") {
-      const res = await axios.post(`/InsertComment`,{params: {doc_name: data.doc_name, doc_status: true}}, data);
+      const res = await axios.post(`/InsertComment`, data,{params: {doc_name: data.doc_name}});
       console.log(res.data);
       return res.data;
     } else {
-      const res = await axios.post(`/InsertVersionComment`, data,{params: {doc_status: data.docStatus, docId: data.parentDocId, doc_name:data.doc_name}});
+      const res = await axios.post(`/InsertVersionComment`, data,{params: {docId: data.parentDocId, doc_name:data.doc_name}});
       console.log(res.data);
       return res.data;
     }
@@ -32,13 +32,13 @@ export const updateComment = async (data) => {
 };
 
 export const insertReply = async (data) => {
-  console.log(data.docId)
+  console.log(data)
   try {
     if (data.docVersionStatus === "version") {
-      const res = await axios.post(`/InsertVersionCommentReply`, data,{params: {doc_name:data.doc_name, docId: data.docId, doc_status: data.docStatus }});
+      const res = await axios.post(`/InsertVersionCommentReply`, data,{params: {doc_name:data.doc_name, docId: data.docId }});
       return res.data;
     } else {
-      const res = await axios.post(`/InsertCommentReply`, {params: {doc_name: data.doc_name, doc_status: true, docId: data.docId}}, data);
+      const res = await axios.post(`/InsertCommentReply`, data,{params: {doc_name: data.doc_name, docId: data.docId}});
       return res.data;
     }
   } catch (err) {

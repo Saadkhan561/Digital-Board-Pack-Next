@@ -17,6 +17,7 @@ import {
   LayoutDashboardIcon,
   Loader2,
   LogIn,
+  LogOutIcon,
   Moon,
   MoreVertical,
   Pizza,
@@ -78,7 +79,8 @@ const IconsComponent = {
   ),
   twitter: Twitter,
   check: Check,
-  house: HouseIcon
+  house: HouseIcon,
+  logout: LogOutIcon
 };
 
 export default IconsComponent;

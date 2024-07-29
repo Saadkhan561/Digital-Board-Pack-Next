@@ -11,6 +11,7 @@ import { MobileSidebar } from "./layout/mobile-nav";
 
 const Header = ({ menu, setMenu, menuRef, children }) => {
   const router = useRouter();
+  const {logout} = useUserStore()
   const setValue = (value, name) => {
     router.query[name] = value;
     router.push(router, undefined, { shallow: true });
@@ -78,6 +79,10 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
             >
               <Notification />
             </div>
+
+          </div>
+          <div onClick={logout} className="border border-black p-2">
+            Logout
           </div>
         </div>
         {/* SMALL SCREEM NOTIFICATION DIV */}
