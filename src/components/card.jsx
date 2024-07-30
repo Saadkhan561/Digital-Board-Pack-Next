@@ -10,8 +10,9 @@ import { useRouter } from "next/navigation";
 const Card = ({ docData }) => {
   const fileExtIndex = docData.doc_name?.lastIndexOf(".");
   const fileExt = docData.doc_name?.slice(fileExtIndex + 1);
-  const docStatus = docData.doc_status === "True" ? true : false;
   const { push } = useRouter();
+
+  // console.log(docData);
   const { mutate: changeStatus } = useUpdateDocumentStatus({
     onError(error) {
       error.error.message,
@@ -30,8 +31,8 @@ const Card = ({ docData }) => {
   });
 
   const onDocumentClick = () => {
-    if (!docStatus) {
-      changeStatus({ docId: docData.doc_id });
+    if (!docData.doc_status) {
+      changeStatus({ docId: docData.doc_id, doc_status: docData.doc_status });
     }
     push(`/card_details?id=${docData.doc_id}`);
   };
@@ -39,25 +40,30 @@ const Card = ({ docData }) => {
   return (
     <div
       onClick={onDocumentClick}
-      className={`w-[150px] mob_screen:w-[130px] card_div_sm:w-screen border ${
-        !docStatus && "shadow-lg shadow-black/50"
-      } "border-slate-400"  rounded-b-lg cursor-pointer hover:scale-105 duration-100`}
+      className="flex flex-col justify-between w-[150px] mob_screen:w-[130px] card_div_sm:w-screen border border-slate-400  rounded-b-lg cursor-pointer hover:scale-105 duration-100"
     >
-      <div className="">
-        <img
-          className=" object-contain"
-          src={fileExt === "pdf" ? "/images/pdf.png" : "/images/word.png"}
-          alt=""
-        />
+      <div>
+        <div className="">
+          <img
+            className=" object-contain"
+            src={fileExt === "pdf" ? "/images/pdf.png" : "/images/word.png"}
+            alt=""
+          />
+        </div>
+        <div className="p-2">
+          <div className="font-semibold text-md">{docData.title}</div>
+          <div className="text-gray-600 text-xs">
+            {moment(docData?.created_at).format("DD MMMM")}
+          </div>
+          <div className="text-gray-600 text-xs">
+            No of versions - {docData.docVersions.length}
+          </div>
+        </div>
       </div>
-      <div className="p-2">
-        <div className="font-semibold text-md">{docData.title}</div>
-        <div className="text-gray-600 text-xs">
-          {moment(docData?.created_at).format("DD MMMM")}
-        </div>
-        <div className="text-gray-600 text-xs">
-          No of versions - {docData.docVersions.length}
-        </div>
+      <div>
+        {!docData.doc_status && (
+          <div className="text-end text-xs text-red-500 p-1">New comments</div>
+        )}
       </div>
     </div>
   );

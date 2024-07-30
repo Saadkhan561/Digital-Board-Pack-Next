@@ -2,6 +2,7 @@ import AccessList from "@/components/access_list";
 import Header from "@/components/header";
 import NewDocument from "@/components/new_document";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
+import SignUp from "@/components/register/signup";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import Sidebar from "@/components/Sidebar";
 import MeetingInfo from "@/pages/scheduling/[id]";
@@ -36,6 +37,12 @@ function Layout({ children }) {
   const renderAccessListModal = () => {
     if (router.query.access) {
       return <AccessList />;
+    }
+  };
+
+  const renderSignUpDiv = () => {
+    if (router.query.signUp) {
+      return <SignUp />;
     }
   };
 
@@ -97,6 +104,8 @@ function Layout({ children }) {
       <div className="absolute top-0">{renderMeetingInfoModal()}</div>
 
       <div className="absolute top-0">{renderAccessListModal()}</div>
+
+      <div className="absolute top-0">{renderSignUpDiv()}</div>
     </div>
   );
 }

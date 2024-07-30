@@ -12,12 +12,6 @@ export const adminNavItems = [
     label: "Meeting",
   },
   {
-    title: "Dashboard",
-    href: "/admin",
-    icon: "dashboard",
-    label: "Admin",
-  },
-  {
     title: "Meetings",
     href: "/admin/meetings",
     icon: "laptop",

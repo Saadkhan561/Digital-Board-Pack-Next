@@ -12,6 +12,8 @@ export const insertMeeting = async (data) => {
 };
 
 export const updateAgendaDocument = async (data) => {
+  console.log(data)
+  console.log("Updating Agenda")
   try {
     const res = await axios.put("/UpdateAgenda", data);
     return res.data;
@@ -21,6 +23,8 @@ export const updateAgendaDocument = async (data) => {
 };
 
 export const updateMeetingMinDocument = async (data) => {
+  console.log(data)
+  console.log("Updating Meeting Minutes")
   try {
     const res = await axios.put("/UpdateMeetingMin", data);
     return res.data;
@@ -59,15 +63,16 @@ export const getMeetingById = async (params) => {
 };
 
 export const scheduleMeeting = async (data) => {
+  console.log(data)
   try {
-    const documentName = data.file[0].name.split(".")[0];
-    await uploadDocument({
-      docName: documentName,
+    // const documentName = data.file[0].name.split(".")[0];
+    const {value: doc_name} = await uploadDocument({
+      docName: data.meeting_title,
       formData: data.formData,
     });
     const { value: documentId } = await insertDocument({
       title: data.meeting_title,
-      doc_name: documentName,
+      doc_name: doc_name,
     });
 
     await insertMeeting({
@@ -80,3 +85,34 @@ export const scheduleMeeting = async (data) => {
     throw new Error(error);
   }
 };
+
+export const reScheduleMeeting = async(data) => {
+  console.log(data)
+  try {
+    const res = await axios.put("/UpdateMeeting", data)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}
+
+
+export const getMeetingDoc = async (params) => {
+  const { id } = params;
+  try {
+    const res = await axios.get(`/getMeetingDoc/${id}`);
+    return res.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const deleteMeeting = async(data) => {
+  console.log(data)
+  try {
+    const res = await axios.delete(`/deleteMeeting/${data.id}`)
+    return res.data
+  } catch(error) {
+    throw new Error(error)
+  }
+}

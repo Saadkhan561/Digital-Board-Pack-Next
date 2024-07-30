@@ -4,7 +4,9 @@ import {
   deleteReply,
   fetchComments,
   insertComment,
+  insertCommentWithStatus,
   insertReply,
+  insertReplyWithStatus,
   updateComment,
   updateReply,
 } from "@/services/comments.service";
@@ -19,7 +21,9 @@ import {
   userAccessList,
 } from "@/services/document.service";
 import {
+  deleteMeeting,
   insertMeeting,
+  reScheduleMeeting,
   scheduleMeeting,
   updateAgendaDocument,
   updateMeetingMinDocument,
@@ -62,6 +66,13 @@ export const useMeetingScheduleMutation = (options) => {
   return useMutation({
     ...options,
     mutationFn: scheduleMeeting,
+  });
+};
+
+export const useMeetingReScheduleMutation = (options) => {
+  return useMutation({
+    ...options,
+    mutationFn: reScheduleMeeting,
   });
 };
 
@@ -111,6 +122,14 @@ export const useInsertMeeting = (option) => {
   });
 };
 
+// TO DELETE THE MEETING
+export const useDeleteMeeting = (options) => {
+  return useMutation({
+    ...options,
+    mutationFn: async (params) => await deleteMeeting(params),
+  });
+};
+
 export const useMeetingMinutesId = (options) => {
   return useMutation({
     ...options,
@@ -122,7 +141,7 @@ export const useInsertComment = (options) => {
   const queryClient = useQueryClient();
   return useMutation({
     ...options,
-    mutationFn: insertComment,
+    mutationFn: insertCommentWithStatus,
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
       options?.onSuccess?.(data, variables, context);
@@ -138,7 +157,7 @@ export const useInsertReply = (options) => {
   const queryClient = useQueryClient();
   return useMutation({
     ...options,
-    mutationFn: insertReply,
+    mutationFn: insertReplyWithStatus,
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
       options?.onSuccess?.(data, variables, context);

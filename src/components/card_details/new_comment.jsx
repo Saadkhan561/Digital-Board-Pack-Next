@@ -76,15 +76,14 @@ const NewComment = ({
     values: initialValues,
     resolver: yupResolver(commentSchema),
   });
-
   const onSubmit = (data) => {
     comment({
       comment: data.comment,
-      doc_id: docId,
+      docId: docId,
       parentDocId: parentDocId,
       docVersionStatus: docVersionStatus,
       doc_name: doc_name,
-      docStatus: docStatus,
+      doc_status: docStatus,
     });
     reset();
   };
@@ -105,9 +104,11 @@ const NewComment = ({
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5 w-4/5">
           <textarea
             id="autoResizableTextArea"
-            // disabled={isCommentPending}
+            disabled={isPending}
             className={
-              "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+              isPending
+                ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50"
+                : "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
             }
             {...register("comment")}
             style={{ overflowY: "hidden" }}
@@ -115,7 +116,7 @@ const NewComment = ({
             onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
-            <Image src="/images/send.png" alt="" height={25} width={25} />
+            <Image className={isPending ? "opacity-50 duration-200":""} src="/images/send.png" alt="" height={25} width={25} />
           </button>
         </form>
       </div>

@@ -29,6 +29,7 @@ const CardDetails = ({ id }) => {
   const [docVersionData, setDocVersionData] = useState();
 
   const { data: document, refetch: refetchDoc } = useFetchDocumentById({ id });
+  // console.log(document)
 
   const fileExtIndex = document?.doc_name?.lastIndexOf(".");
   const fileExt = document?.doc_name?.slice(fileExtIndex + 1);
@@ -125,7 +126,12 @@ const CardDetails = ({ id }) => {
   const { mutate: uploadFile } = useDocUploadMutation({
     onSuccess(data) {
       const title = watch("title");
-      insertUpdatedDoc({ doc_name: data, title, doc_version, root_docId: id });
+      insertUpdatedDoc({
+        doc_name: data.value,
+        title,
+        doc_version,
+        root_docId: id,
+      });
     },
     onError(error) {
       toast.error("Failed to Upload Document", {
@@ -184,6 +190,7 @@ const CardDetails = ({ id }) => {
     }
     router.push(router, undefined, { shallow: true });
   };
+  console.log(document);
 
   return (
     <Layout>
@@ -259,8 +266,8 @@ const CardDetails = ({ id }) => {
                         <button
                           className={
                             isDocUpdatePending
-                              ? "border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3 opacity-50"
-                              : "border border-blue-500 text-sm cursor-pointer text-blue-500 p-1 rounded-lg mt-3"
+                              ? " text-sm w-24 cursor-pointer bg-slate-200  duration-200 p-1 rounded-md mt-3 opacity-50"
+                              : "bg-slate-200 hover:bg-slate-300 duration-200 text-sm cursor-pointer p-1 rounded-md w-24 mt-3"
                           }
                           type="submit"
                           disabled={isDocUpdatePending}
@@ -289,13 +296,14 @@ const CardDetails = ({ id }) => {
                     <Trash2
                       className="h-4 w-4 cursor-pointer"
                       onClick={() => {
-                        document?.docVersions.length === 0
-                          ? docWarning("warning")
-                          : deleteDoc({
-                              folder: doc,
-                              docName: document?.doc_name,
-                              docId: document?.docVersions[0].doc_id,
-                            });
+                        docWarning("warning")
+                        // document?.docVersions.length === 0
+                        //   ? docWarning("warning")
+                        //   : deleteDoc({
+                        //       folder: doc,
+                        //       docName: document?.doc_name,
+                        //       docId: document?.docVersions[0].doc_id,
+                        //     });
                       }}
                     />
                     {router.query.warning && (
@@ -313,17 +321,22 @@ const CardDetails = ({ id }) => {
                         <div
                           className="text-sm bg-red-500 p-1 text-white cursor-pointer"
                           onClick={() => {
-                            document?.docVersions.length === 0
-                              ? deleteDoc({
-                                  folder: doc,
-                                  docName: document?.doc_name,
-                                  rootId: document?.doc_id,
-                                })
-                              : deleteDoc({
-                                  folder: doc,
-                                  docName: document?.docVersions[0].doc_name,
-                                  docId: document?.docVersions[0].doc_id,
-                                });
+                            // document?.docVersions.length === 0
+                            //   ? deleteDoc({
+                            //       folder: doc,
+                            //       docName: document?.doc_name,
+                            //       rootId: document?.doc_id,
+                            //     })
+                            //   : deleteDoc({
+                            //       folder: doc,
+                            //       docName: document?.docVersions[0].doc_name,
+                            //       docId: document?.docVersions[0].doc_id,
+                            //     });
+                            deleteDoc({
+                              folder: doc,
+                              docName: document?.doc_name,
+                              rootId: document?.doc_id,
+                            });
                           }}
                         >
                           Delete anyway
@@ -341,7 +354,6 @@ const CardDetails = ({ id }) => {
               <Image
                 className="mob_screen:h-[70px] mob_screen:w-[70px] menu_bar_mob:h-[50px] menu_bar_mob:w-[50px]"
                 src={fileExt === "pdf" ? "/images/pdf.png" : "/images/word.png"}
-                // src="/images/word.png"
                 alt=""
                 height={100}
                 width={100}
@@ -385,20 +397,18 @@ const CardDetails = ({ id }) => {
                   <div
                     className={
                       docVersionDiv
-                        ? "absolute top-10 p-1 border border-slate-100 bg-white shadow-2xl w-[140px]"
+                        ? "absolute top-10 p-1 border border-slate-100 bg-white shadow-2xl w-[160px]"
                         : "hidden"
                     }
                   >
-                    <div className="p-1 cursor-pointer">
-                      <div className="flex justify-between items-center">
-                        <div
-                          onClick={() =>
-                            versionModalHandler(document && document)
-                          }
-                        >
-                          Original Document
-                        </div>
-                        <Trash2 className="h-4 w-4" />
+                    <div className="p-1 cursor-pointer hover:bg-slate-200 duration-200">
+                      <div
+                        className=""
+                        onClick={() =>
+                          versionModalHandler(document && document)
+                        }
+                      >
+                        Original Document
                       </div>
                     </div>
                     <VersionModal
@@ -406,15 +416,13 @@ const CardDetails = ({ id }) => {
                       modalState={modalState}
                       setModalState={setModalState}
                       docVersionStatus={
-                        docVersionData?.docVersions.length
-                          ? "parent"
-                          : "version"
+                        document?.docVersions.length ? "parent" : "version"
                       }
                     />
                     {document?.docVersions
                       .map((data, index) => (
                         <div
-                          className="p-1 flex justify-between cursor-pointer"
+                          className="p-1 flex justify-between cursor-pointer hover:bg-slate-200 duration-100"
                           key={index}
                         >
                           <div onClick={() => versionModalHandler(data)}>
@@ -429,7 +437,7 @@ const CardDetails = ({ id }) => {
                                 docId: data.doc_id,
                               })
                             }
-                            className="cursor-pointer hover:bg-slate-100 duration-200 p-1 h-6 w-6"
+                            className="cursor-pointer hover:bg-slate-300 rounded-full duration-100 p-1 h-6 w-6"
                             src="/images/trash.png"
                             alt=""
                             height={6}
@@ -477,7 +485,7 @@ const CardDetails = ({ id }) => {
             docVersionStatus={docVersionStatus}
             refetchComments={refetchComments}
             doc_name={document?.title}
-            docStatus={document?.doc_status}
+            docStatus={Boolean(document?.doc_status)}
           />
         </div>
       </div>

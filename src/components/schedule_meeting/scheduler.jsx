@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { useMeetingScheduleMutation } from "@/hooks/mutation.hook";
-import { useFetchAllUsers } from "@/hooks/query.hook";
+import { useFetchAllUsers, useGetUserMeetings } from "@/hooks/query.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -13,12 +13,17 @@ import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import useUserStore from "@/stores/useUserStore";
 import { X } from "lucide-react";
+import { useState } from "react";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
   const { data, isLoading } = useFetchAllUsers();
 
   const { currentUser } = useUserStore();
+
+  const [fileExtError, setFileExtError] = useState();
+
+  const {refetch: refetchMeetings} = useGetUserMeetings()
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
@@ -31,22 +36,20 @@ const Scheduler = () => {
     router.push(router, undefined, { shallow: true });
   };
 
-  // const initialValues = {
-  //   meeting_date: "",
-  //   meeting_time: "",
-  //   meeting_title: "",
-  //   attenders: [],
-  //   file: "",
-  // };
+  const initialValues = {
+    meeting_date: "",
+    meeting_time: "",
+    meeting_title: "",
+    attenders: [],
+    file: null,
+  };
 
   const scheduleSchema = Yup.object({
+    file: Yup.mixed().required("File is required."),
     meeting_date: Yup.string().required("Meeting date is required."),
     meeting_time: Yup.string().required("Meeting time is required."),
     meeting_title: Yup.string().required("Meeting title is required."),
-    attenders: Yup.array()
-      .of(Yup.string().typeError("Attenders must be an array of strings."))
-      .min(1, "At least one attender should be selected."),
-    file: Yup.mixed().required("File is required."),
+    attenders: Yup.array().min(1, "At least one attender should be selected."),
   });
 
   // MUTATIONS
@@ -64,6 +67,7 @@ const Scheduler = () => {
         transition: Bounce,
       });
       reset();
+      refetchMeetings()
     },
     onError(error) {
       toast.error(error.message, {
@@ -86,15 +90,14 @@ const Scheduler = () => {
     handleSubmit,
     reset,
   } = useForm({
+    values: initialValues,
     resolver: yupResolver(scheduleSchema),
   });
   const onSubmit = (data) => {
     data.attenders.push(currentUser.user_id);
-
     const { meeting_date, meeting_time, ...rest } = data;
     const formData = new FormData();
     formData.append("file", data.file[0]);
-
     const dateTime = moment(
       `${data.meeting_date} ${data.meeting_time}`,
       "YYYY-MM-DD HH:mm"
@@ -102,7 +105,12 @@ const Scheduler = () => {
       .utc()
       .toDate();
 
-    scheduleMeeting({ meeting_datetime: dateTime, formData, ...rest });
+      if (data.file[0]?.name.split('.')[1] === "pdf" || data.file[0]?.name.split('.')[1] === "docx") {
+        setFileExtError(null)
+        scheduleMeeting({ meeting_datetime: dateTime, formData, ...rest });
+      } else {
+        setFileExtError("File extension should be pdf or docx")
+      }
   };
 
   return (
@@ -143,8 +151,10 @@ const Scheduler = () => {
                   type="text"
                   {...register("meeting_title")}
                 />
-                {errors.title && (
-                  <p className="text-red-500 text-xs">{errors.title.message}</p>
+                {errors.meeting_title && (
+                  <p className="text-red-500 text-xs">
+                    {errors.meeting_title.message}
+                  </p>
                 )}
               </div>
               <div>
@@ -179,6 +189,9 @@ const Scheduler = () => {
               {errors.file && (
                 <p className="text-red-500 text-xs">{errors.file.message}</p>
               )}
+              {fileExtError !== null ? (
+                <p className="text-red-500 text-xs">{fileExtError}</p>
+              ) : null}
             </div>
             <div>
               <div className="p-2">
@@ -215,11 +228,16 @@ const Scheduler = () => {
                     )
                   )}
                 </div>
+                {errors.attenders && (
+                  <p className="text-red-500 text-xs">
+                    {errors.attenders.message}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex justify-end p-4 mr-4 mt-4 mob_screen:mt-0 mob_screen:p-0">
               <button
-                className="mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
+                className={isPending ? "mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200 opacity-50":"mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"}
                 type="submit"
                 disabled={isPending}
               >

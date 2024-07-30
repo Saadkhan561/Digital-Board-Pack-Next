@@ -7,7 +7,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useUserStore from "@/stores/useUserStore";
 import Image from "next/image";
 
-const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus }) => {
+const Replies = ({
+  replyData,
+  commentator_id,
+  refetchComments,
+  docVersionStatus,
+}) => {
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
@@ -40,22 +45,24 @@ const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus 
     };
   }, []);
 
-  const { mutate: updateReply } = useUpdateReply({
-    onSuccess(data) {
-      reset();
-      setCommentDiv(false);
-      setUpdateCommentDiv(false);
-      refetchComments();
-    },
-    onError(data) {},
-  });
+  const { mutate: updateReply, isPending: isUpdateReplyPending } =
+    useUpdateReply({
+      onSuccess(data) {
+        reset();
+        setCommentDiv(false);
+        setUpdateCommentDiv(false);
+        refetchComments();
+      },
+      onError(data) {},
+    });
 
-  const { mutate: deleteReply } = useDeleteReply({
-    onSuccess(data) {
-      refetchComments();
-    },
-    onError(data) {},
-  });
+  const { mutate: deleteReply, isPending: isDeleteReplyPending } =
+    useDeleteReply({
+      onSuccess(data) {
+        refetchComments();
+      },
+      onError(data) {},
+    });
 
   const {
     register,
@@ -71,11 +78,16 @@ const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus 
     updateReply({
       comment: data.comment,
       comment_id: replyData.comment_id,
-      docVersionStatus: docVersionStatus
+      docVersionStatus: docVersionStatus,
     });
   };
 
-
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
 
   const { currentUser } = useUserStore();
 
@@ -99,13 +111,27 @@ const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus 
             <form onSubmit={handleSubmit(onSubmit)} className="flex gap-5">
               <textarea
                 id="autoResizableTextArea"
-                className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+                className={
+                  isUpdateReplyPending
+                    ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50"
+                    : "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+                }
                 {...register("comment")}
                 style={{ overflowY: "hidden" }}
                 placeholder="Your comment here..."
+                disabled={isUpdateReplyPending}
+                onKeyDown={handleKeyDown}
               />
               <button type="submit" className="w=1/10">
-                <Image src="/images/send.png" alt="" height={25} width={25} />
+                <Image
+                  className={
+                    isUpdateReplyPending ? "opacity-50 duration-200" : ""
+                  }
+                  src="/images/send.png"
+                  alt=""
+                  height={25}
+                  width={25}
+                />
               </button>
             </form>
           ) : (
@@ -133,16 +159,30 @@ const Replies = ({ replyData, commentator_id, refetchComments, docVersionStatus 
                   Edit comment
                 </div>
                 <div
-                  onClick={() => deleteReply({id: replyData?.comment_id, docVersionStatus: docVersionStatus})}
+                  onClick={() =>
+                    deleteReply({
+                      id: replyData?.comment_id,
+                      docVersionStatus: docVersionStatus,
+                    })
+                  }
                   className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                 >
                   <p className="text-red-500">Delete</p>
-                  <Image
-                    src="/images/trash.png"
-                    alt=""
-                    height={15}
-                    width={15}
-                  />
+                  {isDeleteReplyPending ? (
+                    <Image
+                      src="/images/loading.gif"
+                      alt=""
+                      height={15}
+                      width={15}
+                    />
+                  ) : (
+                    <Image
+                      src="/images/trash.png"
+                      alt=""
+                      height={15}
+                      width={15}
+                    />
+                  )}
                 </div>
               </div>
             </div>

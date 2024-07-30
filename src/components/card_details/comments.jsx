@@ -38,7 +38,7 @@ const Comment = ({
     setViewReply(true);
   };
 
-  const { refetch: refetchComments } = useFetchComments();
+  const { data, refetch: refetchComments } = useFetchComments();
 
   const initialValues = {
     comment: "",
@@ -105,7 +105,7 @@ const Comment = ({
       }
     );
 
-  const { mutate: updateComment } = useUpdateComment({
+  const { mutate: updateComment, isPending: isUpdateCommentPending } = useUpdateComment({
     onSuccess(data) {
       setUpdateCommentDiv(false);
       refetchComments();
@@ -179,14 +179,16 @@ const Comment = ({
                   >
                     <textarea
                       id="autoResizableTextArea"
-                      className="h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+                      className={isUpdateCommentPending ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
                       {...register("comment")}
                       style={{ overflowY: "hidden" }}
                       placeholder="Your comment here..."
                       onKeyDown={handleKeyDown}
+                      disabled={isUpdateCommentPending}
                     />
                     <button type="submit" className="w=1/10">
                       <Image
+                      className={isUpdateCommentPending ? "opacity-50 duration-200": ""}
                         src="/images/send.png"
                         alt=""
                         height={25}
@@ -232,14 +234,14 @@ const Comment = ({
                           <p className="text-red-500">Delete</p>
                           {isDeleteCommentPending ? (
                             <Image
-                              src="/images/trash.png"
+                              src="/images/loading.gif"
                               alt=""
                               height={15}
                               width={15}
                             />
                           ) : (
                             <Image
-                              src="/images/loading.gif"
+                              src="/images/trash.png"
                               alt=""
                               height={15}
                               width={15}

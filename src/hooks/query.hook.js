@@ -8,6 +8,7 @@ import {
 import {
   getAllMeetings,
   getMeetingById,
+  getMeetingDoc,
   getUserMeetings
 } from "@/services/meeting.sevice,";
 import { getNotifications, getUserNotificationCount } from "@/services/notification.service";
@@ -92,6 +93,14 @@ export const useFetchMeetingById = (params, options) => {
     ...options,
     queryFn: async () => await getMeetingById(params),
     queryKey: ["getMeetingById", JSON.stringify(params)],
+  });
+};
+
+export const useFetchMeetingDoc = (params, options) => {
+  return useQuery({
+    ...options,
+    queryFn: async () => await getMeetingDoc(params),
+    queryKey: ["getMeetingDoc", JSON.stringify(params)],
   });
 };
 

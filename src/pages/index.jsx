@@ -21,6 +21,7 @@ const Home = () => {
   };
 
   const { data, isLoading } = useFetchDocByUser();
+  console.log(data)
 
   return (
     <Layout>

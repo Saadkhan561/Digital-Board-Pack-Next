@@ -6,12 +6,14 @@ import { usePathname } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 import IconsComponent from "./icons";
 import Link from "next/link";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, Router } from "lucide-react";
+import { useRouter } from "next/router";
 
 export default function Sidebar({ navItems }) {
   const { isLoading, currentUser, logout } = useUserStore();
   const { queryStringChanger } = useQueryString();
   const path = usePathname();
+  const router = useRouter()
 
   if (!navItems?.length) {
     return null;
@@ -19,7 +21,9 @@ export default function Sidebar({ navItems }) {
 
   return (
     <nav
-      className={cn(
+      className={Boolean(router.query.signUp) || Boolean(router.query.access) || Boolean(router.query.open)  || Boolean(router.query.schedule) || Boolean(router.query.modal)? cn(
+        `relative hidden h-screen border-r pt-16 lg:block sm:block w-72 bg-slate-900 opacity-25 duration-200`
+      ):cn(
         `relative hidden h-screen border-r pt-16 lg:block sm:block w-72 bg-slate-900`
       )}
     >
@@ -28,14 +32,25 @@ export default function Sidebar({ navItems }) {
           Digital Board Pack
         </Link>
         {currentUser?.roles === "secretary" && (
-          <div
-            onClick={() => queryStringChanger("open")}
-            className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-[50%] cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
-          >
-            <div className="mr-2">
-              <Image src="/images/plus2.png" alt="" height={15} width={15} />
+          <div className="flex flex-col items-center gap-4">
+            <div
+              onClick={() => queryStringChanger("open")}
+              className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-[200px] cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
+            >
+              <div className="mr-2">
+                <Image src="/images/plus2.png" alt="" height={15} width={15} />
+              </div>
+              <div className="text-sm font-semibold text-white">Upload New Document</div>
             </div>
-            <div className="text-sm font-semibold text-white">New</div>
+            <div
+              onClick={() => queryStringChanger("signUp")}
+              className="flex justify-center p-2 border border-gray-400 rounded-xl items-center w-max cursor-pointer shadow-2xl hover:duration-200 hover:bg-slate-700"
+            >
+              <div className="mr-2">
+                <Image src="/images/plus2.png" alt="" height={15} width={15} />
+              </div>
+              <div className="text-sm font-semibold text-white">Create New User</div>
+            </div>
           </div>
         )}
       </div>
@@ -65,7 +80,7 @@ export default function Sidebar({ navItems }) {
                           className={cn(
                             "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                             path === item.href
-                              ? "bg-accent text-black"
+                              ? "bg-accent duration-200 text-black"
                               : "transparent text-white",
                             item.disabled && "cursor-not-allowed opacity-80"
                           )}
@@ -80,7 +95,7 @@ export default function Sidebar({ navItems }) {
                 <p onClick={logout}>
                   <span
                     className={cn(
-                      "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent text-white"
+                      "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-red-700 duration-200 cursor-pointer hover:text-white transparent text-white"
                     )}
                   >
                     {<LogOutIcon className="mr-2 h-4 w-4" />}

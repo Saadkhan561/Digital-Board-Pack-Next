@@ -52,8 +52,9 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
         Boolean(router.query?.open) ||
         Boolean(router.query?.schedule) ||
         Boolean(router.query?.modal) ||
-        Boolean(router.query?.access)
-          ? "w-full opacity-50 duration-200 relative"
+        Boolean(router.query?.access) || 
+        Boolean(router.query.signUp)
+          ? "w-full opacity-25 duration-200 relative"
           : "w-full opacity-100 duration-200 relative"
       }
     >

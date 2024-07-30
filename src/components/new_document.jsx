@@ -21,6 +21,8 @@ const NewDocument = () => {
   const router = useRouter();
   const [documentName, setDocName] = useState("");
 
+  const [fileExtError, setFileExtError] = useState()
+
   const newDocument = (name) => {
     if (router.query[name]) {
       delete router.query[name];
@@ -33,7 +35,7 @@ const NewDocument = () => {
   const { data, isLoading } = useFetchAllUsers();
 
 
-  const { data: doc, refetch: refetchDoc } = useFetchDocByUser();
+  const { refetch: refetchDoc } = useFetchDocByUser();
 
   const { currentUser } = useUserStore();
   const user_id = currentUser.user_id;
@@ -52,7 +54,6 @@ const NewDocument = () => {
   const { mutate: documentAccess, isLoading: isAccessLoading } =
     useAccessListMutation({
       onSuccess(data) {
-        refetch();
         toast.success("Document added successfully!", {
           position: "top-center",
           autoClose: 2000,
@@ -79,7 +80,7 @@ const NewDocument = () => {
           theme: "dark",
           transition: Bounce,
         });
-      },
+      }
     });
 
   const role = currentUser?.roles;
@@ -87,11 +88,11 @@ const NewDocument = () => {
     useInsertDocumentMutation({
       onSuccess(data) {
         const userId = watch("userId");
-        if (role === "Secretary") {
+        if (role === "secretary") {
           userId.push(currentUser.user_id);
         }
+        console.log(userId)
         const docId = data.value;
-
         documentAccess({ docId, userId });
       },
       onError(error) {
@@ -112,7 +113,7 @@ const NewDocument = () => {
   const { mutate: uploadFile, isLoading: isUploadLoading } =
     useDocUploadMutation({
       onSuccess(data) {
-        const doc_name = data;
+        const doc_name = data.value;
         const title = watch("title");
 
         insertFile({ doc_name, title });
@@ -144,11 +145,15 @@ const NewDocument = () => {
   });
 
   const onSubmit = (data) => {
-    data.userId.push(currentUser.user_id);
     const formData = new FormData();
-    formData.append("file", data.doc_name[0]);
-    const file = data.doc_name[0].name.split(".")[0];
-    uploadFile({ formData, docName: file });
+    if (data.doc_name[0].name.split('.')[1] === "pdf" || data.doc_name[0].name.split('.')[1] === "docx") {
+      formData.append("file", data.doc_name[0]);
+      const file = data.doc_name[0].name.split(".")[0];
+      setFileExtError(null)
+      uploadFile({ formData, docName: file });
+    } else {
+      setFileExtError("File extension should be pdf or docx")
+    }
   };
 
   return (
@@ -181,6 +186,7 @@ const NewDocument = () => {
             {errors.doc_name && (
               <p className="text-red-500 text-xs">{errors.doc_name.message}</p>
             )}
+            {fileExtError !== null ? (<p className="text-red-500 text-xs">{fileExtError}</p>):null}
           </div>
 
           <div>
