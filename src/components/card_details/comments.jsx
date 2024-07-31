@@ -21,11 +21,11 @@ const Comment = ({
   user_name,
   roles,
   commentator_id,
-  // refetchComments,
+
   docVersionStatus,
   doc_name,
   docId,
-  // parentDocId,
+
   docStatus,
 }) => {
   const [isReply, setReply] = useState(false);
@@ -37,8 +37,6 @@ const Comment = ({
     setReply(!isReply);
     setViewReply(true);
   };
-
-  const { data, refetch: refetchComments } = useFetchComments();
 
   const initialValues = {
     comment: "",
@@ -87,7 +85,6 @@ const Comment = ({
             theme: "dark",
             transition: Bounce,
           });
-          refetchComments();
         },
         onError(error) {
           toast.error(error, {
@@ -105,13 +102,13 @@ const Comment = ({
       }
     );
 
-  const { mutate: updateComment, isPending: isUpdateCommentPending } = useUpdateComment({
-    onSuccess(data) {
-      setUpdateCommentDiv(false);
-      refetchComments();
-    },
-    onError(data) {},
-  });
+  const { mutate: updateComment, isPending: isUpdateCommentPending } =
+    useUpdateComment({
+      onSuccess(data) {
+        setUpdateCommentDiv(false);
+      },
+      onError(data) {},
+    });
 
   const {
     register,
@@ -179,7 +176,11 @@ const Comment = ({
                   >
                     <textarea
                       id="autoResizableTextArea"
-                      className={isUpdateCommentPending ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50":"h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"}
+                      className={
+                        isUpdateCommentPending
+                          ? "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none opacity-50"
+                          : "h-[40px] mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out resize-none"
+                      }
                       {...register("comment")}
                       style={{ overflowY: "hidden" }}
                       placeholder="Your comment here..."
@@ -188,7 +189,11 @@ const Comment = ({
                     />
                     <button type="submit" className="w=1/10">
                       <Image
-                      className={isUpdateCommentPending ? "opacity-50 duration-200": ""}
+                        className={
+                          isUpdateCommentPending
+                            ? "opacity-50 duration-200"
+                            : ""
+                        }
                         src="/images/send.png"
                         alt=""
                         height={25}
@@ -227,7 +232,6 @@ const Comment = ({
                               id: commentData.comment_id,
                               docVersionStatus: docVersionStatus,
                             })
-
                           }
                           className="flex justify-between cursor-pointer hover:bg-slate-100 duration-200 p-1"
                         >
@@ -258,7 +262,7 @@ const Comment = ({
               <p className="flex gap-5 menu_bar_mob:text-xs">
                 <div className="flex gap-2">
                   <a onClick={() => setViewReply(!isViewReply)} href="#">
-                    View Replies
+                    View Replies {`(${commentData?.replies.length ?? 0})`}
                   </a>
                   {(roles === "user" || currentUser?.roles === "secretary") && (
                     <div className="flex gap-2">
@@ -277,7 +281,6 @@ const Comment = ({
                   <Replies
                     key={reply.comment_id}
                     replyData={reply}
-                    refetchComments={refetchComments}
                     commentator_id={reply.commentator_id}
                     docVersionStatus={docVersionStatus}
                   />

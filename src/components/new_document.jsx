@@ -91,7 +91,7 @@ const NewDocument = () => {
         if (role === "secretary") {
           userId.push(currentUser.user_id);
         }
-        console.log(userId)
+    
         const docId = data.value;
         documentAccess({ docId, userId });
       },

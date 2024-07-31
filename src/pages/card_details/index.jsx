@@ -18,6 +18,7 @@ import moment from "moment";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Bounce, toast } from "react-toastify";
+import Link from "next/link";
 
 const CardDetails = ({ id }) => {
   const [doc_version, setDocVersion] = useState(1);
@@ -29,7 +30,6 @@ const CardDetails = ({ id }) => {
   const [docVersionData, setDocVersionData] = useState();
 
   const { data: document, refetch: refetchDoc } = useFetchDocumentById({ id });
-  // console.log(document)
 
   const fileExtIndex = document?.doc_name?.lastIndexOf(".");
   const fileExt = document?.doc_name?.slice(fileExtIndex + 1);
@@ -47,11 +47,10 @@ const CardDetails = ({ id }) => {
   }, [document]);
 
   const router = useRouter();
-  // refetchDoc();
 
   const { currentUser } = useUserStore();
 
-  const { data: comments, refetch: refetchComments } = useFetchComments({
+  const { data: comments } = useFetchComments({
     docId: docVersionId,
     role: currentUser?.roles,
     docVersionStatus,
@@ -190,7 +189,6 @@ const CardDetails = ({ id }) => {
     }
     router.push(router, undefined, { shallow: true });
   };
-  console.log(document);
 
   return (
     <Layout>
@@ -288,15 +286,19 @@ const CardDetails = ({ id }) => {
                 </div>
               )}
               <div className="flex gap-2">
-                <button className="text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
+                <Link
+                  href={`/api/download-pdf/${docName}`}
+                  target="_blank"
+                  className="text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200"
+                >
                   <Download className="h-4 w-4 cursor-pointer" />
-                </button>
+                </Link>
                 {currentUser?.roles === "secretary" && (
                   <button className="relative text-gray-500 border border-gray-500 rounded-lg p-1 hover:bg-slate-100 duration-200">
                     <Trash2
                       className="h-4 w-4 cursor-pointer"
                       onClick={() => {
-                        docWarning("warning")
+                        docWarning("warning");
                         // document?.docVersions.length === 0
                         //   ? docWarning("warning")
                         //   : deleteDoc({
@@ -321,17 +323,6 @@ const CardDetails = ({ id }) => {
                         <div
                           className="text-sm bg-red-500 p-1 text-white cursor-pointer"
                           onClick={() => {
-                            // document?.docVersions.length === 0
-                            //   ? deleteDoc({
-                            //       folder: doc,
-                            //       docName: document?.doc_name,
-                            //       rootId: document?.doc_id,
-                            //     })
-                            //   : deleteDoc({
-                            //       folder: doc,
-                            //       docName: document?.docVersions[0].doc_name,
-                            //       docId: document?.docVersions[0].doc_id,
-                            //     });
                             deleteDoc({
                               folder: doc,
                               docName: document?.doc_name,
@@ -483,7 +474,6 @@ const CardDetails = ({ id }) => {
             parentDocId={document?.doc_id}
             docId={docVersionId}
             docVersionStatus={docVersionStatus}
-            refetchComments={refetchComments}
             doc_name={document?.title}
             docStatus={Boolean(document?.doc_status)}
           />

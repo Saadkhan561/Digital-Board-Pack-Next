@@ -17,18 +17,20 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
   const [notify, setNotify] = useState(false);
   const { mutate: changeStatus } = useChangeNotificationStatus();
   const { data: count } = useGetUserNotificationCount();
-  console.log(count)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target)
-      ) {
-        setNotify(false);
-      }
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenu(false);
+      
+      if (notify) {
+        if (
+          notificationRef.current &&
+          !notificationRef.current.contains(event.target)
+        ) {
+          setNotify(false);
+        }
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+          setMenu(false);
+        }
       }
     };
 
@@ -37,7 +39,7 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [setMenu, setNotify]);
+  }, [setMenu, notify]);
   const handleNotification = () => {
     setNotify((prev) => !prev);
 
@@ -52,7 +54,7 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
         Boolean(router.query?.open) ||
         Boolean(router.query?.schedule) ||
         Boolean(router.query?.modal) ||
-        Boolean(router.query?.access) || 
+        Boolean(router.query?.access) ||
         Boolean(router.query.signUp)
           ? "w-full opacity-25 duration-200 relative"
           : "w-full opacity-100 duration-200 relative"
@@ -68,7 +70,7 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
             {Boolean(count?.count) && (
               <div className="rounded-full bg-blue-600 absolute w-2 h-2 left-4 bottom-5" />
             )}
-            <BellIcon onClick={handleNotification} />
+            <BellIcon onClick={handleNotification}  ref={notificationRef}/>
 
             <div
               className={
@@ -76,7 +78,7 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
                   ? "notification-div min-h-[50px]"
                   : "notification-div hidden"
               }
-              ref={notificationRef}
+              
             >
               <Notification />
             </div>

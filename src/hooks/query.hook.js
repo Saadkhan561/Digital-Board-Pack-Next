@@ -9,9 +9,12 @@ import {
   getAllMeetings,
   getMeetingById,
   getMeetingDoc,
-  getUserMeetings
+  getUserMeetings,
 } from "@/services/meeting.sevice,";
-import { getNotifications, getUserNotificationCount } from "@/services/notification.service";
+import {
+  getNotifications,
+  getUserNotificationCount,
+} from "@/services/notification.service";
 import { search } from "@/services/search.service";
 import { fetchAccessedUsers, fetchAllUsers } from "@/services/user.service";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -46,7 +49,7 @@ export const useFetchAllUsers = (params, options) => {
   return useQuery({
     ...options,
     queryFn: async () => await fetchAllUsers(params),
-    queryKey: ["fetchAllUsers", params && JSON.stringify(params)],
+    queryKey: ["fetchAllUsers", JSON.stringify(params)],
   });
 };
 
@@ -120,8 +123,7 @@ export const useGetAllDocuments = (params, options) => {
   });
 };
 
-
-export const useGetUserNotificationCount = ( options) => {
+export const useGetUserNotificationCount = (options) => {
   return useQuery({
     ...options,
     queryFn: async () => await getUserNotificationCount(),

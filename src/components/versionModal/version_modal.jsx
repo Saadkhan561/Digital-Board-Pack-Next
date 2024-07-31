@@ -23,20 +23,17 @@ const VersionModal = ({
 
   const doc_name = versionData?.doc_name.split(".")[0];
 
-  const { data: comments, refetch: refetchComments } = useFetchComments({
+  const { data: comments } = useFetchComments({
     docId: versionData?.doc_id,
     role: currentUser?.roles,
     docVersionStatus,
   });
-
-  
 
   return (
     <Dialog
       open={modalState}
       modal
       onOpenChange={() => setModalState((prev) => !prev)}
-
     >
       <DialogContent>
         <div className="flex justify-between items-center mt-4">
@@ -58,12 +55,12 @@ const VersionModal = ({
           </div>
         </div>
         {/* COMMENT DIV */}
-        <div className="font-semibold">
-          Comments
-        </div>
+        <div className="font-semibold">Comments</div>
         <div className="h-[200px] overflow-y-auto">
           {comments?.length === 0 ? (
-            <div className="flex justify-center text-slate-500 items-center">No comments...</div>
+            <div className="flex justify-center text-slate-500 items-center">
+              No comments...
+            </div>
           ) : (
             comments
               ?.map((comment, index) => {
@@ -75,7 +72,6 @@ const VersionModal = ({
                     comment={comment.comment_id}
                     roles={comment.roles}
                     commentator_id={comment.commentator_id}
-                    refetchComments={refetchComments}
                     docVersionStatus={docVersionStatus}
                   />
                 );

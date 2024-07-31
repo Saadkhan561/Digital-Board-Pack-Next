@@ -3,8 +3,8 @@ import { CellAction } from "./cell-action";
 
 export const columns = [
   {
-    accessorKey: "doc_id",
-    header: "ID",
+    header: "S #",
+    cell: ({ row }) => <p>{row?.index + 1}</p>,
   },
   {
     accessorKey: "doc_name",

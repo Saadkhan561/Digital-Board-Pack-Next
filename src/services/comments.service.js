@@ -3,9 +3,9 @@ import { axios } from "../utils/axios";
 import { updateStatus } from "./document.service";
 
 export const insertComment = async (data) => {
-  // console.log(data)
+
   data["doc_id"] = data.docId
-  console.log(data)
+  
   try {
     if (data.docVersionStatus === "parent") {
       const res = await axios.post(`/InsertComment`, data,{params: {doc_name: data.doc_name}});
@@ -22,7 +22,7 @@ export const insertComment = async (data) => {
 };
 
 export const insertCommentWithStatus = async(data) => {
-  // console.log(data)
+
   try {
     await insertComment(data)
     await updateStatus(data)
@@ -62,7 +62,7 @@ export const insertReply = async (data) => {
 };
 
 export const insertReplyWithStatus = async(data) => {
-  // console.log(data)
+
   try {
     await insertReply(data)
     await updateStatus(data)

@@ -9,7 +9,7 @@ const nextConfig = {
     return [
       {
         source: "/pdf/:parentName/:docName",
-        destination: "https://65c2-39-34-144-188.ngrok-free.app/document/:parentName/:docName",
+        destination: "http://localhost:7077/document/:parentName/:docName",
         permanent: false,
       },
     ];  

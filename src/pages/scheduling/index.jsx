@@ -1,10 +1,12 @@
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import { useGetUserMeetings } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
+import useModalStore from "@/stores/useModalStore";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -13,31 +15,22 @@ import { useState } from "react";
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings } = useGetUserMeetings();
+  const { modals, closeModal, openModal } = useModalStore();
 
   const router = useRouter();
-  const schedule = (name) => {
-    if (router.query[name]) {
-      delete router.query[name];
-    } else {
-      router.query[name] = true;
-    }
-    router.push(router, undefined, { shallow: true });
-  };
 
-  const meeting = (name) => {
-    if (router.query[name]) {
-      delete router.query[name];
-    } else {
-      router.query[name] = true;
-    }
-    router.push(router, undefined, { shallow: true });
-  };
 
-  // FOR CALENDAR
+
   const fullCalendarEvents = meetings?.map((meeting) => ({
     title: meeting.meeting_title,
-    start: `${meeting.meeting_datetime}`,
-    end: `${meeting.meeting_datetime}`,
+    start: `${moment
+      .utc(meeting.meeting_datetime)
+      .local()
+      .format("YYYY-MM-DDTHH:mm:ss")}`,
+    end: `${moment
+      .utc(meeting.meeting_datetime)
+      .local()
+      .format("YYYY-MM-DDTHH:mm:ss")}`,
     extendedProps: {
       agenda: meeting.agenda,
       meeting_id: meeting.meeting_id,
@@ -52,14 +45,14 @@ const Calendar = () => {
     const hours = eventInfo.event.start.getHours();
     const minutes = eventInfo.event.start.getMinutes();
     const seconds = eventInfo.event.start.getSeconds();
-
-    const time = `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    const time = `${hours.toString()}:${minutes.toString()}:${seconds.toString()}`;
+    const modalClickHandler = (id) => {
+      openModal("modals", id);
+    };
 
     return (
-      <Link
-        href={`/scheduling?id=${meeting_id}&modal=true`}
+      <div
+        onClick={() => modalClickHandler(meeting_id)}
         className="cursor-pointer event-content"
       >
         <div key={eventInfo.event.meeting_id}>
@@ -67,7 +60,6 @@ const Calendar = () => {
             {eventInfo.event.title}
           </div>
           <div className="text-xs calendar_mob:hidden">
-            {/* {members && <div>{`Members: ${members.join(", ")}`}</div>} */}
             <div>{`Time: ${time}`}</div>
           </div>
           <div className="calendar_full:hidden">
@@ -75,21 +67,20 @@ const Calendar = () => {
               <p
                 className="underline hover:cursor-pointer text-xs"
                 onClick={() =>
-                  setExpandedEventId(isExpanded ? null : meeting._id)
+                  setExpandedEventId(isExpanded ? null : meeting_id)
                 }
               >
                 {isExpanded ? "Show Less" : "Show More"}
               </p>
               {isExpanded && (
                 <div className="absolute -left-10 border rounded-lg shadow-2xl bg-black text-white p-2 font-semibold">
-                  {/* {members && <div>{`Members: ${members.join(", ")}`}</div>} */}
                   <div>{`Time: ${formattedTime}`}</div>
                 </div>
               )}
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     );
   };
 
@@ -100,7 +91,7 @@ const Calendar = () => {
           <div className="h-[450px] w-11/12">
             <div
               className="mb-4 flex items-center gap-2 cursor-pointer border border-slate-300 rounded-lg hover:bg-slate-200 duration-200 w-max p-1 font-semibold shadow-2xl"
-              onClick={() => schedule("schedule")}
+              onClick={() => openModal("schedule")}
             >
               <Image src="/images/plus.png" alt="" height={15} width={15} />
               <button>Schedule a meeting</button>

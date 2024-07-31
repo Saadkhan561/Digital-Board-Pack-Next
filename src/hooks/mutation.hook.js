@@ -2,10 +2,7 @@ import { adminCreateUser } from "@/services/admin.service";
 import {
   deleteComment,
   deleteReply,
-  fetchComments,
-  insertComment,
   insertCommentWithStatus,
-  insertReply,
   insertReplyWithStatus,
   updateComment,
   updateReply,
@@ -63,16 +60,26 @@ export const useDocUploadMutation = (options) => {
 };
 
 export const useMeetingScheduleMutation = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     ...options,
     mutationFn: scheduleMeeting,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["getUserMeetings"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
 export const useMeetingReScheduleMutation = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     ...options,
     mutationFn: reScheduleMeeting,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["getUserMeetings"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
@@ -124,9 +131,14 @@ export const useInsertMeeting = (option) => {
 
 // TO DELETE THE MEETING
 export const useDeleteMeeting = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     ...options,
     mutationFn: async (params) => await deleteMeeting(params),
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["getUserMeetings"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
@@ -182,23 +194,38 @@ export const useUpdateDocumentStatus = (options) => {
 };
 
 export const useUpdateComment = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateComment,
     ...options,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
 export const useUpdateReply = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateReply,
     ...options,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
 export const useDeleteComment = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params) => deleteComment(params),
     ...options,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
@@ -217,9 +244,14 @@ export const useUpdateMeetingMinDocument = (options) => {
 };
 
 export const useDeleteReply = (params, options) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteReply,
     ...options,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({ queryKey: ["fetchComments"] });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
 
@@ -252,8 +284,15 @@ export const useAdminCreateUser = (options) => {
 };
 
 export const useChangeNotificationStatus = (options) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: changeNotificationStatus,
     ...options,
+    mutationFn: changeNotificationStatus,
+    async onSuccess(data, variables, context) {
+      await queryClient.invalidateQueries({
+        queryKey: ["getUserNotificationCount"],
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };
