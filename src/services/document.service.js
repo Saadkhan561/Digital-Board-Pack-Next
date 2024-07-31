@@ -98,34 +98,6 @@ export const updateStatus = async (data) => {
   }
 };
 
-// try {
-//   const response = await axios.get("/GetDoc", {
-//     params: params || {},
-//   });
-//   return response.data;
-// } catch (error) {
-//   throw new Error(error);
-// }
-// FETCH ALL DOCUMENTS
-// export const fetchAllDocument = async (params) => {
-//   const {role} = params
-//   if (role === 'Secretary') {
-//     try {
-//       const response = await axios.get("/GetDoc");
-//       return response.data;
-//     } catch (error) {
-//       throw new Error(error);
-//     }
-//   } else {
-//     try {
-//       const response = await axios.get("/GetDocByUser");
-//       return response.data;
-//     } catch (error) {
-//       throw new Error(error);
-//     }
-//   }
-// };
-
 export const fetchDocByUser = async () => {
   try {
     const response = await axios.get("GetDocByUser");

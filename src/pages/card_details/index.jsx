@@ -297,13 +297,6 @@ const CardDetails = ({ id }) => {
                       className="h-4 w-4 cursor-pointer"
                       onClick={() => {
                         docWarning("warning")
-                        // document?.docVersions.length === 0
-                        //   ? docWarning("warning")
-                        //   : deleteDoc({
-                        //       folder: doc,
-                        //       docName: document?.doc_name,
-                        //       docId: document?.docVersions[0].doc_id,
-                        //     });
                       }}
                     />
                     {router.query.warning && (
@@ -321,17 +314,6 @@ const CardDetails = ({ id }) => {
                         <div
                           className="text-sm bg-red-500 p-1 text-white cursor-pointer"
                           onClick={() => {
-                            // document?.docVersions.length === 0
-                            //   ? deleteDoc({
-                            //       folder: doc,
-                            //       docName: document?.doc_name,
-                            //       rootId: document?.doc_id,
-                            //     })
-                            //   : deleteDoc({
-                            //       folder: doc,
-                            //       docName: document?.docVersions[0].doc_name,
-                            //       docId: document?.docVersions[0].doc_id,
-                            //     });
                             deleteDoc({
                               folder: doc,
                               docName: document?.doc_name,
