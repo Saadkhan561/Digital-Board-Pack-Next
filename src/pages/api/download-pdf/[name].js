@@ -12,8 +12,9 @@ const handler = async (req, res) => {
     res.status(400).end("Filename parameter is missing");
     return;
   }
-
-  const url = `${baseUrl}document/${name}`;
+  const onlyName = name?.split(".")[0];
+  const url = `${baseUrl}/document/${onlyName}/${name}`;
+  console.log(url);
   const response = await fetch(url);
   if (!response.ok)
     throw new Error(`unexpected response ${response.statusText}`);

@@ -12,8 +12,7 @@ export const insertMeeting = async (data) => {
 };
 
 export const updateAgendaDocument = async (data) => {
-  console.log(data)
-  console.log("Updating Agenda")
+
   try {
     const res = await axios.put("/UpdateAgenda", data);
     return res.data;
@@ -23,8 +22,7 @@ export const updateAgendaDocument = async (data) => {
 };
 
 export const updateMeetingMinDocument = async (data) => {
-  console.log(data)
-  console.log("Updating Meeting Minutes")
+ 
   try {
     const res = await axios.put("/UpdateMeetingMin", data);
     return res.data;
@@ -63,7 +61,7 @@ export const getMeetingById = async (params) => {
 };
 
 export const scheduleMeeting = async (data) => {
-  console.log(data)
+ 
   try {
     // const documentName = data.file[0].name.split(".")[0];
     const {value: doc_name} = await uploadDocument({
@@ -87,7 +85,7 @@ export const scheduleMeeting = async (data) => {
 };
 
 export const reScheduleMeeting = async(data) => {
-  console.log(data)
+ 
   try {
     const res = await axios.put("/UpdateMeeting", data)
     return res.data
@@ -108,7 +106,7 @@ export const getMeetingDoc = async (params) => {
 };
 
 export const deleteMeeting = async(data) => {
-  console.log(data)
+
   try {
     const res = await axios.delete(`/deleteMeeting/${data.id}`)
     return res.data

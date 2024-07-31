@@ -6,10 +6,7 @@ export const columns = [
     header: "S #",
     cell: ({ row }) => <p>{row?.index + 1}</p>,
   },
-  {
-    accessorKey: "user_id",
-    header: "ID",
-  },
+
   {
     accessorKey: "first_name",
     header: "First Name",

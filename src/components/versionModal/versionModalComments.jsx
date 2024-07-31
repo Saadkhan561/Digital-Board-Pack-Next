@@ -2,10 +2,13 @@ import moment from "moment";
 import { useState } from "react";
 import VersionModalReplies from "./versionModalReplies";
 
-const VersionModalComments = ({data: commentData, user_name, roles, commentator_id, refetchComments, docVersionStatus}) => {
-    
-    const [isViewReply, setViewReply] = useState(false);
-   
+const VersionModalComments = ({
+  data: commentData,
+  user_name,
+  docVersionStatus,
+}) => {
+  const [isViewReply, setViewReply] = useState(false);
+
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -33,9 +36,7 @@ const VersionModalComments = ({data: commentData, user_name, roles, commentator_
                     {moment(commentData?.created_at).format("HH:mm")}
                   </p>
                 </div>
-                <div>
-                    {commentData.comment}
-                  </div>
+                <div>{commentData.comment}</div>
               </div>
             </div>
             <div className="text-gray-400 text-md mt-2">
@@ -53,7 +54,6 @@ const VersionModalComments = ({data: commentData, user_name, roles, commentator_
                   <VersionModalReplies
                     key={reply.comment_id}
                     replyData={reply}
-                    refetchComments={refetchComments}
                     commentator_id={reply.commentator_id}
                     docVersionStatus={docVersionStatus}
                   />

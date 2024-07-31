@@ -9,7 +9,7 @@ const ProtectedWrapper = (Component, role) => (props) => {
   const currentUser = useUserStore((state) => state.currentUser);
   const logout = useUserStore((state) => state.logout);
 
-  // console.log(currentUser);
+
   const [showChildren, setShowChildren] = useState(false);
 
   const router = useRouter();

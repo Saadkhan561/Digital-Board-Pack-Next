@@ -12,7 +12,6 @@ const Card = ({ docData }) => {
   const fileExt = docData.doc_name?.slice(fileExtIndex + 1);
   const { push } = useRouter();
 
-  // console.log(docData);
   const { mutate: changeStatus } = useUpdateDocumentStatus({
     onError(error) {
       error.error.message,
@@ -51,7 +50,12 @@ const Card = ({ docData }) => {
           />
         </div>
         <div className="p-2">
-          <div className="font-semibold text-md">{docData.title}</div>
+          <div className="font-semibold text-md relative">
+            {docData.title}{" "}
+            {!docData.doc_status && (
+              <div className=" w-2 h-2 rounded-full bg-red-600 text-end absolute right-0 bottom-11" />
+            )}
+          </div>
           <div className="text-gray-600 text-xs">
             {moment(docData?.created_at).format("DD MMMM")}
           </div>
@@ -60,11 +64,7 @@ const Card = ({ docData }) => {
           </div>
         </div>
       </div>
-      <div>
-        {!docData.doc_status && (
-          <div className="text-end text-xs text-red-500 p-1">New comments</div>
-        )}
-      </div>
+      <div></div>
     </div>
   );
 };

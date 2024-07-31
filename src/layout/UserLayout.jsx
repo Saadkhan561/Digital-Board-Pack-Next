@@ -1,11 +1,13 @@
 import AccessList from "@/components/access_list";
 import Header from "@/components/header";
+import MeetingInfo from "@/components/MeetingInfo";
 import NewDocument from "@/components/new_document";
 import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
 import SignUp from "@/components/register/signup";
 import Scheduler from "@/components/schedule_meeting/scheduler";
 import Sidebar from "@/components/Sidebar";
-import MeetingInfo from "@/pages/scheduling/[id]";
+
+import useModalStore from "@/stores/useModalStore";
 import useUserStore from "@/stores/useUserStore";
 import { adminNavItems, navItems } from "@/utils/constants";
 import { useRouter } from "next/router";
@@ -13,6 +15,7 @@ import { useRef, useState } from "react";
 
 function Layout({ children }) {
   const [menu, setMenu] = useState(false);
+  const { modals, closeModal } = useModalStore();
   const menuRef = useRef();
   const router = useRouter();
 
@@ -23,13 +26,13 @@ function Layout({ children }) {
   };
 
   const renderScheduleModal = () => {
-    if (router.query.schedule) {
+    if (modals["schedule"]) {
       return <Scheduler />;
     }
   };
 
   const renderMeetingInfoModal = () => {
-    if (router.query.modal) {
+    if (modals["modals"]) {
       return <MeetingInfo />;
     }
   };
@@ -47,7 +50,6 @@ function Layout({ children }) {
   };
 
   // FUNCTION TO LOGOUT A USER
-  const { logout } = useUserStore();
 
   const { currentUser } = useUserStore();
 
@@ -65,37 +67,6 @@ function Layout({ children }) {
       <Header menu={menu} setMenu={setMenu} menuRef={menuRef}>
         {children}
       </Header>
-      {/* MENU SIDEBAR */}
-      {/* <div
-        className={
-          menu
-            ? "absolute top-0 right-0 mob_screen_closed:hidden shadow-2xl bg-slate-900 text-white"
-            : "absolute top-0 left-full mob_screen_closed:hidden bg-slate-900 text-white"
-        }
-        ref={menuRef}
-      >
-        <ul className="text-md font-semibold p-2 h-screen w-[250px] menu_bar_mob:w-screen border">
-          <div className="flex justify-end p-1 cursor-pointer">
-            <ArrowRight
-              onClick={() => setMenu(!menu)}
-              className="h-6 w-6 hover:bg-slate-700 duration-200 rounded-full p-1"
-            />
-          </div>
-
-          <li className="menu-bar-li">
-            <Link href={"/"}>Dashboard</Link>
-          </li>
-          <li className="menu-bar-li">
-            <Link href={"/scheduling"}>Scheduling</Link>
-          </li>
-          <li
-            onClick={logout}
-            className="menu-bar-li text-white hover:bg-red-800"
-          >
-            Log Out
-          </li>
-        </ul>
-      </div> */}
 
       <div className="fixed top-0">{renderNewDocument()}</div>
 

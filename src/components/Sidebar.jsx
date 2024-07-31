@@ -8,9 +8,11 @@ import IconsComponent from "./icons";
 import Link from "next/link";
 import { LogOutIcon, Router } from "lucide-react";
 import { useRouter } from "next/router";
+import useModalStore from "@/stores/useModalStore";
 
 export default function Sidebar({ navItems }) {
   const { isLoading, currentUser, logout } = useUserStore();
+  const { modals, closeModal } = useModalStore();
   const { queryStringChanger } = useQueryString();
   const path = usePathname();
   const router = useRouter()
@@ -21,7 +23,7 @@ export default function Sidebar({ navItems }) {
 
   return (
     <nav
-      className={Boolean(router.query.signUp) || Boolean(router.query.access) || Boolean(router.query.open)  || Boolean(router.query.schedule) || Boolean(router.query.modal)? cn(
+      className={Boolean(router.query.signUp) || Boolean(router.query.access) || Boolean(router.query.open)  || Boolean(modals['schedule']) || Boolean(router.query.modal)? cn(
         `relative hidden h-screen border-r pt-16 lg:block sm:block w-72 bg-slate-900 opacity-25 duration-200`
       ):cn(
         `relative hidden h-screen border-r pt-16 lg:block sm:block w-72 bg-slate-900`

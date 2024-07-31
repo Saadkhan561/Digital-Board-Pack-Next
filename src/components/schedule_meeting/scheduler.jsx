@@ -14,6 +14,7 @@ import Image from "next/image";
 import useUserStore from "@/stores/useUserStore";
 import { X } from "lucide-react";
 import { useState } from "react";
+import useModalStore from "@/stores/useModalStore";
 
 const Scheduler = () => {
   // QUERY TO FETCH ALL USERS
@@ -23,18 +24,12 @@ const Scheduler = () => {
 
   const [fileExtError, setFileExtError] = useState();
 
-  const {refetch: refetchMeetings} = useGetUserMeetings()
+  const { refetch: refetchMeetings } = useGetUserMeetings();
 
   // FOR SCHEDULE MODAL
   const router = useRouter();
-  const schedule = (name) => {
-    if (router.query[name]) {
-      delete router.query[name];
-    } else {
-      router.query[name] = true;
-    }
-    router.push(router, undefined, { shallow: true });
-  };
+  const { modals, closeModal, openModal } = useModalStore();
+ 
 
   const initialValues = {
     meeting_date: "",
@@ -66,8 +61,8 @@ const Scheduler = () => {
         theme: "dark",
         transition: Bounce,
       });
+      closeModal("schedule");
       reset();
-      refetchMeetings()
     },
     onError(error) {
       toast.error(error.message, {
@@ -105,16 +100,21 @@ const Scheduler = () => {
       .utc()
       .toDate();
 
-      if (data.file[0]?.name.split('.')[1] === "pdf" || data.file[0]?.name.split('.')[1] === "docx") {
-        setFileExtError(null)
-        scheduleMeeting({ meeting_datetime: dateTime, formData, ...rest });
-      } else {
-        setFileExtError("File extension should be pdf or docx")
-      }
+    if (
+      data.file[0]?.name.split(".")[1] === "pdf" ||
+      data.file[0]?.name.split(".")[1] === "docx"
+    ) {
+      setFileExtError(null);
+
+      scheduleMeeting({ meeting_datetime: dateTime, formData, ...rest });
+    } else {
+      setFileExtError("File extension should be pdf or docx");
+    }
   };
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
+      
       <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[500px] new_document:w-[350px] z-10 mob_screen:h-[600px]">
         <div className="flex justify-between items-center text-white bg-slate-900 p-4">
@@ -132,7 +132,7 @@ const Scheduler = () => {
             />
           </div> */}
           <X
-            onClick={() => schedule("schedule")}
+            onClick={() => closeModal("schedule")}
             className="h-6 w-6 cursor-pointer rounded-full p-1 hover:bg-slate-700 duration-200"
           />
         </div>
@@ -237,7 +237,11 @@ const Scheduler = () => {
             </div>
             <div className="flex justify-end p-4 mr-4 mt-4 mob_screen:mt-0 mob_screen:p-0">
               <button
-                className={isPending ? "mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200 opacity-50":"mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"}
+                className={
+                  isPending
+                    ? "mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200 opacity-50"
+                    : "mt-4 w-24 text-md font-semibold flex justify-center gap-3 items-center bg-slate-200 p-1 rounded-md hover:bg-slate-300 duration-200"
+                }
                 type="submit"
                 disabled={isPending}
               >

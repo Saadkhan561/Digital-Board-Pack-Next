@@ -10,7 +10,7 @@ import Image from "next/image";
 const Replies = ({
   replyData,
   commentator_id,
-  refetchComments,
+
   docVersionStatus,
 }) => {
   const [commentDiv, setCommentDiv] = useState(false);
@@ -51,16 +51,12 @@ const Replies = ({
         reset();
         setCommentDiv(false);
         setUpdateCommentDiv(false);
-        refetchComments();
       },
       onError(data) {},
     });
 
   const { mutate: deleteReply, isPending: isDeleteReplyPending } =
     useDeleteReply({
-      onSuccess(data) {
-        refetchComments();
-      },
       onError(data) {},
     });
 

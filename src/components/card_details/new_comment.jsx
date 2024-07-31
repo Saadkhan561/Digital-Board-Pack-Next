@@ -16,12 +16,6 @@ const NewComment = ({
   parentDocId,
   doc_name,
 }) => {
-  const router = useRouter();
-  const { refetch: refetchComments } = useFetchComments(
-    { docId: docId },
-    { enabled: false }
-  );
-
   const initialValues = {
     comment: "",
   };
@@ -116,7 +110,13 @@ const NewComment = ({
             onKeyDown={handleKeyDown}
           />
           <button type="submit" className="w=1/10">
-            <Image className={isPending ? "opacity-50 duration-200":""} src="/images/send.png" alt="" height={25} width={25} />
+            <Image
+              className={isPending ? "opacity-50 duration-200" : ""}
+              src="/images/send.png"
+              alt=""
+              height={25}
+              width={25}
+            />
           </button>
         </form>
       </div>
