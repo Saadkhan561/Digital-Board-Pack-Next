@@ -33,6 +33,8 @@ const Comment = ({
   const [commentDiv, setCommentDiv] = useState(false);
   const [updateCommentDiv, setUpdateCommentDiv] = useState(false);
 
+  console.log(commentDiv)
+
   const updateReplyFunc = () => {
     setReply(!isReply);
     setViewReply(true);
@@ -85,6 +87,7 @@ const Comment = ({
             theme: "dark",
             transition: Bounce,
           });
+          setCommentDiv(false)
         },
         onError(error) {
           toast.error(error, {
@@ -106,6 +109,7 @@ const Comment = ({
     useUpdateComment({
       onSuccess(data) {
         setUpdateCommentDiv(false);
+        setCommentDiv(false)
       },
       onError(data) {},
     });

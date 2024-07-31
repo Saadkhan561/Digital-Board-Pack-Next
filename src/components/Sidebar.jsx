@@ -30,9 +30,9 @@ export default function Sidebar({ navItems }) {
       )}
     >
       <div className="flex gap-5 flex-col justify-center items-center">
-        <Link href="/" className="text-xl font-semibold text-white text-center">
+        <div className="text-xl font-semibold text-white text-center">
           Digital Board Pack
-        </Link>
+        </div>
         {currentUser?.roles === "secretary" && (
           <div className="flex flex-col items-center gap-4">
             <div

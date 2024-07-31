@@ -57,6 +57,9 @@ const Replies = ({
 
   const { mutate: deleteReply, isPending: isDeleteReplyPending } =
     useDeleteReply({
+      onSuccess(data) {
+        setCommentDiv(false)
+      },
       onError(data) {},
     });
 

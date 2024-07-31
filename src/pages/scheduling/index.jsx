@@ -15,6 +15,7 @@ import { useState } from "react";
 const Calendar = () => {
   const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings } = useGetUserMeetings();
+  console.log(meetings)
   const { modals, closeModal, openModal } = useModalStore();
 
   const router = useRouter();
@@ -60,9 +61,12 @@ const Calendar = () => {
             {eventInfo.event.title}
           </div>
           <div className="text-xs calendar_mob:hidden">
-            <div>{`Time: ${time}`}</div>
+            <div>{`Time: ${time && time}`}</div>
           </div>
-          <div className="calendar_full:hidden">
+          <div className="text-xs text-gray-600 underline">
+            Show details
+          </div>
+          {/* <div className="calendar_full:hidden">
             <div className="relative">
               <p
                 className="underline hover:cursor-pointer text-xs"
@@ -74,11 +78,11 @@ const Calendar = () => {
               </p>
               {isExpanded && (
                 <div className="absolute -left-10 border rounded-lg shadow-2xl bg-black text-white p-2 font-semibold">
-                  <div>{`Time: ${formattedTime}`}</div>
+                  <div>{`Time: ${time}`}</div>
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );

@@ -4,6 +4,7 @@ import useUserStore from "@/stores/useUserStore";
 import { isTokenExpired } from "@/utils/common";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Loader from "../loader";
 
 const ProtectedWrapper = (Component, role) => (props) => {
   const currentUser = useUserStore((state) => state.currentUser);
@@ -47,7 +48,7 @@ const ProtectedWrapper = (Component, role) => (props) => {
     return () => clearTimeout(timeoutId);
   }, [currentUser, router, setShowChildren]);
 
-  return showChildren ? <Component {...props} /> : <div>Redirecting...</div>;
+  return showChildren ? <Component {...props} /> : <div className="absolute top-0"><Loader /></div>;
 };
 
 export const withProtectedWrapper = ProtectedWrapper;
