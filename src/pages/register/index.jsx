@@ -11,11 +11,10 @@ import useUserStore from "../../stores/useUserStore";
 // FOR TOAST
 import AdminPanelDiv from "@/components/admin_panel";
 import Image from "next/image";
+import Link from "next/link";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import { withProtectedWrapper } from "@/components/Protected Routes/protected_login";
+import { HashLoader } from "react-spinners";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);
@@ -71,7 +70,6 @@ const Register = () => {
       }
     },
     onError(err) {
-     
       toast.error("Invalid email or password", {
         position: "top-center",
         autoClose: 1000,
@@ -107,7 +105,16 @@ const Register = () => {
 
   if (currentUser?.token) {
     router.push("/");
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen w-screen">
+        <div className="flex gap-4 items-center">
+          <HashLoader size={30} />
+          <div className="text-xl font-semibold text-slate-900">
+            Digital Board Pack
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -189,7 +196,11 @@ const Register = () => {
               )}
             </div>
             <button
-              className={isPending ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2 opacity-50":"border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"}
+              className={
+                isPending
+                  ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2 opacity-50"
+                  : "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
+              }
               type="submit"
               disabled={isPending}
             >

@@ -52,3 +52,14 @@ export const isTokenExpired = (token) => {
     return true;
   }
 };
+
+export function truncateTitle(title, maxCharacters) {
+  // Check if the length of the title exceeds maxCharacters
+  if (title.length > maxCharacters) {
+    // Slice the title to maxCharacters and add an ellipsis
+    return title.slice(0, maxCharacters) + "...";
+  }
+
+  // If the length is within the limit, return the original title
+  return title;
+}

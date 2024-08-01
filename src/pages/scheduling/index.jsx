@@ -2,6 +2,7 @@ import { withProtectedWrapper } from "@/components/Protected Routes/protected_lo
 import { useGetUserMeetings } from "@/hooks/query.hook";
 import Layout from "@/layout/UserLayout";
 import useModalStore from "@/stores/useModalStore";
+import { truncateTitle } from "@/utils/common";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
@@ -20,10 +21,10 @@ const Calendar = () => {
 
   const router = useRouter();
 
-
+console.log(truncateTitle("asdadadasdasdasdasdasdasdadadsads",10))
 
   const fullCalendarEvents = meetings?.map((meeting) => ({
-    title: meeting.meeting_title,
+    title: truncateTitle(meeting.meeting_title,10),
     start: `${moment
       .utc(meeting.meeting_datetime)
       .local()
