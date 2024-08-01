@@ -9,6 +9,7 @@ import useUserStore from "@/stores/useUserStore";
 import { adminNavItems, navItems } from "@/utils/constants";
 import { BellIcon } from "lucide-react";
 import { MobileSidebar } from "./layout/mobile-nav";
+import useModalStore from "@/stores/useModalStore";
 
 const Header = ({ menu, setMenu, menuRef, children }) => {
   const router = useRouter();
@@ -16,11 +17,11 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
   const { currentUser } = useUserStore();
   const [notify, setNotify] = useState(false);
   const { mutate: changeStatus } = useChangeNotificationStatus();
+  const { modals } = useModalStore();
   const { data: count } = useGetUserNotificationCount();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      
       if (notify) {
         if (
           notificationRef.current &&
@@ -52,8 +53,8 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
       className={
         menu ||
         Boolean(router.query?.open) ||
-        Boolean(router.query?.schedule) ||
-        Boolean(router.query?.modal) ||
+        Boolean(modals["schedule"]) ||
+        Boolean(modals["modals"]) ||
         Boolean(router.query?.access) ||
         Boolean(router.query.signUp)
           ? "w-full opacity-25 duration-200 relative"
@@ -70,7 +71,7 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
             {Boolean(count?.count) && (
               <div className="rounded-full bg-blue-600 absolute w-2 h-2 left-4 bottom-5" />
             )}
-            <BellIcon onClick={handleNotification}  ref={notificationRef}/>
+            <BellIcon onClick={handleNotification} ref={notificationRef} />
 
             <div
               className={
@@ -78,7 +79,6 @@ const Header = ({ menu, setMenu, menuRef, children }) => {
                   ? "notification-div min-h-[50px]"
                   : "notification-div hidden"
               }
-              
             >
               <Notification />
             </div>

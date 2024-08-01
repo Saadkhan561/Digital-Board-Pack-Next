@@ -7,8 +7,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 const Home = () => {
-  const [dropdown, setDropdown] = useState(false);
-  const [filter, setFilter] = useState("All");
   const router = useRouter();
 
   const setValue = (name, value) => {
