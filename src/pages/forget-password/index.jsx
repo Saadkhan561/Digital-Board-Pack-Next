@@ -27,7 +27,7 @@ const page = () => {
   });
   const { handleSubmit, control } = form;
   const { push } = useRouter();
-  const { mutate } = useForgetPassword({
+  const { mutate, isPending } = useForgetPassword({
     onSuccess(data) {
       push("/register?login");
       toast.success(data.message, {
@@ -61,7 +61,7 @@ const page = () => {
     mutate(data);
   };
   return (
-    <main className="antialiased text-gray-900 font-sans">
+    <main className="antialiased text-gray-900 font-sans bg-slate-100">
       <div className="flex items-center h-screen w-full">
         <div className="w-1/2 bg-card rounded shadow-lg p-8 m-4 mx-auto">
           <span className="block w-full text-xl uppercase mb-4">
@@ -97,6 +97,7 @@ const page = () => {
 
               <Button
                 type="submit"
+                disabled={isPending}
                 className="rounded-md bg-slate-100 font-semibold hover:bg-slate-200  text-black uppercase text-sm border border-black "
               >
                 Submit
