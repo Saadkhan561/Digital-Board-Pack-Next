@@ -19,7 +19,6 @@ export const insertDocument = async (data) => {
   
   try {
     const res = await axios.post("/InsertDocument", data);
-
     return res.data;
   } catch (error) {
     
@@ -108,7 +107,6 @@ export const fetchDocByUser = async () => {
 // FETCH A PARTICULAR DOCUMENT
 export const fetchDocumentById = async (params) => {
   const { id } = params;
- 
   if (id) {
     try {
       const response = await axios.get(`/GetFile/${id}`);
