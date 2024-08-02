@@ -14,7 +14,7 @@ const handler = async (req, res) => {
   }
   const onlyName = name?.split(".")[0];
   const url = `${baseUrl}/document/${onlyName}/${name}`;
-  console.log(url);
+
   const response = await fetch(url);
   if (!response.ok)
     throw new Error(`unexpected response ${response.statusText}`);

@@ -532,12 +532,13 @@ const MeetingInfo = () => {
                     onSubmit={handlePostponeSubmit(onPostponeSubmit)}
                   >
                     <p className="text-gray-400 text-sm">
-                      Schedule your time and date
+                      Reschedule your time and date
                     </p>
                     <div className="flex justify-between">
                       <div className="mt-2">
                         <input
                           type="date"
+                          min={new Date().toISOString().split("T")[0]}
                           {...postponeRegister("meeting_date")}
                         />
                         {errors.meeting_date?.message && (

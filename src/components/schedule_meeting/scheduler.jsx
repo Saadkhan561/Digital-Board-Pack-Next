@@ -29,7 +29,6 @@ const Scheduler = () => {
   // FOR SCHEDULE MODAL
   const router = useRouter();
   const { modals, closeModal, openModal } = useModalStore();
- 
 
   const initialValues = {
     meeting_date: "",
@@ -114,7 +113,6 @@ const Scheduler = () => {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      
       <ToastContainer />
       <div className="bg-white shadow-2xl rounded-md w-[600px] mob_screen:w-[500px] new_document:w-[350px] z-10 mob_screen:h-[600px]">
         <div className="flex justify-between items-center text-white bg-slate-900 p-4">
@@ -158,12 +156,16 @@ const Scheduler = () => {
                 )}
               </div>
               <div>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-sm" >
                   Schedule your time and date
                 </p>
                 <div className="flex justify-between">
                   <div className="mt-2">
-                    <input type="date" {...register("meeting_date")} />
+                    <input
+                      type="date"
+                      {...register("meeting_date")}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
                     {errors.meeting_date?.message && (
                       <p className="text-red-500 text-xs">
                         {errors.meeting_date.message}

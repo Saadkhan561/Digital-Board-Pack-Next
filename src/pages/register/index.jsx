@@ -15,6 +15,8 @@ import Link from "next/link";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HashLoader } from "react-spinners";
+import Head from "next/head";
+import { Html } from "next/document";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);
@@ -118,104 +120,112 @@ const Register = () => {
   }
 
   return (
-    <div className="h-screen flex justify-center items-center relative">
-      <div
-        className={
-          router.query.admin
-            ? "flex shadow-2xl rounded-lg border border-slate-300 opacity-50 duration-200"
-            : "flex shadow-2xl rounded-lg border border-slate-300"
-        }
-      >
-        <div className="h-[600px] w-[400px] relative md:hidden">
-          <Image
-            className="object-cover h-full"
-            src="/images/login_img.jpg"
-            alt=""
-            layout="fill"
-            objectFit="cover"
-          />
-          <p className="absolute top-1/3 left-5 text-3xl font-semibold">
-            Digital Board Pack
-          </p>
-        </div>
-        {/* LOGIN DIV */}
-        <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[400px] menu_bar_mob:w-[240px] p-8">
-          <div className="text-3xl menu_bar_mob:text-xl font-semibold">
-            Welcome
+    <>
+      <Head>
+      <title>Digital Board Pack - Sign In</title>
+        <link rel="icon" href="/assets/favicon.png" />
+      </Head>
+      <div className="h-screen flex justify-center items-center relative">
+        <div
+          className={
+            router.query.admin
+              ? "flex shadow-2xl rounded-lg border border-slate-300 opacity-50 duration-200"
+              : "flex shadow-2xl rounded-lg border border-slate-300"
+          }
+        >
+          <div className="h-[600px] w-[400px] relative md:hidden">
+            <Image
+              className="object-cover h-full"
+              src="/images/login_img.jpg"
+              alt=""
+              layout="fill"
+              objectFit="cover"
+            />
+            <p className="absolute top-1/3 left-5 text-3xl font-semibold">
+              Digital Board Pack
+            </p>
           </div>
-          <div className="text-slate-500 text-sm">Sign in to your account</div>
-          <form
-            onSubmit={handleSubmit(onSubmitHandle)}
-            className="w-[300px] menu_bar_mob:w-[200px] mt-8 flex flex-col gap-3"
-          >
-            <div>
-              <label className="label" htmlFor="email">
-                Email
-              </label>
-              <div className="flex gap-1 border-b border-b-gray-300">
-                <input
-                  className="input_field"
-                  type="text"
-                  {...register("email")}
-                />
-                <Image
-                  className="h-4 w-4"
-                  src="/images/account_sm.png"
-                  alt=""
-                  height="4"
-                  width="4"
-                />
-              </div>
-              {errors.email && (
-                <p className="text-red-500 text-xs">{errors.email.message}</p>
-              )}
+          {/* LOGIN DIV */}
+          <div className="flex flex-col items-center h-[500px] w-[400px] menu_bar_mob:h-[400px] menu_bar_mob:w-[240px] p-8">
+            <div className="text-3xl menu_bar_mob:text-xl font-semibold">
+              Welcome
             </div>
-            <div>
-              <label className="label" htmlFor="password">
-                Password
-              </label>
-              <div className="flex gap-1 border-b border-b-gray-300">
-                <input
-                  className="input_field"
-                  type={showpassword ? "text" : "password"}
-                  {...register("password")}
-                />
-                <Image
-                  onClick={() => setShowpassword(!showpassword)}
-                  className="cursor-pointer h-4 w-4"
-                  src="/images/pass_eye.png"
-                  alt=""
-                  height={4}
-                  width={4}
-                />
-              </div>
-              {errors.password && (
-                <p className="text-red-500 text-xs">
-                  {errors.password.message}
-                </p>
-              )}
+            <div className="text-slate-500 text-sm">
+              Sign in to your account
             </div>
-            <button
-              className={
-                isPending
-                  ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2 opacity-50"
-                  : "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
-              }
-              type="submit"
-              disabled={isPending}
+            <form
+              onSubmit={handleSubmit(onSubmitHandle)}
+              className="w-[300px] menu_bar_mob:w-[200px] mt-8 flex flex-col gap-3"
             >
-              Submit
-            </button>
-          </form>
-          <div
-            className="hover:text-blue-300 mb-2 mt-2
+              <div>
+                <label className="label" htmlFor="email">
+                  Email
+                </label>
+                <div className="flex gap-1 border-b border-b-gray-300">
+                  <input
+                    className="input_field"
+                    type="text"
+                    {...register("email")}
+                  />
+                  <Image
+                    className="h-4 w-4"
+                    src="/images/account_sm.png"
+                    alt=""
+                    height="4"
+                    width="4"
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-red-500 text-xs">{errors.email.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="label" htmlFor="password">
+                  Password
+                </label>
+                <div className="flex gap-1 border-b border-b-gray-300">
+                  <input
+                    className="input_field"
+                    type={showpassword ? "text" : "password"}
+                    {...register("password")}
+                  />
+                  <Image
+                    onClick={() => setShowpassword(!showpassword)}
+                    className="cursor-pointer h-4 w-4"
+                    src="/images/pass_eye.png"
+                    alt=""
+                    height={4}
+                    width={4}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-red-500 text-xs">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+              <button
+                className={
+                  isPending
+                    ? "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2 opacity-50"
+                    : "border menu_bar_mob:text-sm rounded-md bg-slate-100 font-semibold hover:bg-slate-200 ease-in-out duration-200 p-[1px] mt-2"
+                }
+                type="submit"
+                disabled={isPending}
+              >
+                Submit
+              </button>
+            </form>
+            <div
+              className="hover:text-blue-300 mb-2 mt-2
           "
-          >
-            <Link href={"/forget-password"}>Forgot Password ?</Link>
+            >
+              <Link href={"/forget-password"}>Forgot Password ?</Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

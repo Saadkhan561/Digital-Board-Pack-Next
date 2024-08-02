@@ -10,6 +10,8 @@ import Sidebar from "@/components/Sidebar";
 import useModalStore from "@/stores/useModalStore";
 import useUserStore from "@/stores/useUserStore";
 import { adminNavItems, navItems } from "@/utils/constants";
+import { Html } from "next/document";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
@@ -54,30 +56,38 @@ function Layout({ children }) {
   const { currentUser } = useUserStore();
 
   return (
-    <div className="flex relative overflow-x-hidden h-screen">
-      {/* SIDE BAR */}
+    <>
+      <Head>
+        <title>Digital Board Pack</title>
+        <link rel="icon" href="/assets/favicon.png" />
+      </Head>
+      <div className="flex relative overflow-x-hidden h-screen">
+        {/* SIDE BAR */}
 
-      {/* SIDE BAR DIV */}
+        {/* SIDE BAR DIV */}
 
-      <Sidebar
-        navItems={currentUser?.roles === "secretary" ? adminNavItems : navItems}
-      />
+        <Sidebar
+          navItems={
+            currentUser?.roles === "secretary" ? adminNavItems : navItems
+          }
+        />
 
-      {/* MIDDLE DIV */}
-      <Header menu={menu} setMenu={setMenu} menuRef={menuRef}>
-        {children}
-      </Header>
+        {/* MIDDLE DIV */}
+        <Header menu={menu} setMenu={setMenu} menuRef={menuRef}>
+          {children}
+        </Header>
 
-      <div className="fixed top-0">{renderNewDocument()}</div>
+        <div className="fixed top-0">{renderNewDocument()}</div>
 
-      <div className="absolute top-0">{renderScheduleModal()}</div>
+        <div className="absolute top-0">{renderScheduleModal()}</div>
 
-      <div className="absolute top-0">{renderMeetingInfoModal()}</div>
+        <div className="absolute top-0">{renderMeetingInfoModal()}</div>
 
-      <div className="absolute top-0">{renderAccessListModal()}</div>
+        <div className="absolute top-0">{renderAccessListModal()}</div>
 
-      <div className="absolute top-0">{renderSignUpDiv()}</div>
-    </div>
+        <div className="absolute top-0">{renderSignUpDiv()}</div>
+      </div>
+    </>
   );
 }
 

@@ -9,22 +9,14 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import moment from "moment";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 const Calendar = () => {
-  const [expandedEventId, setExpandedEventId] = useState(null);
   const { data: meetings } = useGetUserMeetings();
-  console.log(meetings)
-  const { modals, closeModal, openModal } = useModalStore();
-
-  const router = useRouter();
-
-console.log(truncateTitle("asdadadasdasdasdasdasdasdadadsads",10))
+  const { openModal } = useModalStore();
 
   const fullCalendarEvents = meetings?.map((meeting) => ({
-    title: truncateTitle(meeting.meeting_title,10),
+    title: truncateTitle(meeting.meeting_title, 10),
     start: `${moment
       .utc(meeting.meeting_datetime)
       .local()
@@ -42,8 +34,6 @@ console.log(truncateTitle("asdadadasdasdasdasdasdasdadadsads",10))
 
   const renderEventContent = (eventInfo) => {
     const { meeting_id } = eventInfo.event.extendedProps;
-    const isExpanded = meeting_id === expandedEventId;
-
     const hours = eventInfo.event.start.getHours();
     const minutes = eventInfo.event.start.getMinutes();
     const seconds = eventInfo.event.start.getSeconds();
@@ -64,26 +54,7 @@ console.log(truncateTitle("asdadadasdasdasdasdasdasdadadsads",10))
           <div className="text-xs calendar_mob:hidden">
             <div>{`Time: ${time && time}`}</div>
           </div>
-          <div className="text-xs text-gray-600 underline">
-            Show details
-          </div>
-          {/* <div className="calendar_full:hidden">
-            <div className="relative">
-              <p
-                className="underline hover:cursor-pointer text-xs"
-                onClick={() =>
-                  setExpandedEventId(isExpanded ? null : meeting_id)
-                }
-              >
-                {isExpanded ? "Show Less" : "Show More"}
-              </p>
-              {isExpanded && (
-                <div className="absolute -left-10 border rounded-lg shadow-2xl bg-black text-white p-2 font-semibold">
-                  <div>{`Time: ${time}`}</div>
-                </div>
-              )}
-            </div>
-          </div> */}
+          <div className="text-xs text-gray-600 underline">Show details</div>
         </div>
       </div>
     );

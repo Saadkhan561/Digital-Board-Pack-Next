@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForgetPassword } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -61,52 +62,59 @@ const page = () => {
     mutate(data);
   };
   return (
-    <main className="antialiased text-gray-900 font-sans bg-slate-100">
-      <div className="flex items-center h-screen w-full">
-        <div className="w-1/2 bg-card rounded shadow-lg p-8 m-4 mx-auto">
-          <span className="block w-full text-xl uppercase mb-4">
-            Forgot Password?
-          </span>
-          <Form {...form}>
-            <form
-              className="mb-4"
-              onSubmit={handleSubmit(handleForgetPassword)}
-            >
-              <div className="mb-6 md:w-full">
-                <FormField
-                  control={control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="block text-xs mb-1">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <input
-                          type="email"
-                          className="input_field"
-                          placeholder="Enter your email address"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+    <>
+      <Head>
+      <title>Digital Board Pack - Forgot Password</title>
+        <link rel="icon" href="/assets/favicon.png" />
+      </Head>
 
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="rounded-md bg-slate-100 font-semibold hover:bg-slate-200  text-black uppercase text-sm border border-black "
+      <main className="antialiased text-gray-900 font-sans bg-slate-100">
+        <div className="flex items-center h-screen w-full">
+          <div className="w-1/2 bg-card rounded shadow-lg p-8 m-4 mx-auto">
+            <span className="block w-full text-xl uppercase mb-4 font-bold">
+              Forgot Password?
+            </span>
+            <Form {...form}>
+              <form
+                className="mb-4"
+                onSubmit={handleSubmit(handleForgetPassword)}
               >
-                Submit
-              </Button>
-            </form>
-          </Form>
+                <div className="mb-6 md:w-full">
+                  <FormField
+                    control={control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="block text-xs mb-1">
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <input
+                            type="email"
+                            className="input_field"
+                            placeholder="Enter your email address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="rounded-md bg-slate-100 font-semibold hover:bg-slate-200  text-black uppercase text-sm border border-black "
+                >
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 
