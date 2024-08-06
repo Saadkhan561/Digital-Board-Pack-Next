@@ -38,8 +38,8 @@ const Register = () => {
       if (data) {
         reset();
         if (
-          data.userData.roles === "user" ||
-          data.userData.roles === "secretary"
+          data?.userData?.roles === "user" ||
+          data?.userData?.roles === "secretary"
         ) {
           const { token, userData } = data;
           const { password, ...rest } = userData;

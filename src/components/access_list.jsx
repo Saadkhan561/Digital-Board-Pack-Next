@@ -73,13 +73,14 @@ const AccessList = () => {
       },
     });
 
-  const { mutate: removeAccess, isPending: isRemoveAccessPending } = useRemoveAccessMutation({
-    onSuccess() {
-      refetchAccessedUsers();
-      refetchDoc();
-      refetchUsers();
-    }
-  });
+  const { mutate: removeAccess, isPending: isRemoveAccessPending } =
+    useRemoveAccessMutation({
+      onSuccess() {
+        refetchAccessedUsers();
+        refetchDoc();
+        refetchUsers();
+      },
+    });
 
   const initialValues = {
     userId: [],
@@ -118,7 +119,7 @@ const AccessList = () => {
 
   const onRemoveAccessSubmit = (data) => {
     const newValue = data.userId.filter(Boolean);
- 
+
     removeAccess({ docId, users: newValue });
   };
 
@@ -157,31 +158,41 @@ const AccessList = () => {
               <div className="font-semibold">Accessed Users:</div>
               <div className="p-2 flex gap-2 items-center flex-wrap">
                 {isAccessedUsersLoading ? (
-                  <div>
-                    Loading...
-                  </div>
+                  <div>Loading...</div>
                 ) : (
-                  userAccessed?.map((user, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleUserClick(index, user.user_id)}
-                      className={
-                        clickedButtons.includes(index)
-                          ? "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-700 duration-100"
-                          : "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500"
-                      }
-                    >
-                      <p>{user.user_name}</p>
-                    </button>
-                  ))
+                  userAccessed
+                    ?.filter(
+                      (user) =>
+                        !(
+                          currentUser?.roles === "secretary" &&
+                          user?.user_id === currentUser?.user_id
+                        )
+                    )
+                    .map((user, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleUserClick(index, user.user_id)}
+                        className={
+                          clickedButtons.includes(index)
+                            ? "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-700 duration-100"
+                            : "text-center cursor-pointer text-xs font-semibold text-white rounded-lg w-max gap-3 p-1 bg-slate-500"
+                        }
+                      >
+                        <p>{user.user_name}</p>
+                      </button>
+                    ))
                 )}
               </div>
             </div>
             <div className="flex justify-end w-full cursor-pointer ">
               <button
                 type="submit"
-                className={isRemoveAccessPending ? "bg-red-500 opacity-50 text-white text-xs font-semibold p-1 rounded-md":"bg-red-500 text-white text-xs font-semibold p-1 rounded-md"}
+                className={
+                  isRemoveAccessPending
+                    ? "bg-red-500 opacity-50 text-white text-xs font-semibold p-1 rounded-md"
+                    : "bg-red-500 text-white text-xs font-semibold p-1 rounded-md"
+                }
                 disabled={isRemoveAccessPending}
               >
                 Remove Users
@@ -199,7 +210,7 @@ const AccessList = () => {
                   ) : (
                     data?.map(
                       (user, index) =>
-                        user.roles === "user" &&
+                        user?.roles === "user" &&
                         userAccessed?.every(
                           (existedUser) => existedUser.user_id !== user.user_id
                         ) && (

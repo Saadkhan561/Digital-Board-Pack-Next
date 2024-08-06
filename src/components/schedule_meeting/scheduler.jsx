@@ -205,7 +205,7 @@ const Scheduler = () => {
                   ) : (
                     data?.map(
                       (user, index) =>
-                        user.roles === "user" && (
+                        user?.roles === "user" && (
                           <div
                             className="flex justify-between mt-4 border-b pb-2"
                             key={index}

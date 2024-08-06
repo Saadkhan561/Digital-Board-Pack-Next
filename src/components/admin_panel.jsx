@@ -31,7 +31,7 @@ const AdminPanelDiv = () => {
         // const { pwd, ...rest } = userData;
         // setCurrentUser({ ...rest, token: token });
         reset();
-        if (data.userData.roles === "admin") {
+        if (data?.userData?.roles === "admin") {
           const { token, userData } = data;
           const { pwd, ...rest } = userData;
           setCurrentUser({ ...rest, token: token });

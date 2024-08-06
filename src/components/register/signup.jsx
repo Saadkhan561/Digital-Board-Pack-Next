@@ -71,7 +71,7 @@ const SignUp = () => {
   } = form;
 
   const onSubmit = (data) => {
-    data["roles"] = "user"
+    data?.["roles"] = "user"
     mutate(data);
   };
 

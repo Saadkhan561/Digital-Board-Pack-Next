@@ -198,7 +198,7 @@ const NewDocument = () => {
                 ) : (
                   data?.map(
                     (user, index) =>
-                      user.roles === "user" && (
+                      user?.roles === "user" && (
                         <div
                           className="flex justify-between mt-4 border-b pr-2 pl-2 pb-2"
                           key={index}
