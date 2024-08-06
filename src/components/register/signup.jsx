@@ -1,18 +1,17 @@
-import React, { useState } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
+import { useAdminCreateUser } from "@/hooks/mutation.hook";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useAdminCreateUser, useRegisterUser } from "@/hooks/mutation.hook";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 // import { useAllDepartments } from "@/hooks/query.hook";
 
 // FOR TOAST
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Image from "next/image";
 import { passwordValidation } from "@/utils/common";
-import { Form } from "../ui/form";
 import { X } from "lucide-react";
+import Image from "next/image";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
   const [showPassword1, setShowPassword1] = useState(false);
@@ -71,7 +70,7 @@ const SignUp = () => {
   } = form;
 
   const onSubmit = (data) => {
-    data?.["roles"] = "user"
+    data["roles"] = "user"
     mutate(data);
   };
 
