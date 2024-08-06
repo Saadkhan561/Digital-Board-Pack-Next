@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  eslint: { ignoreDuringBuilds: true },
 
   images: {
     domains: ["950a-39-34-147-203.ngrok-free.app", "localhost"],

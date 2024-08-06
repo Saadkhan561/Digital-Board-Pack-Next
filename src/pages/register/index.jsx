@@ -10,13 +10,12 @@ import useUserStore from "../../stores/useUserStore";
 
 // FOR TOAST
 import AdminPanelDiv from "@/components/admin_panel";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { HashLoader } from "react-spinners";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { HashLoader } from "react-spinners";
-import Head from "next/head";
-import { Html } from "next/document";
 
 const Register = () => {
   const [showpassword, setShowpassword] = useState(false);

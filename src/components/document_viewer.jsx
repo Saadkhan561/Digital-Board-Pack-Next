@@ -1,6 +1,4 @@
-import { PDFViewer } from "@react-pdf/renderer";
-import React, { useState } from "react";
-import { Document, Page } from "@react-pdf/renderer";
+import { Document, PDFViewer } from "@react-pdf/renderer";
 // import pdf from "../../public/files/test.pdf"
 
 function ViewPDF() {
